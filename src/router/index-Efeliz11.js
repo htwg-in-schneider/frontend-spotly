@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import SpotDetail from "@/components/SpotDetail.vue";
 import SpotCatalog from "@/components/SpotCatalog.vue";
 import EditSpot from "@/components/EditSpot.vue";
-import CreateSpot from "@/components/CreateSpot.vue";
+import CreateSpot from "@/components/CreateSpot.vue";    
 
 const router = createRouter({
-  history: createWebHistory("/frontend-spotly/"),
+  history: createWebHistory("/frontend-spotly/"), 
   routes: [
     {
       path: "/",
@@ -19,17 +19,19 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/spot/:id/edit",
+      path: "/spot/:id/edit",         // <---- NEUE ROUTE
       name: "spot-edit",
       component: EditSpot,
       props: true,
     },
-    {
-      path: "/create-spot",   // ⭐ WICHTIG ⭐
+   {
+      path: "/spot/create",
       name: "spot-create",
-      component: CreateSpot,
+      component: CreateSpot,   // <- CreateSpot hat eigene Route
     }
-  ],
+  
+
+  ]
 });
 
 export default router;

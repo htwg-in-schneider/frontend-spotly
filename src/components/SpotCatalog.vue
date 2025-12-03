@@ -1,8 +1,10 @@
-<!-- src/views/HomeView.vue -->
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";   // ⭐ WICHTIG
 import SpotCard from "@/components/SpotCard.vue";
 import SpecialBanner from "@/components/SpecialBanner.vue";
+
+const router = useRouter();  // ⭐ WICHTIG
 
 // REST-Spots statt data.js
 const spots = ref([]);
@@ -25,6 +27,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 <template>
   <!-- Hintergrund -->
@@ -96,11 +99,13 @@ onMounted(async () => {
     <section class="scroll-space"></section>
 
     <!-- ⭐ NEUER BUTTON HIER ⭐ -->
-    <div class="create-btn-container">
-      <button class="create-btn" @click="$router.push('/create')">
-        ➕ Neuen Spot anlegen
-      </button>
-    </div>
+  <div class="create-btn-container">
+  <button @click="router.push('/create-spot')" class="create-btn">
+    + Neuen Spot anlegen
+  </button>
+</div>
+
+
 
     <!-- SPOT-KARTEN -->
     <section class="spots">
