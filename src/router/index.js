@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "@/components/HomeView.vue";
-import SpotDetailView from "@/components/SpotDetailView.vue";
+import SpotDetail from "@/components/SpotDetail.vue";
+import SpotCatalog from "@/components/SpotCatalog.vue";
 
 const router = createRouter({
   history: createWebHistory("/frontend-spotly/"), 
@@ -8,14 +8,15 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: SpotCatalog,
     },
     {
       path: "/spot/:id",
       name: "spot-detail",
-      component: SpotDetailView,
+      component: SpotDetail,
       props: true,
     }
+    
   ]
 });
 

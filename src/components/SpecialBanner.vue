@@ -24,7 +24,7 @@ const banner = useBannerStore();
 <style scoped>
 .slogan {
   position: absolute;
-  top: 14.7%;
+  top: 6.5%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;

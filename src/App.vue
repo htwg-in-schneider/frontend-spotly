@@ -6,7 +6,6 @@ import Footer from "@/components/Footer.vue";
 <template>
   <Navbar />
 
-  <!-- Hier wird die aktuelle View angezeigt -->
   <router-view />
 
   <Footer />

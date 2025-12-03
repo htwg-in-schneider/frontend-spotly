@@ -10,7 +10,6 @@ const props = defineProps({
   }
 });
 
-// statt alert → Routing
 function openDetails() {
   router.push(`/spot/${props.spot.id}`);
 }
@@ -21,7 +20,6 @@ function openDetails() {
     <img :src="spot.image" :alt="spot.title">
     <p>{{ spot.title }}</p>
 
-    <!-- Button bleibt exakt wie vorher -->
     <button class="details-btn" @click="openDetails">
       Details
     </button>
@@ -54,7 +52,7 @@ function openDetails() {
   color: #333;
 }
 
-/* Dein alter Button — unverändert */
+/* Details Button — unverändert */
 .details-btn {
   width: 100%;
   background-color: #5b4d3b;
@@ -70,6 +68,24 @@ function openDetails() {
 
 .details-btn:hover {
   background-color: #463b2d;
+}
+
+/* NEU: Bearbeiten Button */
+.edit-btn {
+  width: 100%;
+  background-color: #8d775e; /* leicht andere Farbe */
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.edit-btn:hover {
+  background-color: #6f604c;
 }
 
 @media (max-width: 768px) {
