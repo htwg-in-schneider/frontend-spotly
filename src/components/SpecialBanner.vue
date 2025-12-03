@@ -5,19 +5,19 @@ const banner = useBannerStore();
 </script>
 
 <template>
-  <!-- Banner wird nur angezeigt, wenn isVisible = true -->
+
   <section class="slogan" v-if="banner.isVisible">
+
+    <button class="close-btn" @click="banner.hideBanner()">✕</button>
+
     <h1>Entdecke Konstanz neu!</h1>
 
     <div class="cta-container">
-      <a 
-        href="#" 
-        class="spots-link"
-        @click.prevent="banner.hideBanner()"
-      >
+      <a href="#" class="spots-link">
         >> Hier mehr Spots entdecken
       </a>
     </div>
+
   </section>
 </template>
 
@@ -29,6 +29,19 @@ const banner = useBannerStore();
   transform: translate(-50%, -50%);
   text-align: center;
   z-index: 5;
+}
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: none;        /* kein Hintergrund */
+  border: none;            /* kein Rand */
+  color: white;            /* weißes X */
+  font-size: 28px;         /* Größe */
+  cursor: pointer;
+  padding: 0;              /* kein Abstand */
+  line-height: 1;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4); /* leicht sichtbar */
 }
 
 .slogan h1 {
