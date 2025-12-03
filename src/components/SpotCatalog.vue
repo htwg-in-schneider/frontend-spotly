@@ -1,32 +1,81 @@
+<!-- src/views/SpotCatalog.vue -->
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";   // ⭐ WICHTIG
+import { useRouter } from "vue-router";
+
 import SpotCard from "@/components/SpotCard.vue";
 import SpecialBanner from "@/components/SpecialBanner.vue";
+import SpotFilter from "@/components/SpotFilter.vue";
 
-const router = useRouter();  // ⭐ WICHTIG
+// ⭐ API aus .env
+const API = import.meta.env.VITE_API_URL;
 
-// REST-Spots statt data.js
-const spots = ref([]);
+const router = useRouter();
 
-// Daten aus REST API laden (POSTS!)
-onMounted(async () => {
+const allSpots = ref([]);  // Ungefiltert
+const spots = ref([]);     // Gefiltert
+
+// ⭐ API-Call mit Fallback
+async function fetchSpots({ name = "", category = "" } = {}) {
   try {
-    const response = await fetch("https://dummyjson.com/posts");
-    const data = await response.json();
+    // --- Backend-Aufruf ---
+    const res = await fetch(
+      `${API}/product?name=${name}&category=${category}`
+    );
+    const data = await res.json();
 
-    // Posts → Spots umwandeln
-    spots.value = data.posts.map(p => ({
-      id: p.id,
-      title: p.title,
-      description: p.body,
-      image: `https://picsum.photos/600/400?random=${p.id}`
-    }));
-  } catch (error) {
-    console.error("Fehler beim Laden der Spots:", error);
+    // Falls Backend Daten liefert:
+    if (Array.isArray(data)) {
+      spots.value = data.map(s => ({
+        id: s.id,
+        title: s.title,
+        description: s.description,
+        image: s.imageUrl,
+        tags: [s.category?.name] // 1 Kategorie
+      }));
+      return;
+    }
+  } catch (err) {
+    console.warn("⚠ Backend nicht erreichbar – Dummy Daten werden genutzt.");
   }
-});
+
+  // --- Fallback DummyJSON ---
+  const res = await fetch("https://dummyjson.com/posts");
+  const dummy = await res.json();
+
+  allSpots.value = dummy.posts.map(p => ({
+    id: p.id,
+    title: p.title,
+    description: p.body,
+    image: `https://picsum.photos/600/400?random=${p.id}`,
+    tags: p.tags ?? []
+  }));
+
+  // 📌 Filter anwenden (lokal)
+  applyLocalFilter(name, category);
+}
+
+// ⭐ Lokales Filtern für DummyJSON
+function applyLocalFilter(name, category) {
+  let result = allSpots.value;
+
+  if (name.trim()) {
+    result = result.filter(spot =>
+      spot.title.toLowerCase().includes(name.toLowerCase())
+    );
+  }
+
+  if (category) {
+    result = result.filter(spot => spot.tags.includes(category));
+  }
+
+  spots.value = result;
+}
+
+// Beim Laden → alle Spots laden
+onMounted(() => fetchSpots());
 </script>
+
 
 
 <template>
@@ -98,14 +147,15 @@ onMounted(async () => {
 
     <section class="scroll-space"></section>
 
-    <!-- ⭐ NEUER BUTTON HIER ⭐ -->
-  <div class="create-btn-container">
-  <button @click="router.push('/create-spot')" class="create-btn">
-    + Neuen Spot anlegen
-  </button>
-</div>
+    <!-- ⭐ Neuer Spot anlegen -->
+    <div class="create-btn-container">
+      <button @click="router.push('/create-spot')" class="create-btn">
+        + Neuen Spot anlegen
+      </button>
+    </div>
 
-
+    <!-- ⭐ FILTER -->
+    <SpotFilter @search-changed="fetchSpots" />
 
     <!-- SPOT-KARTEN -->
     <section class="spots">
@@ -119,6 +169,35 @@ onMounted(async () => {
     </section>
   </main>
 </template>
+
+
+
+
+<style scoped>
+.create-btn-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.create-btn {
+  background: #0084ff;
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 25px;
+  font-size: 18px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: 0.2s ease;
+}
+
+.create-btn:hover {
+  background: #1c86ee;
+  transform: translateY(-2px);
+}
+</style>
+
 
 <style scoped>
 .create-btn-container {

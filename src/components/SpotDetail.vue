@@ -1,6 +1,9 @@
+<!-- src/components/SpotDetail.vue -->
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+import SpotReviews from "@/components/SpotReviews.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -15,7 +18,9 @@ onMounted(async () => {
     spot.value = {
       id: data.id,
       title: data.title,
-      description: data.body,
+      category: data.tags?.[0] ?? "Unbekannt",
+      location: "Konstanz",
+      description: data.body || "Keine Beschreibung vorhanden.",
       image: `https://picsum.photos/900/600?random=${data.id}`
     };
   } catch (err) {
@@ -28,82 +33,96 @@ function editSpot() {
 }
 </script>
 
-<template>
 
-  <!-- 🔵 Hintergrund -->
+<template>
+  <!-- Hintergrund -->
   <div class="background">
     <div class="ellipse ellipse1"></div>
     <div class="ellipse ellipse2"></div>
     <div class="ellipse ellipse3"></div>
+    <img src="@/assets/background.jpeg" class="bg-image" />
   </div>
 
-  <div v-if="spot" class="detail-wrapper">
+  <div v-if="spot" class="detail-container">
 
-    <h1>{{ spot.title }}</h1>
+    <div class="card">
 
-    <img :src="spot.image" :alt="spot.title" class="spot-image" />
+      <!-- Bild -->
+      <img :src="spot.image" class="spot-image" />
 
-    <p class="description">{{ spot.description }}</p>
+      <!-- Titel -->
+      <h2 class="spot-name">{{ spot.title }}</h2>
 
-    <!-- Bearbeiten Button -->
-    <button class="edit-btn" @click="editSpot">
-      Bearbeiten
-    </button>
+      <!-- Kategorie -->
+      <p class="info-line">
+        <strong>Kategorie:</strong> {{ spot.category }}
+      </p>
+
+      <!-- Standort -->
+      <p class="info-line">
+        <strong>Standort:</strong> {{ spot.location }}
+      </p>
+
+      <!-- Beschreibung -->
+      <div class="description-box">
+        <strong>Beschreibung:</strong>
+        <p>{{ spot.description }}</p>
+      </div>
+
+      <!-- ⭐ Bewertungen -->
+      <SpotReviews :spotId="spot.id" />
+
+      <!-- Button -->
+      <button class="edit-btn" @click="editSpot">Bearbeiten</button>
+
+    </div>
 
   </div>
 
   <div v-else class="loading">Lade Spot...</div>
-
 </template>
+
 
 <style scoped>
 /* Hintergrund */
 .background {
   position: fixed;
   inset: 0;
-  background: linear-gradient(to bottom right, #dff1ff, #ffffff);
   z-index: -1;
+}
+
+.bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
 }
 
 .ellipse {
   position: absolute;
-  background: rgba(0, 150, 255, 0.18);
   border-radius: 50%;
-  filter: blur(120px);
+  background: rgba(255,255,255,0.5);
 }
 
-.ellipse1 {
-  width: 480px;
-  height: 260px;
-  top: 10%;
-  left: 5%;
-}
-.ellipse2 {
-  width: 420px;
-  height: 240px;
-  top: 35%;
-  right: 8%;
-}
-.ellipse3 {
-  width: 450px;
-  height: 260px;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
+.ellipse1 { width: 800px; height: 400px; top: 0; left: -200px; }
+.ellipse2 { width: 900px; height: 500px; top: 200px; right: -300px; }
+.ellipse3 { width: 700px; height: 350px; bottom: -100px; left: 100px; }
 
 /* Inhalt */
-.detail-wrapper {
+.detail-container {
   max-width: 900px;
-  margin: 140px auto 120px;
-  padding: 20px;
+  margin: 140px auto;
   text-align: center;
 }
 
-h1 {
-  font-size: 38px;
-  margin-bottom: 30px;
-  color: #222;
+/* Karte */
+.card {
+  background: rgba(240, 240, 240, 0.95);
+  border-radius: 25px;
+  padding: 30px;
+  width: 85%;
+  margin: 0 auto;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .spot-image {
@@ -112,15 +131,45 @@ h1 {
   margin-bottom: 25px;
 }
 
-.description {
-  font-size: 20px;
-  line-height: 1.6;
-  color: #444;
-  max-width: 780px;
-  margin: 0 auto 40px;
+/* Titel */
+.spot-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 20px;
 }
 
-/* Bearbeiten Button */
+/* Info */
+.info-line {
+  font-size: 18px;
+  color: #000;
+  text-align: left;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+/* Beschreibung */
+.description-box {
+  background: #d8e6f7;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: left;
+  margin: 20px 0;
+}
+
+.description-box strong {
+  color: #000;
+  font-size: 18px;
+}
+
+.description-box p {
+  font-size: 16px;
+  margin-top: 8px;
+  color: #000;
+  line-height: 1.5;
+}
+
+/* Button */
 .edit-btn {
   background: #0084ff;
   border: none;
@@ -128,12 +177,13 @@ h1 {
   padding: 14px 40px;
   border-radius: 40px;
   font-size: 18px;
+  margin-top: 20px;
   cursor: pointer;
   transition: 0.2s;
 }
 
 .edit-btn:hover {
-  background: #006fd6;
+  background: #0072d6;
 }
 
 .loading {

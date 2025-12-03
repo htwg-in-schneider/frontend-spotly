@@ -19,23 +19,22 @@ onMounted(async () => {
     const data = await res.json();
 
     title.value = data.title;
-    category.value = "Kategorie";       // Dummy: API hat keine Kategorie
-    location.value = "Konstanz";       // Dummy
+    category.value = "Kategorie";
+    location.value = "Konstanz";
     description.value = data.body;
     image.value = `https://picsum.photos/600/400?random=${data.id}`;
-
   } catch (err) {
     console.error("Fehler beim Laden:", err);
   }
 });
 
-// Speichern (Fake)
+// Speichern
 function saveSpot() {
   alert("Änderungen gespeichert! (Fake-REST)");
   router.push(`/spot/${route.params.id}`);
 }
 
-// Löschen (Fake)
+// Löschen
 function deleteSpot() {
   if (confirm("Willst du diesen Spot wirklich löschen?")) {
     alert("Spot gelöscht! (Fake-REST)");
@@ -46,7 +45,7 @@ function deleteSpot() {
 
 <template>
 
-  <!-- Hintergrund wie bei CreateSpot -->
+  <!-- Hintergrund wie SpotDetail -->
   <div class="background">
     <div class="ellipse ellipse1"></div>
     <div class="ellipse ellipse2"></div>
@@ -60,9 +59,11 @@ function deleteSpot() {
   </div>
 
   <div class="wrapper">
+
     <h1 class="title">Spot bearbeiten</h1>
 
-    <div class="card">
+    <!-- ⭐ GRAUER KASTEN – wie bei SpotDetail -->
+    <div class="edit-card">
 
       <!-- Bild-Vorschau -->
       <div class="image-box">
@@ -103,13 +104,10 @@ function deleteSpot() {
 </template>
 
 <style scoped>
-/* Hintergrund */
+/* ───────── Hintergrund ───────── */
 .background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  inset: 0;
   overflow: hidden;
   z-index: -1;
 }
@@ -148,94 +146,104 @@ function deleteSpot() {
   left: 100px;
 }
 
-/* Inhalt */
+/* ───────── Inhalt ───────── */
 .wrapper {
   text-align: center;
-  margin-top: 80px;
+  margin-top: 130px;
 }
 
 .title {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
-  color: #0084ff;
-  margin-bottom: 30px;
+  color: #000;
+  margin-bottom: 25px;
 }
 
-.card {
-  width: 420px;
+/* ⭐ GRAUER KARTEN-KASTEN */
+.edit-card {
+  width: 480px;
   margin: 0 auto;
-  background: #b19884;
+  background: rgba(235, 235, 235, 0.9);
   padding: 30px;
   border-radius: 25px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-.image-box {
-  text-align: center;
-  margin-bottom: 20px;
+/* ───────── Bild ───────── */
+.image-box img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 12px;
 }
 
 .placeholder {
   width: 100%;
   height: 180px;
-  background: white;
+  background: #fff;
   border-radius: 15px;
-  line-height: 180px;
   font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 
-.image-box img {
-  width: 100%;
-  border-radius: 15px;
-  margin-bottom: 10px;
-}
-
-/* Inputs */
+/* ───────── Inputs ───────── */
 .input {
   width: 100%;
-  padding: 12px;
-  border-radius: 30px;
+  padding: 14px;
+  border-radius: 25px;
   border: none;
-  margin-bottom: 15px;
+  margin: 12px 0;
+  font-size: 16px;
+  background: white;
 }
 
 .textarea {
   width: 100%;
-  height: 120px;
-  padding: 12px;
+  height: 140px;
+  padding: 14px;
   border-radius: 20px;
   border: none;
-  margin-bottom: 15px;
+  margin: 12px 0;
+  font-size: 16px;
+  background: white;
 }
 
-/* Buttons */
+/* ───────── Buttons ───────── */
 .save-btn {
   width: 100%;
   background: #0084ff;
   color: white;
-  padding: 14px;
+  padding: 15px;
   border: none;
-  border-radius: 30px;
+  border-radius: 25px;
   font-size: 18px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  transition: 0.2s;
 }
 
 .save-btn:hover {
-  background: #5dade2;
+  background: #1b82e9;
+  transform: translateY(-2px);
 }
 
 .delete-btn {
   width: 100%;
   background: #ff4d4d;
   color: white;
-  padding: 14px;
+  padding: 15px;
   border: none;
-  border-radius: 30px;
+  border-radius: 25px;
   font-size: 18px;
   cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
 }
 
 .delete-btn:hover {
   background: #ff1a1a;
+  transform: translateY(-2px);
 }
 </style>
