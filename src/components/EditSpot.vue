@@ -15,7 +15,7 @@ const image = ref("");
 // Spot laden
 onMounted(async () => {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}posts/${route.params.id}`);
+    const res = await fetch(`https://dummyjson.com/posts/${route.params.id}`);
     const data = await res.json();
 
     title.value = data.title;
