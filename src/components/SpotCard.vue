@@ -52,7 +52,6 @@ function openDetails() {
   color: #333;
 }
 
-/* Details Button — unverändert */
 .details-btn {
   width: 100%;
   background-color: #5b4d3b;
@@ -70,10 +69,9 @@ function openDetails() {
   background-color: #463b2d;
 }
 
-/* NEU: Bearbeiten Button */
 .edit-btn {
   width: 100%;
-  background-color: #8d775e; /* leicht andere Farbe */
+  background-color: #8d775e; 
   color: white;
   border: none;
   padding: 10px 0;

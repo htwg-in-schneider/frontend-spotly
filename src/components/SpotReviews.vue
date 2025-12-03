@@ -6,10 +6,7 @@ const props = defineProps({
   spotId: Number
 });
 
-// ⭐ Dummy Bewertungen pro Spot (weil dummyjson keine Bewertungen hat)
-const reviews = ref([]);
-
-// Dummy-Review-Pool
+// Alle möglichen Reviews
 const possibleReviews = [
   { text: "Wunderschöner Ort!", stars: 5 },
   { text: "Mega Aussicht!", stars: 4 },
@@ -18,15 +15,22 @@ const possibleReviews = [
   { text: "Hat mir nicht gefallen.", stars: 1 }
 ];
 
-// ⭐ Bewertungen generieren
+const reviews = ref([]);
+
+// ⭐ Stabiler, spotbasierter Zufall
+function seededRandom(seed) {
+  return Math.abs(Math.sin(seed) * 10000) % 1;
+}
+
+// ⭐ Bewertungen pro Spot generieren (1–3)
 function generateReviewsForSpot(id) {
-  // Jede Spot-ID erhält 1–3 zufällige Bewertungen
-  const count = Math.floor(Math.random() * 3) + 1;
+  const count = Math.floor(seededRandom(id) * 3) + 1;
 
   let result = [];
 
   for (let i = 0; i < count; i++) {
-    const r = possibleReviews[Math.floor(Math.random() * possibleReviews.length)];
+    const index = Math.floor(seededRandom(id + i) * possibleReviews.length);
+    const r = possibleReviews[index];
 
     result.push({
       id: `${id}-${i}`,
@@ -38,40 +42,22 @@ function generateReviewsForSpot(id) {
   reviews.value = result;
 }
 
-onMounted(() => {
-  generateReviewsForSpot(props.spotId);
-});
+onMounted(() => generateReviewsForSpot(props.spotId));
 </script>
-
 
 <template>
   <div class="reviews-wrapper">
     <h2 class="title">Bewertungen</h2>
 
-    <div 
-      v-for="r in reviews" 
-      :key="r.id" 
-      class="review-card"
-    >
-
-      <!-- Sterne -->
+    <div v-for="r in reviews" :key="r.id" class="review-card">
       <div class="stars">
-        <span 
-          v-for="i in 5" 
-          :key="i"
-          class="star"
-          :class="{ active: i <= r.stars }"
-        >★</span>
+        <span v-for="i in 5" :key="i" class="star" :class="{ active: i <= r.stars }">★</span>
       </div>
 
-      <!-- Text -->
-      <p class="review-text">
-        {{ r.text }}
-      </p>
+      <p class="review-text">{{ r.text }}</p>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .reviews-wrapper {
@@ -83,11 +69,9 @@ onMounted(() => {
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 20px;
-  text-align: left;
   color: #000;
 }
 
-/* Karte */
 .review-card {
   background: white;
   padding: 18px;
@@ -96,7 +80,6 @@ onMounted(() => {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Sterne */
 .stars {
   margin-bottom: 10px;
 }
@@ -111,7 +94,6 @@ onMounted(() => {
   color: #ffcc00;
 }
 
-/* Text */
 .review-text {
   font-size: 16px;
   color: #333;

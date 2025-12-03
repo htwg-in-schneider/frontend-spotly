@@ -127,23 +127,33 @@ onMounted(() => fetchSpots());
 
   <!-- Intro Wave -->
   <main>
-    <section class="scroll-space"></section>
-
     <section class="intro-wave">
-      <div class="wave-content">
-        <img src="@/assets/Moritz.jpg" alt="Linkes Bild" class="circle-image">
+  <div class="intro-container">
 
-        <div class="wave-text">
-          <h2>Unsere Idee hinter Spotly:</h2>
-          <p>
-            Spotly ist unsere Art, Konstanz neu zu entdecken — durch echte Tipps von echten Menschen.
-            Wir, Efe-liz und Moritz, haben Spotly entwickelt, weil wir gemerkt haben, wie schwer es ist,
-            gute Orte zu finden, wenn man neu in der Stadt ist.  
-            Auf Spotly teilen Locals ihre Lieblingsplätze, von kleinen Cafés bis zu geheimen Spots am See.
-          </p>
-        </div>
-      </div>
-    </section>
+    <!-- Linkes Bild (Moritz) -->
+    <div class="intro-image">
+      <img src="@/assets/Moritz.jpg" alt="Moritz" class="circle-image">
+    </div>
+
+    <!-- Text mittig -->
+    <div class="intro-text">
+      <h2>Unsere Idee hinter Spotly:</h2>
+      <p>
+        Spotly ist unsere Art, Konstanz neu zu entdecken durch echte Tipps von echten Menschen.
+        Wir, Efe-liz und Moritz, haben Spotly entwickelt, weil wir gemerkt haben, wie schwer es ist,
+        gute Orte zu finden, wenn man neu in der Stadt ist.  
+        Auf Spotly teilen Locals ihre Lieblingsplätze, von kleinen Cafés bis zu geheimen Spots am See.
+      </p>
+    </div>
+
+    <!-- Rechtes Bild (Du) -->
+    <div class="intro-image">
+      <img src="@/assets/Efeliz.jpg" alt="Efe-liz" class="circle-image">
+    </div>
+
+  </div>
+</section>
+
 
     <section class="scroll-space"></section>
 
@@ -174,6 +184,7 @@ onMounted(() => fetchSpots());
 
 
 <style scoped>
+
 .create-btn-container {
   text-align: center;
   margin-bottom: 30px;
@@ -222,4 +233,89 @@ onMounted(() => fetchSpots());
   background: #1c86ee;
   transform: translateY(-2px);
 }
+/* Intro Section */
+.intro-wave {
+  width: 100%;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.intro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+/* Profilbilder */
+.circle-image {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Text in der Mitte */
+.intro-text {
+  max-width: 420px;
+  text-align: center;
+}
+
+.intro-text h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #0078ff;
+}
+
+.intro-text p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: #000;
+}
+.intro-wave {
+  margin-top: 400px; 
+}
+
+/* ⭐ RESPONSIVE GRID FÜR SPOT-KARTEN */
+.spots-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  padding: 0 10px;
+}
+
+/* Karten-Zentrierung */
+.spots {
+  display: flex;
+  justify-content: center;
+}
+
+/* Mobile optimieren */
+@media (max-width: 768px) {
+  .spots-container {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .create-btn {
+    width: 90%;
+    font-size: 16px;
+  }
+}
+
+/* Extra Mobile (<480px) */
+@media (max-width: 480px) {
+  .spots-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>

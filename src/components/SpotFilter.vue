@@ -16,7 +16,7 @@ const categories = ref([]);
 // Kategorien laden — zuerst Backend, falls Fehler: Fallback
 async function fetchCategories() {
   try {
-    const res = await fetch(`${API}/category`);
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/category`);
     const data = await res.json();
 
     categories.value = data.map(cat => ({

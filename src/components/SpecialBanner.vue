@@ -5,103 +5,80 @@ const banner = useBannerStore();
 </script>
 
 <template>
-
   <section class="slogan" v-if="banner.isVisible">
-
     <button class="close-btn" @click="banner.hideBanner()">✕</button>
 
     <h1>Entdecke Konstanz neu!</h1>
 
     <div class="cta-container">
-      <a href="#" class="spots-link">
-        >> Hier mehr Spots entdecken
-      </a>
+      <a href="#" class="spots-link">>> Hier mehr Spots entdecken</a>
     </div>
-
   </section>
 </template>
 
 <style scoped>
 .slogan {
   position: absolute;
-  top: 6.5%;
+  top: 8%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   text-align: center;
   z-index: 5;
 }
+
 .close-btn {
   position: absolute;
   top: -10px;
   right: -10px;
-  background: none;        /* kein Hintergrund */
-  border: none;            /* kein Rand */
-  color: white;            /* weißes X */
-  font-size: 28px;         /* Größe */
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
   cursor: pointer;
-  padding: 0;              /* kein Abstand */
-  line-height: 1;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.4); /* leicht sichtbar */
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
 }
 
 .slogan h1 {
-  font-family: "Poppins", sans-serif;
   font-size: 60px;
   font-weight: 700;
   color: #f5f5f5;
-  line-height: 1.5;
   text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.75);
 }
 
-/* CTA */
+/* CTA Button */
 .cta-container {
-  position: absolute;
-  top: 390%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
+  margin-top: 250px;
 }
 
 .spots-link {
   display: inline-block;
   background: #0084ff;
-  color: #f5f5f5;
+  color: #fff;
   font-weight: 600;
   font-size: 20px;
-  padding: 25px 100px;
+  padding: 22px 70px;
   border-radius: 50px;
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   white-space: nowrap;
 }
 
-.spots-link:hover {
-  background: #5dade2;
-  transform: translateY(-1px);
-}
-
-/* responsive Banner */
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .slogan {
     position: relative;
-    top: 40px;
-    max-width: 90%;
-    margin: 0 auto;
+    top: 20px;
+    transform: translateX(0);
+    width: 100%;
   }
 
   .slogan h1 {
     font-size: 28px;
-    line-height: 1.2;
   }
 
   .spots-link {
-    position: relative;
-    top: 20px;
-    left: 0;
-    text-align: center;
-    display: block;
     font-size: 16px;
+    padding: 15px 35px;
   }
 }
 </style>
