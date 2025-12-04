@@ -19,9 +19,9 @@ const spots = ref([]);     // Gefiltert
 async function fetchSpots({ name = "", category = "" } = {}) {
   try {
     // --- Backend-Aufruf ---
-    const res = await fetch(
-      `${API}/product?name=${name}&category=${category}`
-    );
+    const res = await fetch(`${API}/spots`);
+
+
     const data = await res.json();
 
     // Falls Backend Daten liefert:

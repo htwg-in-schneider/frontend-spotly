@@ -15,32 +15,64 @@ const image = ref("");
 // Spot laden
 onMounted(async () => {
   try {
-    const res = await fetch(`https://dummyjson.com/posts/${route.params.id}`);
+    const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`);
     const data = await res.json();
 
     title.value = data.title;
-    category.value = "Kategorie";
-    location.value = "Konstanz";
-    description.value = data.body;
-    image.value = `https://picsum.photos/600/400?random=${data.id}`;
+    category.value = data.category;
+    location.value = data.location;
+    description.value = data.description;
+    image.value = data.imageUrl;
   } catch (err) {
     console.error("Fehler beim Laden:", err);
   }
 });
 
+
 // Speichern
-function saveSpot() {
-  alert("Änderungen gespeichert! (Fake-REST)");
-  router.push(`/spot/${route.params.id}`);
+async function saveSpot() {
+  try {
+    const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: title.value,
+        category: category.value,
+        location: location.value,
+        description: description.value,
+        imageUrl: image.value
+      })
+    });
+
+    if (!res.ok) throw new Error("Fehler beim Speichern");
+
+    router.push(`/spot/${route.params.id}`);
+  } catch (err) {
+    console.error(err);
+    alert("Fehler beim Speichern");
+  }
 }
 
 // Löschen
-function deleteSpot() {
+async function deleteSpot() {
   if (confirm("Willst du diesen Spot wirklich löschen?")) {
-    alert("Spot gelöscht! (Fake-REST)");
-    router.push("/");
+    try {
+      const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`, {
+        method: "DELETE"
+      });
+
+      if (!res.ok) throw new Error("Fehler beim Löschen");
+
+      router.push("/");
+    } catch (err) {
+      console.error(err);
+      alert("Fehler beim Löschen");
+    }
   }
 }
+
 </script>
 
 <template>
