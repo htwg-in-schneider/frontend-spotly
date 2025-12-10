@@ -1,18 +1,22 @@
 <template>
   <div>
-    <!-- Logo -->
     <div class="logo-container">
       <img src="@/assets/logo.png" alt="Spotly Logo" class="logo-outside" />
     </div>
 
-    <!-- Navigation -->
     <header class="header">
       <nav class="nav">
-        <a href="#">Home</a>
-        <a href="#">Spots</a>
-        <a href="#">Karte</a>
-        <a href="#">Über uns</a>
-        <a href="#">Support</a>
+        
+        <router-link to="/">Home</router-link>
+        <router-link to="/">Spots</router-link> 
+        
+        <router-link to="/map">Karte</router-link> 
+        
+        <router-link to="/about">Über uns</router-link>
+        
+        <router-link to="/support">Support</router-link>
+
+   
 
         <a href="#" class="search-icon">
           <img src="@/assets/search.svg" alt="Suche">
@@ -20,7 +24,6 @@
       </nav>
     </header>
 
-    <!-- Login -->
     <Button class="login-btn" variant="accent">Log In</Button>
   </div>
 </template>

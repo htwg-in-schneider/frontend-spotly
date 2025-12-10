@@ -32,17 +32,19 @@ async function fetchCategories() {
       { id: "shops", name: "Shops & Märkte" },
       { id: "events", name: "Events & Kultur" },
       { id: "cafes", name: "Cafés & Essen" },
+      { id: "sport", name: "Sport & Freizeit"},
+      { id: "andere", name: "Andere" },
+
     ];
   }
 }
 
 function updateSearch() {
   emit("search-changed", {
-    name: searchName.value,
+    title: searchName.value, // <--- SENDET 'name'
     category: searchCategory.value
   });
 }
-
 function resetFilter() {
   searchName.value = "";
   searchCategory.value = "";

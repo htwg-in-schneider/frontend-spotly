@@ -17,8 +17,23 @@ function openDetails() {
 
 <template>
   <div class="spot-card">
-    <img :src="spot.image" :alt="spot.title">
-    <p>{{ spot.title }}</p>
+
+    <h3 class="title">{{ spot.title }}</h3>
+
+    <div class="image-container">
+      
+      <img 
+        v-if="spot.imageUrl" 
+        :src="spot.imageUrl" 
+        :alt="'Bild von ' + spot.title"
+        class="card-img"
+      >
+
+      <div v-else class="placeholder-text">
+        Kein Bild verfügbar
+      </div>
+
+    </div>
 
     <button class="details-btn" @click="openDetails">
       Details
@@ -32,24 +47,27 @@ function openDetails() {
   border-radius: 16px;
   overflow: hidden;
   width: 90%;
+  min-height: 240px;            /* sorgt dafür, dass alle Karten gleich hoch sind */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Details-Button bleibt unten */
+  padding: 15px 10px;
   text-align: center;
 }
 
-.spot-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-bottom: 2px solid #c0afa1;
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0;
 }
 
-.spot-card p {
-  height: 30px;
-  line-height: 45px;
-  margin: 0;
-  padding: 0;
-  font-size: 15px;
-  color: #333;
+.url {
+  font-size: 14px;
+  color: #666;
+  word-break: break-word;
+  padding: 0 10px;
+  margin-bottom: auto; /* schiebt Button nach unten */
 }
 
 .details-btn {
@@ -57,33 +75,16 @@ function openDetails() {
   background-color: #5b4d3b;
   color: white;
   border: none;
-  padding: 10px 0;
+  padding: 12px 0;
   border-radius: 5px;
-  margin-top: 10px;
   font-size: 1rem;
   cursor: pointer;
   transition: 0.2s ease-in-out;
+  margin-top: 15px; /* Abstand nach oben */
 }
 
 .details-btn:hover {
   background-color: #463b2d;
-}
-
-.edit-btn {
-  width: 100%;
-  background-color: #8d775e; 
-  color: white;
-  border: none;
-  padding: 10px 0;
-  border-radius: 5px;
-  margin-top: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-}
-
-.edit-btn:hover {
-  background-color: #6f604c;
 }
 
 @media (max-width: 768px) {

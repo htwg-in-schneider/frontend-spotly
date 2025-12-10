@@ -1,37 +1,52 @@
-<!-- src/components/SpotDetail.vue -->
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
-import SpotReviews from "@/components/SpotReviews.vue";
-
-const route = useRoute();
-const router = useRouter();
-
-const spot = ref(null);
-
-onMounted(async () => {
-  try {
-    const res = await fetch(`https://dummyjson.com/posts/${route.params.id}`);
-    const data = await res.json();
-
-    spot.value = {
-      id: data.id,
-      title: data.title,
-      category: data.tags?.[0] ?? "Unbekannt",
-      location: "Konstanz",
-      description: data.body || "Keine Beschreibung vorhanden.",
-      image: `https://picsum.photos/900/600?random=${data.id}`
-    };
-  } catch (err) {
-    console.error("Fehler beim Laden:", err);
+  import { ref, onMounted } from "vue";
+  import { useRoute, useRouter } from "vue-router";
+  
+  import SpotReviews from "@/components/SpotReviews.vue";
+  
+  const route = useRoute();
+  const router = useRouter();
+  
+  // API-Basis-URL verwenden
+  const API_BASE = import.meta.env.VITE_API_URL; 
+  
+  const spot = ref(null);
+  
+  onMounted(async () => {
+    // Die ID des Spots aus der Route
+    const spotId = route.params.id; 
+    
+    try {
+      // KORREKTUR: Aufruf Ihres Backends: /api/spots/{id}
+      const res = await fetch(`${API_BASE}/spots/${spotId}`); 
+      
+      if (!res.ok) {
+          throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
+      }
+      
+      const data = await res.json();
+  
+      // KORREKTUR: Daten-Mapping an Ihr Backend-JSON anpassen
+      spot.value = {
+        id: data.id,
+        title: data.title,
+        category: data.category ?? "Unbekannt", // Verwenden Sie data.category
+        location: data.location ?? "Konstanz", // Verwenden Sie data.location
+        description: data.description || "Keine Beschreibung vorhanden.",
+        image: data.imageUrl // Verwenden Sie data.imageUrl
+      };
+      
+    } catch (err) {
+      console.error("Fehler beim Laden des Spots:", err);
+      // Optional: Fehler-Meldung anzeigen
+      alert("Konnte Spot-Details nicht vom Backend laden. Prüfen Sie, ob die ID existiert.");
+    }
+  });
+  
+  function editSpot() {
+    router.push(`/spot/${route.params.id}/edit`);
   }
-});
-
-function editSpot() {
-  router.push(`/spot/${route.params.id}/edit`);
-}
-</script>
+  </script>
 
 
 <template>
@@ -53,9 +68,8 @@ function editSpot() {
       <!-- Titel -->
       <h2 class="spot-name">{{ spot.title }}</h2>
 
-      <!-- Kategorie -->
       <p class="info-line">
-        <strong>Kategorie:</strong> {{ spot.category }}
+        <strong>Kategorie:</strong> {{ spot.category.name }}
       </p>
 
       <!-- Standort -->

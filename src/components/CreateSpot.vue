@@ -1,17 +1,60 @@
-<!-- src/views/CreateSpot.vue -->
 <script setup>
-import { ref } from "vue";
-
-const title = ref("");
-const category = ref("");
-const location = ref("");
-const description = ref("");
-const image = ref("");
-
-function createSpot() {
-  alert("Spot gespeichert (Fake-REST)!");
-}
-</script>
+  import { ref } from "vue";
+  import { useRouter } from "vue-router"; // <--- 1. Importieren Sie useRouter
+  
+  // Die Basis-URL zu Ihrem Spring Boot Backend
+  const API_URL = "http://localhost:8080/api/spots"; 
+  
+  // Router initialisieren (um ihn später zu verwenden)
+  const router = useRouter(); // <--- 2. Initialisieren Sie den Router
+  
+  const title = ref("");
+  const location = ref("");
+  const category = ref("");
+  const description = ref("");
+  const image = ref("");
+  const categories = [
+    "Natur & Aussicht",
+    "Shops & Märkte",
+    "Events & Kultur",
+    "Cafés & Essen",
+    "Sport & Freizeit",
+    "Andere" // Optional: Falls ein Spot mal nicht passt
+];
+  
+  async function createSpot() {
+    
+    // 1. Daten aus den State-Variablen zusammenstellen
+    const spotData = {
+      title: title.value,
+      category: category.value,
+      description: description.value,
+      imageUrl: image.value,
+      location: location.value,
+    };
+  
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(spotData),
+      });
+  
+      if (res.ok) {
+        alert(`Spot '${title.value}' wurde erfolgreich erstellt!`);
+        
+        // 3. Navigation nach Erfolg
+        router.push('/'); // <--- 3. Verwenden Sie den Router, um zur Home-Route zu gehen
+      } else {
+        // Fehlerbehandlung...
+        alert(`Fehler beim Erstellen: ${res.statusText}.`);
+      }
+  
+    } catch (err) {
+      alert("Spot konnte nicht erstellt werden. Prüfen Sie die Verbindung und CORS.");
+    }
+  }
+  </script>
 
 <template>
 
@@ -58,12 +101,20 @@ function createSpot() {
       >
 
       <!-- Kategorie -->
-      <input 
-        class="input"
-        type="text"
-        placeholder="Kategorie"
-        v-model="category"
-      >
+      <select
+    class="input"
+    v-model="category"
+>
+    <option value="" disabled>Kategorie</option> 
+    
+    <option 
+        v-for="cat in categories" 
+        :key="cat" 
+        :value="cat"
+    >
+        {{ cat }}
+    </option>
+</select>
 
       <!-- Standort -->
       <input 

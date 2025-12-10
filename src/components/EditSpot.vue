@@ -6,6 +6,8 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 
+const API_BASE = import.meta.env.VITE_API_URL;;
+
 const title = ref("");
 const category = ref("");
 const location = ref("");
@@ -15,11 +17,11 @@ const image = ref("");
 // Spot laden
 onMounted(async () => {
   try {
-    const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`);
+    const res = await fetch(`${API_BASE}/spots/${route.params.id}`);
     const data = await res.json();
 
     title.value = data.title;
-    category.value = data.category;
+    category.value = data.category.name;
     location.value = data.location;
     description.value = data.description;
     image.value = data.imageUrl;
@@ -32,7 +34,7 @@ onMounted(async () => {
 // Speichern
 async function saveSpot() {
   try {
-    const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`, {
+    const res = await fetch(`${API_BASE}/spots/${route.params.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -59,7 +61,7 @@ async function saveSpot() {
 async function deleteSpot() {
   if (confirm("Willst du diesen Spot wirklich löschen?")) {
     try {
-      const res = await fetch(`http://localhost:8081/api/spots/${route.params.id}`, {
+      const res = await fetch(`${API_BASE}/spots/${route.params.id}`, {
         method: "DELETE"
       });
 
