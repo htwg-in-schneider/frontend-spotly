@@ -33,7 +33,8 @@
         category: data.category ?? "Unbekannt", // Verwenden Sie data.category
         location: data.location ?? "Konstanz", // Verwenden Sie data.location
         description: data.description || "Keine Beschreibung vorhanden.",
-        image: data.imageUrl // Verwenden Sie data.imageUrl
+        image: data.imageUrl, // Verwenden Sie data.imageUrl
+        reviews: data.reviews || []
       };
       
     } catch (err) {
