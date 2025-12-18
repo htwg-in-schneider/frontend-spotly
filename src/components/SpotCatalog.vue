@@ -85,11 +85,12 @@ onMounted(() => fetchSpots());
       <div class="carousel-item">
         <img src="@/assets/cafe.jpeg" class="d-block w-100" alt="Café" />
       </div>
+    </div>
+
       <div class="cta-container">
       <a href="#" class="spots-link">>> Hier mehr Spots entdecken</a>
     </div>
    
-    </div>
 
     <button
       class="carousel-control-prev"
@@ -172,7 +173,7 @@ onMounted(() => fetchSpots());
   position: absolute;
   
   /* NEU: Exakte Zentrierung */
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   
@@ -186,7 +187,7 @@ onMounted(() => fetchSpots());
 
 .close-btn {
   position: absolute;
-  top: -10px;
+  top: -20px;
   right: -10px;
   background: none;
   border: none;
@@ -205,10 +206,10 @@ onMounted(() => fetchSpots());
   line-height: 1.2;
 }
 
-/* CTA Button */
-/* CTA Button Container */
 .cta-container {
-  margin-top: 20px; /* Viel kleinerer Wert, damit er unter dem Text bleibt */
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 60px; /* Abstand zum Carousel und nachfolgendem Text */
 }
 
 .spots-link {
