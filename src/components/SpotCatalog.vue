@@ -153,150 +153,139 @@ onMounted(() => fetchSpots());
     </section>
   </main>
 </template>
+  
 
-<style scoped>
-/* Hintergrund */
-.background {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: -1;
-}
-
-.bg-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.35;
-}
-
-.ellipse {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.ellipse1 {
-  width: 800px;
-  height: 400px;
-  top: 0;
-  left: -200px;
-}
-
-.ellipse2 {
-  width: 900px;
-  height: 500px;
-  top: 200px;
-  right: -300px;
-}
-
-.ellipse3 {
-  width: 700px;
-  height: 350px;
-  bottom: -100px;
-  left: 100px;
-}
-
-/* Intro Section */
-.intro-wave {
-  width: 100%;
-  padding: 40px 20px;
-  display: flex;
-  justify-content: center;
-  margin-top: 400px;
-}
-
-.intro-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  max-width: 1100px;
-  width: 100%;
-}
-
-.circle-image {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.intro-text {
-  max-width: 420px;
-  text-align: center;
-}
-
-.intro-text h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #0078ff;
-}
-
-.intro-text p {
-  font-size: 17px;
-  line-height: 1.6;
-  color: #000;
-}
-
-/* Neuer Spot Button */
-.create-btn-container {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.create-btn {
-  background: #0084ff;
-  color: white;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 25px;
-  font-size: 18px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: 0.2s ease;
-}
-
-.create-btn:hover {
-  background: #1c86ee;
-  transform: translateY(-2px);
-}
-
-/* Spots Grid */
-.spots-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto 60px;
-  padding: 0 10px;
-}
-
-.spots {
-  display: flex;
-  justify-content: center;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .spots-container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-
+  <style scoped>
+  
   .create-btn {
-    width: 90%;
-    font-size: 16px;
+    background: #0084ff;
+    color: white;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: 0.2s ease;
   }
+  
+  .create-btn:hover {
+    background: #1c86ee;
+    transform: translateY(-2px);
+  }
+  /* Intro Section */
+  .intro-wave {
+    width: 100%;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .intro-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    max-width: 1100px;
+    width: 100%;
+  }
+  
+  /* Profilbilder */
+  .circle-image {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  
+  /* Text in der Mitte */
+  .intro-text {
+    max-width: 420px;
+    text-align: center;
+  }
+  
+  .intro-text h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #0078ff;
+  }
+  
+  .intro-text p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #000;
+  }
+  .intro-wave {
+    margin-top: 400px; 
+  }
+  
+  /* ⭐ RESPONSIVE GRID FÜR SPOT-KARTEN */
+  .spots-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 10px;
+  }
+  .carousel {
+  position: relative;
+  z-index: 5;           /* WICHTIG: Macht Buttons klickbar */  /* Verhindert, dass es zu breit wird */
+  margin: 80px auto;     /* Zentriert das Carousel mit Abstand */
 }
 
-@media (max-width: 480px) {
-  .spots-container {
-    grid-template-columns: 1fr;
-  }
+/* Bild-Styling */
+.carousel-item img {
+  height: 450px;
+  object-fit: cover;     /* Bilder werden nicht verzerrt */
 }
-</style>
+
+/* Die Steuerungspfeile (optional: schöner machen) */
+/* 2. Carousel-Pfeile fixieren */
+.carousel-control-prev, 
+.carousel-control-next {
+  z-index: 30;           /* Absolut am höchsten! */
+  width: 10%;            /* Etwas breiter für einfachere Bedienung */
+  pointer-events: auto;  /* Sicherstellen, dass Klicks erlaubt sind */
+  opacity: 1;            /* Damit man sie sieht */
+}
+  .create-btn-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  /* Karten-Zentrierung */
+  .spots {
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Mobile optimieren */
+  @media (max-width: 768px) {
+    .spots-container {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+  
+    .create-btn {
+      width: 90%;
+      font-size: 16px;
+    }
+  }
+  
+  /* Extra Mobile (<480px) */
+  @media (max-width: 480px) {
+    .spots-container {
+      grid-template-columns: 1fr;
+    }
+
+    .carousel-item img {
+    height: 250px;
+  }
+  }
+  
+  </style>

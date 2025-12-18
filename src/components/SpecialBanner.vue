@@ -6,7 +6,6 @@ const banner = useBannerStore();
 
 <template>
   <section class="slogan" v-if="banner.isVisible">
-    <button class="close-btn" @click="banner.hideBanner()">✕</button>
 
     <h1>Entdecke Konstanz neu!</h1>
 
@@ -18,12 +17,21 @@ const banner = useBannerStore();
 
 <style scoped>
 .slogan {
+  display: flex;
+  top: 15%; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
   position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
+  
   text-align: center;
-  z-index: 5;
+  z-index: 10;
+  width: 100%;
+  padding: 40px 20px;
+  box-sizing: border-box;
+
+  /* --- DIE ENTSCHEIDENDE ZEILE --- */
+  pointer-events: none; 
 }
 
 .close-btn {
@@ -43,6 +51,8 @@ const banner = useBannerStore();
   font-weight: 700;
   color: #f5f5f5;
   text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.75);
+  margin: 0;
+  line-height: 1.2;
 }
 
 /* CTA Button */
@@ -80,5 +90,6 @@ const banner = useBannerStore();
     font-size: 16px;
     padding: 15px 35px;
   }
+
 }
 </style>
