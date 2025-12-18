@@ -60,14 +60,18 @@ onMounted(() => fetchSpots());
   </div>
 
   <!-- Special Banner -->
-  <SpecialBanner />
+
 
   <!-- Carousel -->
   <div
+  
     id="carouselExampleAutoplaying"
     class="carousel slide"
     data-bs-ride="carousel"
   >
+  <div class="slogan">
+    <h1>Entdecke Konstanz neu!</h1>
+  </div>
     <div class="carousel-inner">
       <div class="carousel-item active">
         <img src="@/assets/park.jpg" class="d-block w-100" alt="Park" />
@@ -81,6 +85,10 @@ onMounted(() => fetchSpots());
       <div class="carousel-item">
         <img src="@/assets/cafe.jpeg" class="d-block w-100" alt="Café" />
       </div>
+      <div class="cta-container">
+      <a href="#" class="spots-link">>> Hier mehr Spots entdecken</a>
+    </div>
+   
     </div>
 
     <button
@@ -156,7 +164,66 @@ onMounted(() => fetchSpots());
   
 
   <style scoped>
+.slogan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+  position: absolute;
   
+  /* NEU: Exakte Zentrierung */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  text-align: center;
+  z-index: 10;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  pointer-events: none; 
+}
+
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+.slogan h1 {
+  font-size: 60px;
+  font-weight: 700;
+  color: #f5f5f5;
+  text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.75);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* CTA Button */
+/* CTA Button Container */
+.cta-container {
+  margin-top: 20px; /* Viel kleinerer Wert, damit er unter dem Text bleibt */
+}
+
+.spots-link {
+  pointer-events: auto; /* WICHTIG: Damit der Button klickbar bleibt */
+  display: inline-block;
+  background: #0084ff;
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+  padding: 15px 40px; /* Etwas kompaktere Maße für bessere Responsivität */
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  white-space: nowrap;
+}
   .create-btn {
     background: #0084ff;
     color: white;
