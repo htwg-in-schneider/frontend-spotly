@@ -343,5 +343,48 @@ onMounted(() => fetchSpots());
     height: 250px;
   }
   }
+/* ===== RESPONSIVE FIX: Intro Section ===== */
+@media (max-width: 768px) {
+  .intro-container {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  /* Bilder nebeneinander */
+  .intro-image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .intro-container {
+    align-items: center;
+  }
+
+  /* Bilder kleiner & nebeneinander */
+  .intro-container > .intro-image {
+    display: inline-flex;
+  }
+
+  .circle-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  /* Text darunter & kleiner */
+  .intro-text {
+    max-width: 90%;
+    text-align: center;
+  }
+
+  .intro-text h2 {
+    font-size: 22px;
+  }
+
+  .intro-text p {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
   
   </style>
