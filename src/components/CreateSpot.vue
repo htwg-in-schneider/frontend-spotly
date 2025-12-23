@@ -57,20 +57,6 @@
   </script>
 
 <template>
-
-  <!-- Hintergrund (gleich wie Startseite) -->
-  <div class="background">
-    <div class="ellipse ellipse1"></div>
-    <div class="ellipse ellipse2"></div>
-    <div class="ellipse ellipse3"></div>
-
-    <img 
-      src="@/assets/background.jpeg" 
-      alt="Background" 
-      class="bg-image"
-    >
-  </div>
-
   <!-- Inhalt -->
   <div class="wrapper">
     <h1 class="title">Erstelle einen neuen Spot!</h1>
@@ -140,51 +126,6 @@
 </template>
 
 <style scoped>
-
-/* Hintergrund */
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
-}
-
-.bg-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.35;
-}
-
-.ellipse {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-}
-
-.ellipse1 {
-  width: 800px;
-  height: 400px;
-  top: 0;
-  left: -200px;
-}
-
-.ellipse2 {
-  width: 900px;
-  height: 500px;
-  top: 200px;
-  right: -300px;
-}
-
-.ellipse3 {
-  width: 700px;
-  height: 350px;
-  bottom: -100px;
-  left: 100px;
-}
 
 /* Inhalt */
 .wrapper {

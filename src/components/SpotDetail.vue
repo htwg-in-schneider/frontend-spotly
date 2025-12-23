@@ -51,13 +51,6 @@
 
 
 <template>
-  <!-- Hintergrund -->
-  <div class="background">
-    <div class="ellipse ellipse1"></div>
-    <div class="ellipse ellipse2"></div>
-    <div class="ellipse ellipse3"></div>
-    <img src="@/assets/background.jpeg" class="bg-image" />
-  </div>
 
   <div v-if="spot" class="detail-container">
 
@@ -99,31 +92,7 @@
 
 
 <style scoped>
-/* Hintergrund */
-.background {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-}
 
-.bg-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.35;
-}
-
-.ellipse {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.5);
-}
-
-.ellipse1 { width: 800px; height: 400px; top: 0; left: -200px; }
-.ellipse2 { width: 900px; height: 500px; top: 200px; right: -300px; }
-.ellipse3 { width: 700px; height: 350px; bottom: -100px; left: 100px; }
-
-/* Inhalt */
 .detail-container {
   max-width: 900px;
   margin: 140px auto;

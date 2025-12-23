@@ -42,7 +42,7 @@ async function fetchSpots({ title = "", category = "" } = {}) {
       : [];
   } catch (err) {
     console.error(err);
-    alert("Spots konnten nicht vom Backend geladen werden.");
+   // alert("Spots konnten nicht vom Backend geladen werden.");
   }
 }
 
@@ -50,19 +50,7 @@ onMounted(() => fetchSpots());
 </script>
 
 <template>
-  <!-- Hintergrund -->
-  <div class="background">
-    <div class="ellipse ellipse1"></div>
-    <div class="ellipse ellipse2"></div>
-    <div class="ellipse ellipse3"></div>
 
-    <img src="@/assets/background.jpeg" alt="Background" class="bg-image" />
-  </div>
-
-  <!-- Special Banner -->
-
-
-  <!-- Carousel -->
   <div
   
     id="carouselExampleAutoplaying"

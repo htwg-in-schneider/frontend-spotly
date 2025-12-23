@@ -3,9 +3,9 @@
     <p>©️ 2025 Spotly – von Efe-liz & Moritz</p>
 
     <div class="footer-links">
-      <FooterLink href="#">Impressum</FooterLink>
-      <FooterLink href="#">Datenschutz</FooterLink>
-      <FooterLink href="#">Kontakt</FooterLink>
+      <FooterLink href="impressum">Impressum</FooterLink>
+      <FooterLink href="datenschutz">Datenschutz</FooterLink>
+      <FooterLink href="support">Kontakt</FooterLink>
     </div>
   </footer>
 </template>
