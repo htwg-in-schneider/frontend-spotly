@@ -24,7 +24,9 @@
       </nav>
     </header>
 
-    <Button class="login-btn" variant="accent">Log In</Button>
+    <Button @click="handleLogin" class="login-btn">
+      <span class="btn-text">Log In</span>
+      <span class="user-icon"><img src="../assets/people.png" height="30" width="30"/></span> </Button>
   </div>
 </template>
 
@@ -105,10 +107,52 @@ import Button from "@/components/Button.vue";
     font-size: 14px;
   }
 
-  .login-btn {
-    position: static;
-    margin-top: 15px;
-    display: block;
+
+    /* ... deine anderen Styles für logo-outside, header, nav ... */
+
+    .login-btn {
+      /* Positionierung: Schwebt rechts oben */
+      position: absolute;
+      top: 25px;
+      right: 20px;
+      z-index: 1100; /* Muss über dem Header (1000) liegen */
+
+      /* Form: Kreis */
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+
+      /* Inhalt zentrieren */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* Design */
+      background: #0084ff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* Text auf Mobile verstecken */
+    .btn-text {
+      display: none;
+    }
+
+    /* Icon auf Mobile groß anzeigen */
+    .user-icon {
+      display: block;
+      font-size: 24px;
+      color: white;
+    }
   }
-}
+
+  /* ===== DESKTOP (Voreinstellung) ===== */
+  /* Damit das Icon auf dem Desktop nicht stört: */
+  @media (min-width: 769px) {
+    .user-icon {
+      display: none;
+    }
+  }
 </style>
