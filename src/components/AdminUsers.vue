@@ -1,45 +1,76 @@
 <template>
-  <div class="admin-users-view">
-    <div class="top-bar">
+  <div class="admin-users-page">
+    <div class="header-section">
       <button @click="$router.push('/admin')" class="back-link">
         <span class="arrow">←</span> Dashboard
       </button>
-      <div class="admin-badge">Admin-Modus</div>
+      <h1 class="page-title-styled">Benutzer verwalten</h1>
     </div>
 
-    <h1 class="page-title">Benutzer verwalten</h1>
-
-    <div class="search-pill">
-      <span class="icon">🔍</span>
-      <input
-          v-model="searchQuery"
-          placeholder="Benutzer suchen..."
-          class="search-input"
-      />
-    </div>
-
-    <div class="table-card">
-      <div class="table-header">
-        <div class="col">Name</div>
-        <div class="col">E-mail</div>
-        <div class="col">Aktion</div>
+    <div class="content-wrapper">
+      <div class="search-pill">
+        <span class="icon">🔍</span>
+        <input v-model="searchQuery" placeholder="Benutzer suchen..." class="search-input" />
       </div>
 
-      <div class="table-body">
-        <div v-if="filteredUsers.length === 0" class="no-data">
-          Keine Benutzer gefunden.
+      <div class="table-card">
+        <div class="table-header">
+          <div class="col">Name</div>
+          <div class="col">E-Mail</div>
+          <div class="col">Aktion</div>
         </div>
 
-        <div v-for="user in filteredUsers" :key="user.id" class="table-row">
-          <div class="col font-bold">{{ user.username }}</div>
-          <div class="col email-cell">{{ user.email || 'keine@mail.de' }}</div>
-          <div class="col actions">
-            <button @click="toggleRole(user)" class="btn-small">sperren</button>
-            <button @click="deleteUser(user)" class="btn-small btn-red">löschen</button>
+        <div class="table-body">
+          <div v-if="filteredUsers.length === 0" class="no-data-row">
+            <span class="no-data-icon"></span> Keine Benutzer gefunden.
+          </div>
+
+          <div v-for="user in filteredUsers" :key="user.id" class="table-row">
+            <div class="col username">{{ user.username }}</div>
+            <div class="col email">{{ user.email || 'keine@mail.de' }}</div>
+            <div class="col actions">
+              <button @click="triggerAction(user, 'lock')" class="btn-table">sperren</button>
+              <button @click="triggerAction(user, 'delete')" class="btn-table btn-red">löschen</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <div v-if="showOverlay" class="overlay-backdrop">
+      <div class="overlay-card">
+        <p v-if="activeMode === 'delete'">
+          Benutzer <strong>{{ selectedUser?.username }}</strong> wirklich löschen?
+        </p>
+        <div v-else>
+          <p>Warum wird <strong>{{ selectedUser?.username }}</strong> gesperrt?</p>
+          <textarea
+              v-model="reason"
+              placeholder="Begründung (mind. 10 Zeichen)..."
+              class="reason-input"
+              :class="{ 'input-error': reason.length > 0 && reason.length < 10 }"
+          ></textarea>
+          <div class="validation-msg" v-if="reason.length > 0 && reason.length < 10">
+            Noch {{ 10 - reason.length }} Zeichen benötigt...
+          </div>
+        </div>
+
+        <div class="overlay-btns">
+          <button
+              @click="handleConfirm"
+              class="btn-overlay"
+              :disabled="activeMode === 'lock' && reason.length < 10"
+          >
+            Bestätigen
+          </button>
+          <button @click="showOverlay = false" class="btn-overlay-alt">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="admin-footer">
+      <p>© 2025 Spotly – Admin Panel</p>
+    </footer>
   </div>
 </template>
 
@@ -48,7 +79,11 @@ export default {
   data() {
     return {
       users: [],
-      searchQuery: ''
+      searchQuery: '',
+      showOverlay: false,
+      selectedUser: null,
+      activeMode: '',
+      reason: ''
     };
   },
   computed: {
@@ -58,109 +93,76 @@ export default {
       );
     }
   },
-  mounted() {
-    this.fetchUsers();
-  },
+  mounted() { this.fetchUsers(); },
   methods: {
     async fetchUsers() {
       try {
-        const response = await fetch('http://localhost:8080/api/users');
-        if (!response.ok) throw new Error('Fehler beim Laden');
-        this.users = await response.json();
-      } catch (e) {
-        console.error("Fehler:", e);
-      }
+        const res = await fetch('http://localhost:8080/api/users');
+        this.users = await res.json();
+      } catch (e) { console.error(e); }
     },
-
-    async deleteUser(user) {
-      if (confirm(`Sind Sie sicher, dass Sie den Benutzer "${user.username}" löschen wollen?`)) {
-        try {
-          const response = await fetch(`http://localhost:8080/api/users/${user.id}`, {
-            method: 'DELETE'
-          });
-          if (response.ok) {
-            this.fetchUsers();
-          }
-        } catch (e) {
-          alert("Fehler beim Löschen.");
-        }
-      }
+    triggerAction(user, mode) {
+      this.selectedUser = user;
+      this.activeMode = mode;
+      this.reason = ''; // Reset der Begründung
+      this.showOverlay = true;
     },
-
-    async toggleRole(user) {
-      if (confirm(`Sind Sie sicher, dass Sie den Benutzer "${user.username}" sperren wollen?`)) {
-        try {
-          const response = await fetch(`http://localhost:8080/api/users/${user.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...user, role: 'LOCKED' })
-          });
-
-          if (response.ok) {
-            alert("Benutzer wurde gesperrt.");
-            this.fetchUsers();
-          }
-        } catch (e) {
-          alert("Sperren fehlgeschlagen.");
-        }
+    async handleConfirm() {
+      if (this.activeMode === 'delete') {
+        await fetch(`http://localhost:8080/api/users/${this.selectedUser.id}`, { method: 'DELETE' });
+      } else {
+        await fetch(`http://localhost:8080/api/users/${this.selectedUser.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...this.selectedUser, role: 'LOCKED', lockReason: this.reason })
+        });
       }
+      this.showOverlay = false;
+      this.fetchUsers();
     }
   }
 }
 </script>
 
 <style scoped>
-.admin-users-view {
+.admin-users-page {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background: transparent;
-  min-height: 80vh;
+  position: relative;
+  padding-bottom: 80px;
 }
 
-/* Neuer Top-Bar Bereich */
-.top-bar {
+.header-section {
   width: 100%;
   max-width: 800px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  padding: 60px 20px 20px;
+  position: relative;
+  text-align: center;
 }
 
 .back-link {
-  background: none;
-  border: none;
-  color: #5daae0;
-  font-weight: 700;
-  cursor: pointer;
+  position: absolute; left: 0; top: 40px;
+  background: none; border: none;
+  color: #4a90e2; font-weight: bold; cursor: pointer;
+}
+
+.page-title-styled {
+  color: #4a90e2;
+  font-size: 42px;
+  font-weight: 900;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  font-size: 16px;
-  padding: 5px 0;
-}
-
-.back-link:hover {
-  text-decoration: underline;
-}
-
-.admin-badge {
-  background: rgba(93, 170, 224, 0.1);
-  color: #5daae0;
-  padding: 5px 12px;
-  border-radius: 15px;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.page-title {
-  color: #5daae0;
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 25px;
 }
 
 .search-pill {
@@ -168,80 +170,94 @@ export default {
   padding: 10px 20px;
   border-radius: 25px;
   display: flex;
-  align-items: center;
   width: 100%;
-  max-width: 280px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 35px;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
 }
 
-.search-input {
-  border: none;
-  outline: none;
-  margin-left: 10px;
-  width: 100%;
-}
+.search-input { border: none; outline: none; margin-left: 10px; width: 100%; }
 
 .table-card {
-  background: rgba(173, 216, 245, 0.5); /* Hellblau transparent */
-  border-radius: 20px;
+  background: rgba(173, 216, 245, 0.4);
+  border-radius: 25px;
   width: 100%;
-  max-width: 800px;
+  min-height: 200px;
   overflow: hidden;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
 }
 
 .table-header {
   display: grid;
-  grid-template-columns: 1.2fr 2fr 1fr;
-  padding: 15px 20px;
-  font-weight: bold;
+  grid-template-columns: 1.2fr 2fr 1.2fr;
+  padding: 20px;
+  font-weight: 900;
   color: #4a90e2;
   border-bottom: 1px solid rgba(255,255,255,0.3);
 }
 
 .table-row {
   display: grid;
-  grid-template-columns: 1.2fr 2fr 1fr;
+  grid-template-columns: 1.2fr 2fr 1.2fr;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   align-items: center;
 }
 
-.font-bold { font-weight: 700; }
-
-.email-cell {
-  font-size: 14px;
-  color: #444;
+/* FIX für das abgeschnittene "Keine Benutzer gefunden" */
+.no-data-row {
+  padding: 50px 20px;
+  text-align: center;
+  color: #4a90e2;
+  font-weight: bold;
+  font-size: 18px;
+  width: 100%;
 }
 
-.actions {
-  display: flex;
-  gap: 8px;
-}
+.no-data-icon { display: block; font-size: 30px; margin-bottom: 10px; }
 
-.btn-small {
-  background: rgba(255, 255, 255, 0.6);
+.username { font-weight: bold; font-size: 16px; }
+.email { font-size: 14px; color: #444; }
+
+.btn-table {
+  background: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: 8px 15px;
+  border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
-.btn-small:hover {
-  background: white;
+.btn-red { color: #ff4d4d; }
+
+.overlay-backdrop {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
 
-.btn-red {
-  color: #ff4d4d;
+.overlay-card {
+  background: #2a8df2; color: white; padding: 30px; border-radius: 30px; width: 340px; text-align: center;
 }
 
-.no-data {
-  padding: 40px;
-  text-align: center;
-  color: #666;
+.reason-input {
+  width: 100%; height: 80px; border-radius: 15px; padding: 12px; margin: 15px 0 5px 0; border: 2px solid transparent; outline: none;
 }
+
+.input-error { border: 2px solid #ff4d4d; background-color: #fff0f0; }
+
+.validation-msg { font-size: 11px; color: #ffcccc; margin-bottom: 15px; text-align: left; }
+
+.btn-overlay:disabled { background-color: #888 !important; opacity: 0.6; cursor: not-allowed; }
+
+.overlay-btns { display: flex; gap: 10px; margin-top: 10px; }
+
+.btn-overlay, .btn-overlay-alt {
+  background: #8ec5ef; border: none; color: white; padding: 12px; border-radius: 20px; flex: 1; cursor: pointer; font-weight: bold;
+}
+
+.admin-footer { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #888; font-size: 14px; }
 </style>

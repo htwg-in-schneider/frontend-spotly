@@ -15,8 +15,14 @@
         <div class="search-container">
           <input v-model="searchQuery" placeholder="Spot suchen..." class="inner-search" />
         </div>
+
         <div class="spot-list-scroll">
-          <div v-for="spot in filteredSpots" :key="spot.id" class="spot-card-item">
+          <div v-if="filteredSpots.length === 0" class="no-results-msg">
+            <span class="no-data-icon">📍</span>
+            Kein Ort gefunden.
+          </div>
+
+          <div v-else v-for="spot in filteredSpots" :key="spot.id" class="spot-card-item">
             <span class="spot-name">{{ spot.title }}</span>
             <div class="item-actions">
               <button @click="openDetail(spot, 'check')" class="btn-action-light">Ort prüfen</button>
@@ -63,17 +69,33 @@
             <button @click="showOverlay = false" class="btn-overlay-alt">Abbrechen</button>
           </div>
         </template>
+
         <template v-else>
           <p>Möchten Sie diesen Ort wirklich veröffentlichen?</p>
-          <textarea v-model="reason" placeholder="Begründung (optional)..." class="reason-input"></textarea>
+          <textarea
+              v-model="reason"
+              placeholder="Begründung (mind. 10 Zeichen)..."
+              class="reason-input"
+              :class="{ 'input-error': reason.length > 0 && reason.length < 10 }"
+          ></textarea>
+
+          <div class="validation-msg" v-if="reason.length > 0 && reason.length < 10">
+            Bitte noch {{ 10 - reason.length }} Zeichen eingeben...
+          </div>
+
           <div class="overlay-btns">
-            <button @click="confirmPublish" class="btn-overlay">Bestätigen</button>
+            <button
+                @click="confirmPublish"
+                class="btn-overlay"
+                :disabled="reason.length < 10"
+            >
+              Bestätigen
+            </button>
             <button @click="showOverlay = false" class="btn-overlay-alt">Abbrechen</button>
           </div>
         </template>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -108,12 +130,14 @@ export default {
     goBack() {
       if (this.currentView === 'detail') this.currentView = 'list';
       else this.$router.push('/admin');
+      this.reason = '';
     },
     openDetail(spot, mode) {
       this.selectedSpot = spot;
       this.activeMode = mode;
       this.currentView = 'detail';
       this.showOverlay = false;
+      this.reason = '';
     },
     async confirmDelete() {
       await fetch(`http://localhost:8080/api/spots/${this.selectedSpot.id}`, { method: 'DELETE' });
@@ -122,9 +146,12 @@ export default {
       this.fetchSpots();
     },
     confirmPublish() {
-      alert("Ort veröffentlicht!");
-      this.showOverlay = false;
-      this.currentView = 'list';
+      if (this.reason.length >= 10) {
+        alert("Ort erfolgreich mit Begründung veröffentlicht!");
+        this.showOverlay = false;
+        this.currentView = 'list';
+        this.reason = '';
+      }
     }
   }
 }
@@ -137,10 +164,9 @@ export default {
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 100px; /* Platz für Footer */
+  padding-bottom: 100px;
 }
 
-/* Header & Zurück-Button */
 .header-section {
   width: 100%;
   max-width: 500px;
@@ -150,67 +176,52 @@ export default {
 }
 
 .back-link {
-  position: absolute;
-  left: 0;
-  top: 40px;
-  background: none;
-  border: none;
-  color: #4a90e2;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 16px;
+  position: absolute; left: 0; top: 40px;
+  background: none; border: none;
+  color: #4a90e2; font-weight: bold; cursor: pointer; font-size: 16px;
 }
 
-/* Die blaue, fette Überschrift mit Schatten */
 .page-title-styled {
-  color: #4a90e2;
-  font-size: 42px;
-  font-weight: 900;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
-  margin: 0;
+  color: #4a90e2; font-size: 42px; font-weight: 900;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2); margin: 0;
 }
 
 .content-wrapper {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  flex: 1; width: 100%; display: flex; justify-content: center; padding: 20px;
 }
 
-/* Blaue Menü-Karte */
 .menu-card {
-  background: #4a90e2;
-  border-radius: 30px;
-  width: 100%;
-  max-width: 380px;
-  padding: 25px;
-  color: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  background: #4a90e2; border-radius: 30px; width: 100%; max-width: 380px;
+  padding: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  display: flex; flex-direction: column;
 }
 
-.menu-header {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-}
+.menu-header { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
 
 .inner-search {
-  width: 100%;
-  padding: 12px 20px;
-  border-radius: 20px;
-  border: none;
-  margin-bottom: 20px;
-  font-size: 16px;
+  width: 100%; padding: 12px 20px; border-radius: 20px; border: none;
+  margin-bottom: 20px; font-size: 16px; outline: none;
 }
 
-.spot-card-item {
-  background: rgba(255,255,255,0.2);
+/* Scrollbereich für die Liste */
+.spot-list-scroll {
+  flex: 1; overflow-y: auto; max-height: 400px;
+}
+
+/* NEU: Styling für die "Kein Ort gefunden" Meldung */
+.no-results-msg {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.no-data-icon { display: block; font-size: 30px; margin-bottom: 10px; }
+
+.spot-card-item {
+  background: rgba(255,255,255,0.2); border-radius: 20px;
+  padding: 20px; margin-bottom: 15px;
 }
 
 .spot-name { font-size: 18px; font-weight: bold; display: block; margin-bottom: 15px; }
@@ -218,24 +229,13 @@ export default {
 .item-actions { display: flex; gap: 10px; }
 
 .btn-action-light {
-  background: #a1c9f1;
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 15px;
-  flex: 1;
-  font-weight: bold;
-  cursor: pointer;
+  background: #a1c9f1; border: none; color: white; padding: 10px;
+  border-radius: 15px; flex: 1; font-weight: bold; cursor: pointer;
 }
 
-/* Detail-Ansicht */
 .detail-card {
-  background: #eef7ff;
-  border-radius: 30px;
-  width: 100%;
-  max-width: 380px;
-  padding: 20px;
-  text-align: center;
+  background: #eef7ff; border-radius: 30px; width: 100%; max-width: 380px;
+  padding: 20px; text-align: center;
 }
 
 .sub-view-title { color: #4a90e2; margin-bottom: 20px; font-weight: 800; }
@@ -247,22 +247,18 @@ export default {
 .info-grid { text-align: left; font-size: 15px; margin-bottom: 15px; }
 
 .description-area {
-  background: #d4e9ff;
-  padding: 15px;
-  border-radius: 20px;
-  text-align: left;
-  font-size: 14px;
-  line-height: 1.4;
+  background: #d4e9ff; padding: 15px; border-radius: 20px;
+  text-align: left; font-size: 14px; line-height: 1.4;
 }
 
 .action-footer-btns { display: flex; gap: 10px; margin-top: 25px; }
 
 .btn-confirm-main, .btn-danger-main {
-  background: #6ab0e5; color: white; border: none; padding: 15px; border-radius: 25px; flex: 1; font-weight: bold; font-size: 16px;
+  background: #6ab0e5; color: white; border: none; padding: 15px;
+  border-radius: 25px; flex: 1; font-weight: bold; font-size: 16px;
 }
 .btn-reject-main { background: #8ec5ef; color: white; border: none; padding: 15px; border-radius: 25px; flex: 1; font-weight: bold; }
 
-/* Overlay */
 .overlay-backdrop {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);
   display: flex; align-items: center; justify-content: center; z-index: 1000;
@@ -270,20 +266,21 @@ export default {
 .overlay-card {
   background: #2a8df2; color: white; padding: 30px; border-radius: 30px; width: 320px; text-align: center;
 }
-.reason-input { width: 100%; height: 100px; border-radius: 15px; padding: 12px; margin: 15px 0; border: none; }
-.overlay-btns { display: flex; gap: 10px; }
-.btn-confirm, .btn-cancel, .btn-overlay, .btn-overlay-alt {
-  background: #8ec5ef; border: none; color: white; padding: 12px; border-radius: 20px; flex: 1; cursor: pointer; font-weight: bold;
+
+.reason-input {
+  width: 100%; height: 100px; border-radius: 15px; padding: 12px;
+  margin: 15px 0 5px 0; border: 2px solid transparent; outline: none;
 }
 
-/* Footer fixiert unten */
-.admin-footer {
-  width: 100%;
-  position: absolute;
-  bottom: 20px;
-  text-align: center;
-  color: #666;
-  font-size: 15px;
+.input-error { border: 2px solid #ff4d4d; background-color: #fff0f0; color: #333; }
+
+.validation-msg { font-size: 11px; color: #ffcccc; margin-bottom: 15px; text-align: left; }
+
+.btn-overlay:disabled { background-color: #888 !important; opacity: 0.6; cursor: not-allowed; }
+
+.overlay-btns { display: flex; gap: 10px; margin-top: 10px;}
+.btn-overlay, .btn-overlay-alt {
+  background: #8ec5ef; border: none; color: white; padding: 12px;
+  border-radius: 20px; flex: 1; cursor: pointer; font-weight: bold;
 }
-.footer-links { display: flex; justify-content: center; gap: 20px; margin-top: 8px; }
 </style>
