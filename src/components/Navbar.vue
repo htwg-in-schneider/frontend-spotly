@@ -6,17 +6,11 @@
 
     <header class="header">
       <nav class="nav">
-        
         <router-link to="/">Home</router-link>
-        <router-link to="/">Spots</router-link> 
-        
-        <router-link to="/map">Karte</router-link> 
-        
+        <router-link to="/">Spots</router-link>
+        <router-link to="/map">Karte</router-link>
         <router-link to="/about">Über uns</router-link>
-        
         <router-link to="/support">Support</router-link>
-
-   
 
         <a href="#" class="search-icon">
           <img src="@/assets/search.svg" alt="Suche">
@@ -25,13 +19,36 @@
     </header>
 
     <Button @click="handleLogin" class="login-btn">
-      <span class="btn-text">Log In</span>
-      <span class="user-icon"><img src="../assets/people.png" height="30" width="30"/></span> </Button>
+      <span class="btn-text">
+        {{ isAuthenticated ? 'Log Out' : 'Log In' }}
+      </span>
+
+      <span class="user-icon">
+        <img
+            :src="isAuthenticated ? user.picture : '/src/assets/people.png'"
+            height="30"
+            width="30"
+            style="border-radius: 50%"
+        />
+      </span>
+    </Button>
   </div>
 </template>
 
 <script setup>
 import Button from "@/components/Button.vue";
+import { useAuth0 } from '@auth0/auth0-vue';
+
+// Diese Funktionen kommen direkt aus dem Auth0-Paket
+const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+
+const handleLogin = () => {
+  loginWithRedirect(); // Das leitet den User zur Auth0-Seite weiter
+};
+
+const handleLogout = () => {
+  logout({ logoutParams: { returnTo: window.location.origin } });
+};
 </script>
 
 <style scoped>
