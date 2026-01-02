@@ -23,13 +23,30 @@
         </a>
       </nav>
     </header>
-
-    <Button class="login-btn" variant="accent">Log In</Button>
+    <Button
+        class="login-btn"
+        :variant="isAuthenticated ? 'secondary' : 'accent'"
+        @click="handleAuth"
+    >
+      {{ isAuthenticated ? 'Log Out' : 'Log In' }}
+    </Button>
   </div>
 </template>
 
 <script setup>
 import Button from "@/components/Button.vue";
+import { useAuth0 } from '@auth0/auth0-vue';
+
+// Auth0-Funktionen laden
+const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+
+const handleAuth = () => {
+  if (!isAuthenticated.value) {
+    loginWithRedirect();
+  } else {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  }
+};
 </script>
 
 <style scoped>

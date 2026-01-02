@@ -42,7 +42,7 @@ async function fetchSpots({ title = "", category = "" } = {}) {
       : [];
   } catch (err) {
     console.error(err);
-   // alert("Spots konnten nicht vom Backend geladen werden.");
+    alert("Spots konnten nicht vom Backend geladen werden.");
   }
 }
 

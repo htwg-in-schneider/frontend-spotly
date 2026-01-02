@@ -6,6 +6,7 @@ import CreateSpot from "@/components/CreateSpot.vue";
 import Support from "@/components/Support.vue";
 import Impressum from "@/components/Impressum.vue";
 import Datenschutz from "@/components/Datenschutz.vue";
+import { useUserStore } from "@/stores/userStore";
 
 // Neue Admin-Komponenten importieren
 import AdminDashboard from "@/components/AdminDashboard.vue";
@@ -58,24 +59,47 @@ const router = createRouter({
         {
             path: "/admin",
             name: "admin-dashboard",
-            component: AdminDashboard
+            component: AdminDashboard,
+            meta: { requiresAdmin: true }
         },
         {
             path: "/admin/users",
             name: "admin-users",
-            component: AdminUsers
+            component: AdminUsers,
+            meta: { requiresAdmin: true }
         },
         {
             path: "/admin/spots", // Der Pfad für deine neue Orte-Verwaltung
             name: "admin-spots",
-            component: AdminSpots
+            component: AdminSpots,
+            meta: { requiresAdmin: true }
         },
         {
             path: "/admin/support",
             name: "admin-support",
-            component: AdminSupport
+            component: AdminSupport,
+            meta: { requiresAdmin: true }
+
         }
     ],
+});
+
+router.beforeEach(async (to, from, next) => {
+    const userStore = useUserStore();
+
+    // Wenn die Seite Admin-Rechte braucht
+    if (to.matched.some(record => record.meta.requiresAdmin)) {
+
+        // Check: Ist der User eingeloggt und ist er ADMIN in unserer Datenbank?
+        if (userStore.userProfile?.role === 'ADMIN') {
+            next(); // Zugriff erlaubt
+        } else {
+            alert("Zugriff verweigert: Nur für Admins!");
+            next('/'); // Umleitung auf Startseite
+        }
+    } else {
+        next(); // Seite braucht kein Admin, einfach weiterleiten
+    }
 });
 
 export default router;
