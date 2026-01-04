@@ -9,7 +9,7 @@
     <header class="header">
       <nav class="nav">
         <router-link to="/">Home</router-link>
-        <router-link to="/">Spots</router-link>
+        <router-link to="/meine-spots">Spots</router-link>
         <router-link to="/map">Karte</router-link>
         <router-link to="/about">Über uns</router-link>
         <router-link to="/support">Support</router-link>

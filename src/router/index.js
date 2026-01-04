@@ -7,6 +7,8 @@ import Support from "@/components/Support.vue";
 import Impressum from "@/components/Impressum.vue";
 import Datenschutz from "@/components/Datenschutz.vue";
 import { useUserStore } from "@/stores/userStore";
+import MySpots from "@/components/MySpots.vue";
+import MyOwnSpots from "@/components/MyOwnSpots.vue";
 
 // Neue Admin-Komponenten importieren
 import AdminDashboard from "@/components/AdminDashboard.vue";
@@ -85,6 +87,18 @@ const router = createRouter({
             path: '/map',
             name: 'Map',
             component: () => import('../components/MapView.vue')
+        },
+        {
+            path: "/meine-spots", // <--- NEU: Die Route für deine Transaktionen (Aufgabe c)
+            name: "my-spots",
+            component: MySpots,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: "/my-own-spots", // <--- NEU: Die Seite für die eigenen erstellten Spots
+            name: "my-own-spots",
+            component: MyOwnSpots,
+            meta: { requiresAuth: true }
         }
     ],
 });
