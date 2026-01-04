@@ -1,110 +1,104 @@
 <script setup>
-  import { ref, onMounted } from "vue";
-  
-  const API_BASE = import.meta.env.VITE_API_URL; 
-  
-  const props = defineProps({
-    spotId: Number 
-  });
-  
-  const reviews = ref([]);
-  const reviewText = ref("");
-  const rating = ref(5);
-  
-  async function fetchReviews() {
-    try {
-      const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
-      
-      if (res.ok) {
-          reviews.value = await res.json();
-      } else {
-          reviews.value = [];
-      }
-    } catch (err) {
-      console.error("Fehler beim Laden der Reviews:", err);
+import { ref, onMounted } from "vue";
+import { useAuth0 } from "@auth0/auth0-vue"; // <--- 1. Auth0 importieren
+
+const API_BASE = import.meta.env.VITE_API_URL;
+const { getAccessTokenSilently, isAuthenticated } = useAuth0(); // <--- 2. Auth0-Funktionen laden
+
+const props = defineProps({
+  spotId: Number
+});
+
+const reviews = ref([]);
+const reviewText = ref("");
+const rating = ref(5);
+
+async function fetchReviews() {
+  try {
+    const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
+    if (res.ok) {
+      reviews.value = await res.json();
+    } else {
+      reviews.value = [];
     }
+  } catch (err) {
+    console.error("Fehler beim Laden der Reviews:", err);
   }
-  
-  async function submitReview() {
-    if (reviewText.value.trim() === "" || rating.value < 1 || rating.value > 5) {
-      alert("Bitte geben Sie einen gültigen Text und eine Bewertung (1-5) ein.");
-      return;
-    }
-  
-    const newReview = {
-      spotId: props.spotId,
-      rating: rating.value,
-      comment: reviewText.value,
-    };
-    
-    try {
-      const res = await fetch(`${API_BASE}/reviews`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newReview)
-      });
-  
-      if (res.ok) {
-        reviewText.value = "";
-        rating.value = 5;
-        await fetchReviews(); 
-      } else {
-        throw new Error(`Fehler beim Speichern der Bewertung: ${res.statusText}`);
-      }
-    } catch (err) {
-      console.error("Fehler beim Senden der Bewertung.", err);
-      alert("Die Bewertung konnte nicht gesendet werden. Prüfen Sie das Backend.");
-    }
+}
+
+async function submitReview() {
+  if (!isAuthenticated.value) {
+    alert("Du musst eingeloggt sein, um eine Bewertung abzugeben.");
+    return;
   }
-  
-  onMounted(fetchReviews);
-  
-  </script>
+
+  if (reviewText.value.trim() === "" || rating.value < 1 || rating.value > 5) {
+    alert("Bitte geben Sie einen gültigen Text und eine Bewertung (1-5) ein.");
+    return;
+  }
+
+  const newReview = {
+    spotId: props.spotId,
+    rating: rating.value,
+    comment: reviewText.value,
+  };
+
+  try {
+    // 3. Token für die Autorisierung abrufen
+    const token = await getAccessTokenSilently();
+
+    const res = await fetch(`${API_BASE}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // <--- 4. Token mitschicken
+      },
+      body: JSON.stringify(newReview)
+    });
+
+    if (res.ok) {
+      reviewText.value = "";
+      rating.value = 5;
+      await fetchReviews();
+    } else {
+      throw new Error(`Fehler beim Speichern der Bewertung: ${res.statusText}`);
+    }
+  } catch (err) {
+    console.error("Fehler beim Senden der Bewertung.", err);
+    alert("Die Bewertung konnte nicht gesendet werden.");
+  }
+}
+
+onMounted(fetchReviews);
+</script>
 
 <template>
   <div class="reviews-wrapper">
     <h2 class="title">Bewertungen</h2>
 
-    <div class="review-form">
-        <h4>Ihre Bewertung</h4>
-        
-        <textarea 
-            v-model="reviewText" 
-            placeholder="Ihre Meinung zum Spot..."
-            rows="3"
-        ></textarea>
-        
-        <div class="rating-input">
-            <label for="rating">Bewertung (1-5):</label>
-            <input 
-                type="number" 
-                id="rating" 
-                v-model.number="rating" 
-                min="1" 
-                max="5"
-            >
-        </div>
-
-        <button @click="submitReview" class="submit-btn">Absenden</button>
+    <div v-if="isAuthenticated" class="review-form">
+      <h4>Ihre Bewertung</h4>
+      <textarea v-model="reviewText" placeholder="Ihre Meinung zum Spot..." rows="3"></textarea>
+      <div class="rating-input">
+        <label for="rating">Bewertung (1-5):</label>
+        <input type="number" id="rating" v-model.number="rating" min="1" max="5">
+      </div>
+      <button @click="submitReview" class="submit-btn">Absenden</button>
     </div>
-
     <hr>
-    
-    <div v-if="reviews.length" class="review-list">
-        <h3>Bestehende Bewertungen ({{ reviews.length }})</h3>
-        <div v-for="r in reviews" :key="r.id" class="review-card">
-            
-            <div class="stars">
-                <span v-for="i in 5" :key="i" class="star" :class="{ active: i <= r.rating }">★</span>
-            </div>
 
-            <p class="review-text">{{ r.comment}}</p>
+    <div v-if="reviews.length" class="review-list">
+      <h3>Bestehende Bewertungen ({{ reviews.length }})</h3>
+      <div v-for="r in reviews" :key="r.id" class="review-card">
+        <div class="stars">
+          <span v-for="i in 5" :key="i" class="star" :class="{ active: i <= r.rating }">★</span>
         </div>
+        <p class="review-text">{{ r.comment }}</p>
+      </div>
     </div>
     <div v-else class="no-reviews">
-        Noch keine Bewertungen vorhanden.
+      Noch keine Bewertungen vorhanden.
     </div>
-
   </div>
 </template>
 

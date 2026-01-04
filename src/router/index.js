@@ -80,6 +80,11 @@ const router = createRouter({
             component: AdminSupport,
             meta: { requiresAdmin: true }
 
+        },
+        {
+            path: '/map',
+            name: 'Map',
+            component: () => import('../components/MapView.vue')
         }
     ],
 });

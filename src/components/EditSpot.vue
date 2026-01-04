@@ -1,12 +1,13 @@
-<!-- src/components/EditSpot.vue -->
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useAuth0 } from "@auth0/auth0-vue"; // 1. Importieren
 
 const route = useRoute();
 const router = useRouter();
+const { getAccessTokenSilently } = useAuth0(); // 2. Funktion bereitstellen
 
-const API_BASE = import.meta.env.VITE_API_URL;;
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const title = ref("");
 const category = ref("");
@@ -14,14 +15,15 @@ const location = ref("");
 const description = ref("");
 const image = ref("");
 
-// Spot laden
+// Spot laden (GET braucht oft keinen Token)
 onMounted(async () => {
   try {
     const res = await fetch(`${API_BASE}/spots/${route.params.id}`);
     const data = await res.json();
 
     title.value = data.title;
-    category.value = data.category.name;
+    // Falls data.category ein Objekt ist, nehmen wir den Namen
+    category.value = typeof data.category === 'object' ? data.category.name : data.category;
     location.value = data.location;
     description.value = data.description;
     image.value = data.imageUrl;
@@ -30,14 +32,16 @@ onMounted(async () => {
   }
 });
 
-
-// Speichern
+// Speichern (JETZT MIT TOKEN)
 async function saveSpot() {
   try {
+    const token = await getAccessTokenSilently(); // Token holen
+
     const res = await fetch(`${API_BASE}/spots/${route.params.id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // Header hinzufügen
       },
       body: JSON.stringify({
         title: title.value,
@@ -48,21 +52,26 @@ async function saveSpot() {
       })
     });
 
-    if (!res.ok) throw new Error("Fehler beim Speichern");
+    if (!res.ok) throw new Error("Fehler beim Speichern: " + res.status);
 
     router.push(`/spot/${route.params.id}`);
   } catch (err) {
     console.error(err);
-    alert("Fehler beim Speichern");
+    alert("Fehler beim Speichern (Status 401? Nicht eingeloggt?)");
   }
 }
 
-// Löschen
+// Löschen (JETZT MIT TOKEN)
 async function deleteSpot() {
   if (confirm("Willst du diesen Spot wirklich löschen?")) {
     try {
+      const token = await getAccessTokenSilently(); // Token holen
+
       const res = await fetch(`${API_BASE}/spots/${route.params.id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}` // Header hinzufügen
+        }
       });
 
       if (!res.ok) throw new Error("Fehler beim Löschen");
@@ -74,7 +83,6 @@ async function deleteSpot() {
     }
   }
 }
-
 </script>
 
 <template>
