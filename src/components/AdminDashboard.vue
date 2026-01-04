@@ -5,19 +5,19 @@
     </div>
 
     <div class="menu-container">
-      <button @click="$router.push('/admin/spots')" class="menu-btn">
+      <button @click="router.push('/admin/spots')" class="menu-btn">
         <span class="icon">🗺️</span>
         Orte verwalten
         <span class="arrow">>></span>
       </button>
 
-      <button @click="$router.push('/admin/users')" class="menu-btn">
+      <button @click="router.push('/admin/users')" class="menu-btn">
         <span class="icon">👤</span>
         Benutzer verwalten
         <span class="arrow">>></span>
       </button>
 
-      <button @click="$router.push('/admin/support')" class="menu-btn">
+      <button @click="router.push('/admin/support')" class="menu-btn">
         <span class="icon">⚙️</span>
         Support
         <span class="arrow">>></span>
@@ -66,4 +66,6 @@
 .arrow { margin-left: auto; }
 </style>
 <script setup lang="ts">
+import {useRouter} from 'vue-router';
+const router = useRouter();
 </script>

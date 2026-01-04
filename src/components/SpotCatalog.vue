@@ -1,16 +1,22 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useAuth0 } from '@auth0/auth0-vue';
+
+const { isAuthenticated } = useAuth0();
 
 import SpotCard from "@/components/SpotCard.vue";
 import SpecialBanner from "@/components/SpecialBanner.vue";
 import SpotFilter from "@/components/SpotFilter.vue";
+
 
 const API = import.meta.env.VITE_API_URL; // z.B. http://localhost:8081/api
 
 const router = useRouter();
 
 const spots = ref([]);
+
+
 
 // Spots vom Backend laden
 async function fetchSpots({ title = "", category = "" } = {}) {
@@ -133,7 +139,7 @@ onMounted(() => fetchSpots());
     <section class="scroll-space"></section>
 
     <!-- Neuer Spot anlegen -->
-    <div class="create-btn-container">
+    <div v-if= "isAuthenticated" class="create-btn-container">
       <button @click="router.push('/create-spot')" class="create-btn">
         + Neuen Spot anlegen
       </button>

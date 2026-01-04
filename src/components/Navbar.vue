@@ -6,40 +6,73 @@
 
     <header class="header">
       <nav class="nav">
-        
         <router-link to="/">Home</router-link>
-        <router-link to="/">Spots</router-link> 
-        
-        <router-link to="/map">Karte</router-link> 
-        
+        <router-link to="/">Spots</router-link>
+        <router-link to="/map">Karte</router-link>
         <router-link to="/about">Über uns</router-link>
-        
         <router-link to="/support">Support</router-link>
-
-   
 
         <a href="#" class="search-icon">
           <img src="@/assets/search.svg" alt="Suche">
         </a>
       </nav>
     </header>
-    <Button
-        class="login-btn"
-        :variant="isAuthenticated ? 'secondary' : 'accent'"
-        @click="handleAuth"
-    >
-      {{ isAuthenticated ? 'Log Out' : 'Log In' }}
-    </Button>
+
+    <div class="auth-controls">
+      <Button
+          class="login-btn"
+          :variant="isAuthenticated ? 'secondary' : 'accent'"
+          @click="handleAuth"
+      >
+        {{ isAuthenticated ? 'Log Out' : 'Log In' }}
+      </Button>
+
+      <Button
+          v-if="userStore.userProfile?.role === 'ADMIN'"
+          class="admin-btn"
+          @click="router.push('/admin')"
+      >Dashboard
+      </Button>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { watch, onMounted } from 'vue'; // WICHTIG: watch und onMounted importieren
 import Button from "@/components/Button.vue";
 import { useAuth0 } from '@auth0/auth0-vue';
+import { useRouter} from "vue-router";
+import { useUserStore } from '@/stores/userStore';
 
-// Auth0-Funktionen laden
-const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+const { loginWithRedirect, logout, isAuthenticated, getAccessTokenSilently } = useAuth0();
+const userStore = useUserStore();
+const router = useRouter();
 
+// Funktion zum Laden des Profils
+const loadProfile = async () => {
+  if (isAuthenticated.value) {
+    try {
+      const token = await getAccessTokenSilently();
+      await userStore.fetchProfile(token); // Dein Store braucht diese Methode
+      console.log("Profil geladen:", userStore.userProfile);
+    } catch (error) {
+      console.error("Fehler beim Laden des Profils:", error);
+    }
+  }
+};
+
+// 1. Beim ersten Laden der Komponente prüfen
+onMounted(loadProfile);
+
+// 2. Sobald sich der Login-Status ändert (Login erfolgt), Profil laden
+watch(isAuthenticated, (newVal) => {
+  if (newVal) {
+    loadProfile();
+  } else {
+    userStore.userProfile = null; // In der Navbar (ohne .value)
+    // Falls das immer noch rot ist, schau in den Store-Code.
+  }
+});
 const handleAuth = () => {
   if (!isAuthenticated.value) {
     loginWithRedirect();
@@ -86,12 +119,30 @@ const handleAuth = () => {
   text-decoration: underline;
 }
 
-/* Login Button */
-.login-btn {
+/* Der Container bekommt jetzt die Position oben rechts */
+.auth-controls {
   position: absolute;
   top: 60px;
   right: 70px;
   z-index: 20;
+
+  /* Flexbox sorgt für das Untereinander */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Abstand zwischen den Buttons */
+  width: 120px; /* Optional: Feste Breite, damit beide gleich breit sind */
+}
+
+/* Die Buttons füllen den Container komplett aus */
+.login-btn, .admin-btn {
+  position: static; /* WICHTIG: absolute Positionierung entfernen! */
+  width: 100%;      /* Beide Buttons sind exakt gleich breit */
+  margin: 0;
+
+  display: flex;
+  justify-content: center; /* Horizontal mittig */
+  align-items: center;     /* Vertikal mittig */
+  text-align: center;
 }
 
 /* ===== MOBILE ===== */
@@ -122,10 +173,25 @@ const handleAuth = () => {
     font-size: 14px;
   }
 
-  .login-btn {
-    position: static;
-    margin-top: 15px;
-    display: block;
+  /* Der Container bekommt jetzt die Position oben rechts */
+  .auth-controls {
+    position: absolute;
+    top: 60px;
+    right: 70px;
+    z-index: 20;
+
+    /* Flexbox sorgt für das Untereinander */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Abstand zwischen den Buttons */
+    width: 120px; /* Optional: Feste Breite, damit beide gleich breit sind */
+  }
+
+  /* Die Buttons füllen den Container komplett aus */
+  .login-btn, .admin-btn {
+    position: static; /* WICHTIG: absolute Positionierung entfernen! */
+    width: 100%;      /* Beide Buttons sind exakt gleich breit */
+    margin: 0;
   }
 }
 </style>
