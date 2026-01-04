@@ -2,12 +2,14 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth0 } from '@auth0/auth0-vue';
+const userStore = useUserStore();
 
 const { isAuthenticated } = useAuth0();
 
 import SpotCard from "@/components/SpotCard.vue";
 import SpecialBanner from "@/components/SpecialBanner.vue";
 import SpotFilter from "@/components/SpotFilter.vue";
+import {useUserStore} from "@/stores/userStore.js";
 
 
 const API = import.meta.env.VITE_API_URL; // z.B. http://localhost:8081/api
@@ -139,11 +141,12 @@ onMounted(() => fetchSpots());
     <section class="scroll-space"></section>
 
     <!-- Neuer Spot anlegen -->
-    <div v-if= "isAuthenticated" class="create-btn-container">
-      <button @click="router.push('/create-spot')" class="create-btn">
+    <div v-if="userStore.userProfile?.role === 'USER'">
+    <button @click="router.push('/create-spot')" class="create-btn">
         + Neuen Spot anlegen
       </button>
     </div>
+
 
     <!-- Filter -->
     <SpotFilter @search-changed="fetchSpots" />

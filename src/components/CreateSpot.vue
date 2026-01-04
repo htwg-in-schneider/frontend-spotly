@@ -1,60 +1,70 @@
 <script setup>
-  import { ref } from "vue";
-  import { useRouter } from "vue-router"; // <--- 1. Importieren Sie useRouter
-  
-  // Die Basis-URL zu Ihrem Spring Boot Backend
-  const API_URL = "http://localhost:8080/api/spots"; 
-  
-  // Router initialisieren (um ihn später zu verwenden)
-  const router = useRouter(); // <--- 2. Initialisieren Sie den Router
-  
-  const title = ref("");
-  const location = ref("");
-  const category = ref("");
-  const description = ref("");
-  const image = ref("");
-  const categories = [
-    "Natur & Aussicht",
-    "Shops & Märkte",
-    "Events & Kultur",
-    "Cafés & Essen",
-    "Sport & Freizeit",
-    "Andere" // Optional: Falls ein Spot mal nicht passt
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuth0 } from "@auth0/auth0-vue"; // <--- 1. Auth0 importieren
+
+const API_URL = "http://localhost:8080/api/spots";
+const router = useRouter();
+const { getAccessTokenSilently } = useAuth0(); // <--- 2. Funktion für Token holen
+
+const title = ref("");
+const location = ref("");
+const category = ref("");
+const description = ref("");
+const image = ref("");
+
+const categories = [
+  "Natur & Aussicht",
+  "Shops & Märkte",
+  "Events & Kultur",
+  "Cafés & Essen",
+  "Sport & Freizeit",
+  "Andere"
 ];
-  
-  async function createSpot() {
-    
-    // 1. Daten aus den State-Variablen zusammenstellen
-    const spotData = {
-      title: title.value,
-      category: category.value,
-      description: description.value,
-      imageUrl: image.value,
-      location: location.value,
-    };
-  
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(spotData),
-      });
-  
-      if (res.ok) {
-        alert(`Spot '${title.value}' wurde erfolgreich erstellt!`);
-        
-        // 3. Navigation nach Erfolg
-        router.push('/'); // <--- 3. Verwenden Sie den Router, um zur Home-Route zu gehen
-      } else {
-        // Fehlerbehandlung...
-        alert(`Fehler beim Erstellen: ${res.statusText}.`);
-      }
-  
-    } catch (err) {
-      alert("Spot konnte nicht erstellt werden. Prüfen Sie die Verbindung und CORS.");
-    }
+
+async function createSpot() {
+  // Pflichtfelder-Check (optional, aber gut für UX)
+  if (!title.value || !category.value) {
+    alert("Bitte mindestens Name und Kategorie angeben.");
+    return;
   }
-  </script>
+
+  const spotData = {
+    title: title.value,
+    category: category.value,
+    description: description.value,
+    imageUrl: image.value,
+    location: location.value,
+  };
+
+  try {
+    // 3. Den Token von Auth0 holen
+    const token = await getAccessTokenSilently();
+
+    // 4. Den Request mit Authorization Header senden
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // <--- WICHTIG: Token mitschicken
+      },
+      body: JSON.stringify(spotData),
+    });
+
+    if (res.ok) {
+      alert(`Spot '${title.value}' wurde erfolgreich erstellt!`);
+      router.push('/');
+    } else {
+      console.error("Fehler-Status:", res.status);
+      alert(`Fehler beim Erstellen: ${res.status} ${res.statusText}`);
+    }
+
+  } catch (err) {
+    console.error("Verbindungsfehler:", err);
+    alert("Spot konnte nicht erstellt werden. Prüfen Sie die Verbindung und CORS.");
+  }
+}
+</script>
 
 <template>
   <!-- Inhalt -->

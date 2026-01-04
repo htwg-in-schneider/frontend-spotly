@@ -1,7 +1,34 @@
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+// Logs als reaktive Referenz
+const logs = ref([
+  { time: "14:02", msg: "Admin eingeloggt." },
+  { time: "14:05", msg: "GET /api/users erfolgreich (200 OK)" },
+  { time: "14:10", msg: "Neuer Spot 'Campus Festival' zur Prüfung eingereicht." },
+  { time: "14:12", msg: "Datenbank-Synchronisation abgeschlossen." }
+]);
+
+const contactSupport = () => {
+  alert("Support-Anfrage wurde an support@spotly.de gesendet.");
+};
+
+const clearLogs = () => {
+  logs.value = [{ time: "JETZT", msg: "Logs wurden vom Administrator bereinigt." }];
+};
+
+const goBack = () => {
+  router.push('/admin');
+};
+</script>
+
 <template>
   <div class="admin-support-page">
     <div class="header-section">
-      <button @click="$router.push('/admin')" class="back-link">
+      <button @click="goBack" class="back-link">
         <span class="arrow">←</span> Dashboard
       </button>
       <h1 class="page-title-styled">Support & Logs</h1>
@@ -45,33 +72,10 @@
     </div>
 
     <footer class="admin-footer">
-      <p>© 2025 Spotly – Admin Support Panel</p>
+      <p>© 2026 Spotly – Admin Support Panel</p>
     </footer>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      logs: [
-        { time: "14:02", msg: "Admin eingeloggt." },
-        { time: "14:05", msg: "GET /api/users erfolgreich (200 OK)" },
-        { time: "14:10", msg: "Neuer Spot 'Campus Festival' zur Prüfung eingereicht." },
-        { time: "14:12", msg: "Datenbank-Synchronisation abgeschlossen." }
-      ]
-    };
-  },
-  methods: {
-    contactSupport() {
-      alert("Support-Anfrage wurde an support@spotly.de gesendet.");
-    },
-    clearLogs() {
-      this.logs = [{ time: "JETZT", msg: "Logs wurden vom Administrator bereinigt." }];
-    }
-  }
-}
-</script>
 
 <style scoped>
 .admin-support-page {

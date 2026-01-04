@@ -74,54 +74,91 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      users: [],
-      searchQuery: '',
-      showOverlay: false,
-      selectedUser: null,
-      activeMode: '',
-      reason: ''
-    };
-  },
-  computed: {
-    filteredUsers() {
-      return this.users.filter(u =>
-          u.username.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    }
-  },
-  mounted() { this.fetchUsers(); },
-  methods: {
-    async fetchUsers() {
-      try {
-        const res = await fetch('http://localhost:8080/api/users');
-        this.users = await res.json();
-      } catch (e) { console.error(e); }
-    },
-    triggerAction(user, mode) {
-      this.selectedUser = user;
-      this.activeMode = mode;
-      this.reason = ''; // Reset der Begründung
-      this.showOverlay = true;
-    },
-    async handleConfirm() {
-      if (this.activeMode === 'delete') {
-        await fetch(`http://localhost:8080/api/users/${this.selectedUser.id}`, { method: 'DELETE' });
-      } else {
-        await fetch(`http://localhost:8080/api/users/${this.selectedUser.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...this.selectedUser, role: 'LOCKED', lockReason: this.reason })
-        });
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth0 } from '@auth0/auth0-vue';
+
+// Auth0 & Router
+const { getAccessTokenSilently } = useAuth0();
+const router = useRouter();
+
+// State
+const users = ref([]);
+const searchQuery = ref('');
+const showOverlay = ref(false);
+const selectedUser = ref(null);
+const activeMode = ref('');
+const reason = ref('');
+
+// Gefilterte Benutzer (Computed)
+const filteredUsers = computed(() => {
+  return users.value.filter(u =>
+      u.username.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+// Daten vom Backend laden
+const fetchUsers = async () => {
+  try {
+    // 1. Token von Auth0 holen
+    const token = await getAccessTokenSilently();
+
+    // 2. Mit Token anfragen
+    const res = await fetch('http://localhost:8080/api/users', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
-      this.showOverlay = false;
-      this.fetchUsers();
+    });
+
+    if (res.ok) {
+      users.value = await res.json();
+    } else {
+      console.error("Server meldet Fehler:", res.status);
     }
+  } catch (e) {
+    console.error("Netzwerkfehler:", e);
   }
-}
+};
+
+// Aktionen (Sperren/Löschen)
+const triggerAction = (user, mode) => {
+  selectedUser.value = user;
+  activeMode.value = mode;
+  reason.value = '';
+  showOverlay.value = true;
+};
+
+const handleConfirm = async () => {
+  try {
+    const token = await getAccessTokenSilently();
+    const url = `http://localhost:8080/api/users/${selectedUser.value.id}`;
+
+    const method = activeMode.value === 'delete' ? 'DELETE' : 'PUT';
+    const body = activeMode.value === 'lock'
+        ? JSON.stringify({ ...selectedUser.value, role: 'LOCKED', lockReason: reason.value })
+        : null;
+
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: body
+    });
+
+    if (res.ok) {
+      showOverlay.value = false;
+      await fetchUsers(); // Liste aktualisieren
+    }
+  } catch (e) {
+    console.error("Aktion fehlgeschlagen:", e);
+  }
+};
+
+onMounted(fetchUsers);
 </script>
 
 <style scoped>

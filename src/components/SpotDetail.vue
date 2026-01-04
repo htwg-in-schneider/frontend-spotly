@@ -1,11 +1,14 @@
 <script setup>
   import { ref, onMounted } from "vue";
   import { useRoute, useRouter } from "vue-router";
-  
+  import {useAuth0} from "@auth0/auth0-vue";
+  import { useUserStore } from '@/stores/userStore';
+
   import SpotReviews from "@/components/SpotReviews.vue";
   
   const route = useRoute();
   const router = useRouter();
+  const userStore = useUserStore();
   
   // API-Basis-URL verwenden
   const API_BASE = import.meta.env.VITE_API_URL; 
@@ -81,7 +84,9 @@
       <SpotReviews :spotId="spot.id" />
 
       <!-- Button -->
+      <div v-if="userStore.userProfile?.role === 'ADMIN'">
       <button class="edit-btn" @click="editSpot">Bearbeiten</button>
+      </div>
 
     </div>
 
