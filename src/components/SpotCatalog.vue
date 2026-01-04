@@ -4,10 +4,8 @@ import { useRouter } from "vue-router";
 import { useAuth0 } from '@auth0/auth0-vue';
 const userStore = useUserStore();
 
-const { isAuthenticated } = useAuth0();
 
 import SpotCard from "@/components/SpotCard.vue";
-import SpecialBanner from "@/components/SpecialBanner.vue";
 import SpotFilter from "@/components/SpotFilter.vue";
 import {useUserStore} from "@/stores/userStore.js";
 import Button from "@/components/Button.vue";
