@@ -141,11 +141,11 @@ onMounted(() => fetchSpots());
 
     <div class="top-controls">
       <!-- Neuer Spot anlegen -->
-      <div v-if="userStore.userProfile?.role === 'ADMIN' || userStore.userProfile?.role === 'USER'">
+     <!-- <div v-if="userStore.userProfile?.role === 'ADMIN' || userStore.userProfile?.role === 'USER'">
         <Button @click="router.push('/create-spot')" class="create-btn">
           + Neuen Spot anlegen
         </Button>
-      </div>
+      </div> -->
 
 
       <!-- Filter -->

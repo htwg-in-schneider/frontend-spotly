@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router'; // <--- Neu: Router importieren
+import {onMounted, ref} from 'vue';
+import {useRouter} from 'vue-router'; // <--- Neu: Router importieren
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Button from "@/components/Button.vue";
@@ -74,28 +74,23 @@ onMounted(async () => {
 
 <template>
   <div class="map-page">
-    <h1 class="page-title">Spotly Map</h1>
     <div id="map-container"></div>
   </div>
 </template>
 
 <style scoped>
 .map-page {
-  padding: 20px;
+  text-align: center;
   height: calc(100vh - 100px); /* Seite minus Navbar-Höhe */
 }
 
-.page-title {
-
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 #map-container {
-  height: 97%;
-  width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: inline-block;
+  margin-top: 80px;
+  height: 80%;
+  width: 80%;
+  border-radius: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1; /* Sicherstellen, dass die Karte unter Menüs bleibt */
 }
 </style>>
