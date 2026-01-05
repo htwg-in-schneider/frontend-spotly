@@ -3,12 +3,16 @@ const props = defineProps({
   variant: {
     type: String,
     default: "accent" // accent = blau, secondary = grau
+  },
+  round: {
+    type: Boolean,
+    default: false // Macht den Button kreisrund, wenn 'round' im Tag steht
   }
 })
 </script>
 
 <template>
-  <button :class="['btn', variant]">
+  <button :class="['btn', variant, { 'round': round }]">
     <slot></slot>
   </button>
 </template>
@@ -21,24 +25,36 @@ const props = defineProps({
   cursor: pointer;
   font-weight: 600;
   transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; /* Falls du den Button mal in einem Link nutzt */
 }
 
-/* Acccent Button */
+/* Runder Button Style */
+.round {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* Accent (Blau) */
 .accent {
   background: #0084ff;
   color: white;
 }
-
 .accent:hover {
   background: #1c86ee;
 }
 
-/* Secondary Button */
+/* Secondary (Grau) */
 .secondary {
   background: #dcdcdc;
   color: #333;
 }
-
 .secondary:hover {
   background: #c5c5c5;
 }
