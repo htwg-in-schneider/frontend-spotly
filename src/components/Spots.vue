@@ -73,7 +73,7 @@ const filteredSpots = computed(() => {
           <router-link to="/create-spot">
             <Button style="width: 100%; padding: 8px 15px;">+ Spot erstellen</Button>
           </router-link>
-          <router-link to="/my-own-spots">
+          <router-link to="/meine-spots">
             <Button variant="secondary" style="width: 100%; padding: 8px 15px;">🗁 Meine Spots</Button>
           </router-link>
         </div>

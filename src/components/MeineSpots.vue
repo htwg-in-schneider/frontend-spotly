@@ -26,7 +26,7 @@ onMounted(fetchMySpots);
 <template>
   <div class="my-spots-page">
     <div class="top-left-nav">
-      <router-link to="/meine-spots">
+      <router-link to="/spots">
         <Button variant="secondary" round><</Button>
       </router-link>
     </div>
