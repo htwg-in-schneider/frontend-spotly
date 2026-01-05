@@ -82,10 +82,9 @@ onMounted(() => fetchSpots());
       </div>
     </div>
 
-    <div class="cta-container">
-      <a href="#" class="spots-link">>> Hier mehr Spots entdecken</a>
+   <div class="cta-container">
+      <router-link to="/spots" class="spots-link">>> Hier mehr Spots entdecken</router-link>
     </div>
-
 
     <button
         class="carousel-control-prev"
@@ -140,14 +139,6 @@ onMounted(() => fetchSpots());
     <section class="scroll-space"></section>
 
     <div class="top-controls">
-      <!-- Neuer Spot anlegen -->
-     <!-- <div v-if="userStore.userProfile?.role === 'ADMIN' || userStore.userProfile?.role === 'USER'">
-        <Button @click="router.push('/create-spot')" class="create-btn">
-          + Neuen Spot anlegen
-        </Button>
-      </div> -->
-
-
       <!-- Filter -->
       <SpotFilter @search-changed="fetchSpots"/>
     </div>
@@ -165,12 +156,12 @@ onMounted(() => fetchSpots());
 .slogan {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-content: center;
   justify-content: center;
   position: absolute;
 
   /* NEU: Exakte Zentrierung */
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
@@ -181,19 +172,6 @@ onMounted(() => fetchSpots());
   box-sizing: border-box;
   pointer-events: none;
 }
-
-.close-btn {
-  position: absolute;
-  top: -20px;
-  right: -10px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-}
-
 
 .slogan h1 {
   font-size: 60px;
@@ -300,7 +278,6 @@ onMounted(() => fetchSpots());
   margin-top: 400px;
 }
 
-/* ⭐ RESPONSIVE GRID FÜR SPOT-KARTEN */
 .spots-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -308,7 +285,7 @@ onMounted(() => fetchSpots());
   width: 90%;
   max-width: 1200px;
   margin: 0 auto 60px;
-  padding: 0 10px;
+  padding: 25px 10px;
 }
 
 .carousel {
