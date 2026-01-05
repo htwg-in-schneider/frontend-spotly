@@ -1,13 +1,15 @@
 <template>
   <div>
     <div class="logo-container">
-      <img src="@/assets/logo.png" alt="Spotly Logo" class="logo-outside" />
+      <router-link to="/" class="logo-link">
+        <img src="@/assets/logo.png" alt="Spotly Logo" class="logo-outside" />
+      </router-link>
     </div>
 
     <header class="header">
       <nav class="nav">
         <router-link to="/">Home</router-link>
-        <router-link to="/meine-spots">Spots</router-link>
+        <router-link to="/spots">Spots</router-link>
         <router-link to="/map">Karte</router-link>
         <router-link to="/about">Über uns</router-link>
         <router-link to="/support">Support</router-link>
@@ -112,7 +114,7 @@ const handleAuth = () => {
   margin: 0 15px;
   text-decoration: none;
   color: #1c1c1c;
-  font-weight: 500;
+  font-weight: normal;
 }
 
 .nav a:hover {
@@ -145,6 +147,18 @@ const handleAuth = () => {
   text-align: center;
 }
 
+.logo-link {
+  cursor: pointer;
+  display: inline-block; /* Sorgt dafür, dass der Link genau so groß wie das Bild ist */
+  transition: transform 0.2s ease; /* Optional: Kleiner Effekt beim Klicken */
+}
+
+.logo-link:hover {
+  opacity: 0.9; /* Optional: Logo wird leicht blasser beim Drüberfahren */
+}
+
+
+
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .logo-outside {
@@ -171,6 +185,7 @@ const handleAuth = () => {
   .nav a {
     margin: 5px;
     font-size: 14px;
+    font-weight: bold;
   }
 
   /* Der Container bekommt jetzt die Position oben rechts */

@@ -116,7 +116,7 @@ async function createSpot() {
       <input 
         class="input"
         type="text"
-        placeholder="Standort"
+        placeholder="Standort (Straße Hausnummer, Postleitzahl Ort)"
         v-model="location"
       >
 

@@ -71,16 +71,21 @@ function openDetails() {
 }
 
 .details-btn {
-  width: 100%;
-  background-color: #5b4d3b;
+  align-self: center;
+  width: 80%;
+  background-color: #463b2d;
   color: white;
-  border: none;
+  border: 10px color(black);
   padding: 12px 0;
-  border-radius: 5px;
+  border-radius: 25px;
   font-size: 1rem;
   cursor: pointer;
   transition: 0.2s ease-in-out;
   margin-top: 15px; /* Abstand nach oben */
+}
+
+.card-img {
+  border-radius: 16px;
 }
 
 .details-btn:hover {
