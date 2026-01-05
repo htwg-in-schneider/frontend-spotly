@@ -1,11 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth0 } from "@auth0/auth0-vue"; // <--- 1. Auth0 importieren
+import { useAuth0 } from "@auth0/auth0-vue";
+import Button from "./Button.vue"; // Button Komponente importieren
 
-const API_URL = "http://localhost:8080/api/spots";
+const API_URL = import.meta.env.VITE_API_URL + "/spots";
 const router = useRouter();
-const { getAccessTokenSilently } = useAuth0(); // <--- 2. Funktion für Token holen
+const { getAccessTokenSilently } = useAuth0();
 
 const title = ref("");
 const location = ref("");
@@ -23,7 +24,6 @@ const categories = [
 ];
 
 async function createSpot() {
-  // Pflichtfelder-Check (optional, aber gut für UX)
   if (!title.value || !category.value) {
     alert("Bitte mindestens Name und Kategorie angeben.");
     return;
@@ -38,182 +38,174 @@ async function createSpot() {
   };
 
   try {
-    // 3. Den Token von Auth0 holen
     const token = await getAccessTokenSilently();
-
-    // 4. Den Request mit Authorization Header senden
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // <--- WICHTIG: Token mitschicken
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(spotData),
     });
 
     if (res.ok) {
       alert(`Spot '${title.value}' wurde erfolgreich erstellt!`);
-      router.push('/');
+      router.push('/spots');
     } else {
-      console.error("Fehler-Status:", res.status);
-      alert(`Fehler beim Erstellen: ${res.status} ${res.statusText}`);
+      alert(`Fehler beim Erstellen: ${res.status}`);
     }
-
   } catch (err) {
     console.error("Verbindungsfehler:", err);
-    alert("Spot konnte nicht erstellt werden. Prüfen Sie die Verbindung und CORS.");
+    alert("Spot konnte nicht erstellt werden.");
   }
 }
 </script>
 
 <template>
-  <!-- Inhalt -->
-  <div class="wrapper">
-    <h1 class="title">Erstelle einen neuen Spot!</h1>
+  <div class="create-page">
+    <div class="top-left-nav">
+      <Button variant="secondary" round @click="router.push('/spots')">&lt;</Button>
+    </div>
 
-    <div class="card">
+    <div class="wrapper">
+      <h1 class="main-title">Neuen Spot erstellen</h1>
 
-      <!-- Bild-Vorschau -->
-      <div class="image-box">
-        <img v-if="image" :src="image" alt="Spot Bild">
-        <div v-else class="placeholder">
-          📷 Bild hinzufügen
+      <div class="card">
+        <div class="image-box">
+          <img v-if="image" :src="image" alt="Spot Bild">
+          <div v-else class="placeholder-container">
+            <img src="@/assets/img.png" alt="Platzhalter" class="placeholder-icon">
+          </div>
+
+          <input
+              type="text"
+              placeholder="Bild-URL eingeben"
+              v-model="image"
+              class="input"
+          >
         </div>
 
-        <input 
-          type="text"
-          placeholder="Bild-URL eingeben"
-          v-model="image"
-          class="input"
+        <input class="input" type="text" placeholder="Name" v-model="title">
+
+        <select class="input select-input" v-model="category">
+          <option value="" disabled>Kategorie wählen</option>
+          <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+        </select>
+
+        <input class="input" type="text" placeholder="Standort" v-model="location">
+
+        <textarea
+            class="textarea"
+            placeholder="Beschreibung hinzufügen..."
+            v-model="description"
+        ></textarea>
+
+        <Button
+            style="width: 100%; padding: 15px; margin-top: 10px;"
+            @click="createSpot"
         >
+          Spot erstellen
+        </Button>
       </div>
-
-      <!-- Name -->
-      <input 
-        class="input"
-        type="text"
-        placeholder="Name"
-        v-model="title"
-      >
-
-      <!-- Kategorie -->
-      <select
-    class="input"
-    v-model="category"
->
-    <option value="" disabled>Kategorie</option> 
-    
-    <option 
-        v-for="cat in categories" 
-        :key="cat" 
-        :value="cat"
-    >
-        {{ cat }}
-    </option>
-</select>
-
-      <!-- Standort -->
-      <input 
-        class="input"
-        type="text"
-        placeholder="Standort (Straße Hausnummer, Postleitzahl Ort)"
-        v-model="location"
-      >
-
-      <!-- Beschreibung -->
-      <textarea 
-        class="textarea"
-        placeholder="Füge eine Beschreibung hinzu..."
-        v-model="description"
-      ></textarea>
-
-      <button class="create-btn" @click="createSpot">
-        Spot erstellen
-      </button>
     </div>
   </div>
-
 </template>
 
 <style scoped>
-
-/* Inhalt */
-.wrapper {
-  text-align: center;
-  margin-top: 80px;
+.create-page {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f7ff 0%, #c9e4ff 100%);
+  padding-bottom: 50px;
 }
 
-.title {
-  font-size: 32px;
-  font-weight: 700;
+.top-left-nav {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+.wrapper {
+  text-align: center;
+  padding-top: 100px;
+}
+
+.main-title {
   color: #0084ff;
-  margin-bottom: 30px;
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 25px;
 }
 
 .card {
-  width: 420px;
+  width: 90%;
+  max-width: 450px;
   margin: 0 auto;
-  background: #b19884;
-  padding: 30px;
-  border-radius: 25px;
-}
-
-.image-box {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.placeholder {
-  width: 100%;
-  height: 180px;
   background: white;
-  border-radius: 15px;
-  line-height: 180px;
-  font-size: 22px;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
+/* Bild & Platzhalter */
 .image-box img {
   width: 100%;
+  height: 200px;
   border-radius: 15px;
+  object-fit: cover;
   margin-bottom: 10px;
 }
 
-.image-box input {
-  margin-top: 10px; /* sorgt für Abstand */
+.placeholder-container {
+  width: 100%;
+  height: 180px;
+  background: #f9f9f9;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+  margin-bottom: 15px;
 }
 
+.placeholder-icon {
+  width: 60px !important;
+  height: auto !important;
+  opacity: 0.2;
+}
 
-/* Inputs */
+/* Form Styling */
 .input {
   width: 100%;
-  padding: 12px;
-  border-radius: 30px;
-  border: none;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1px solid #eee;
   margin-bottom: 15px;
+  background: #fafafa;
+  font-size: 16px;
+  outline: none;
+}
+
+.select-input {
+  cursor: pointer;
+  color: #555;
 }
 
 .textarea {
   width: 100%;
   height: 120px;
-  padding: 12px;
-  border-radius: 20px;
-  border: none;
-  margin-bottom: 15px;
-}
-
-/* Button */
-.create-btn {
-  width: 100%;
-  background: #0084ff;
-  color: white;
   padding: 14px;
-  border: none;
-  border-radius: 30px;
-  font-size: 18px;
-  cursor: pointer;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  margin-bottom: 15px;
+  background: #fafafa;
+  font-size: 16px;
+  outline: none;
+  resize: none;
 }
 
-.create-btn:hover {
-  background: #5dade2;
+.input:focus, .textarea:focus {
+  border-color: #0084ff;
 }
 </style>
