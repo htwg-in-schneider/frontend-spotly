@@ -156,7 +156,7 @@ onMounted(() => fetchSpots());
 .slogan {
   display: flex;
   flex-direction: column;
-  align-content: center;
+  align-items: center;
   justify-content: center;
   position: absolute;
 
@@ -291,7 +291,9 @@ onMounted(() => fetchSpots());
 .carousel {
   position: relative;
   z-index: 5; /* WICHTIG: Macht Buttons klickbar */ /* Verhindert, dass es zu breit wird */
-  margin: 80px auto; /* Zentriert das Carousel mit Abstand */
+  margin: 80px auto;
+  width: 100%;
+  overflow: hidden; /* Zentriert das Carousel mit Abstand */
 }
 
 /* Bild-Styling */
