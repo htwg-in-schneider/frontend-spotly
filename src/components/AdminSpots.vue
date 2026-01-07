@@ -100,7 +100,15 @@
 </template>
 
 <script>
+import { useAuth0 } from "@auth0/auth0-vue";
+
 export default {
+  // Setup wird benötigt, um die Auth0-Funktionen in der Options-API nutzbar zu machen
+  setup() {
+    const { getAccessTokenSilently } = useAuth0();
+    return { getAccessTokenSilently };
+  },
+
   data() {
     return {
       spots: [],
@@ -109,29 +117,43 @@ export default {
       activeMode: '',
       selectedSpot: null,
       showOverlay: false,
-      reason: ''
+      reason: '',
+      // Falls du eine .env Datei nutzt, kannst du hier import.meta.env.VITE_API_URL nutzen
+      apiBaseUrl: 'http://localhost:8080/api/spots'
     };
   },
+
   computed: {
     filteredSpots() {
-      return this.spots.filter(s => s.title?.toLowerCase().includes(this.searchQuery.toLowerCase()));
+      return this.spots.filter(s =>
+          s.title?.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     }
   },
+
   mounted() {
     this.fetchSpots();
   },
+
   methods: {
     async fetchSpots() {
       try {
-        const res = await fetch('http://localhost:8080/api/spots');
+        const res = await fetch(this.apiBaseUrl);
         this.spots = await res.json();
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error("Fehler beim Laden der Spots:", e);
+      }
     },
+
     goBack() {
-      if (this.currentView === 'detail') this.currentView = 'list';
-      else this.$router.push('/admin');
+      if (this.currentView === 'detail') {
+        this.currentView = 'list';
+      } else {
+        this.$router.push('/admin');
+      }
       this.reason = '';
     },
+
     openDetail(spot, mode) {
       this.selectedSpot = spot;
       this.activeMode = mode;
@@ -139,18 +161,59 @@ export default {
       this.showOverlay = false;
       this.reason = '';
     },
+
     async confirmDelete() {
-      await fetch(`http://localhost:8080/api/spots/${this.selectedSpot.id}`, { method: 'DELETE' });
-      this.showOverlay = false;
-      this.currentView = 'list';
-      this.fetchSpots();
-    },
-    confirmPublish() {
-      if (this.reason.length >= 10) {
-        alert("Ort erfolgreich mit Begründung veröffentlicht!");
+      try {
+        // Holt das Token von Auth0
+        const token = await this.getAccessTokenSilently();
+
+        const response = await fetch(`${this.apiBaseUrl}/${this.selectedSpot.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) throw new Error("Löschen fehlgeschlagen (403 oder 401)");
+
         this.showOverlay = false;
         this.currentView = 'list';
-        this.reason = '';
+        await this.fetchSpots(); // Liste aktualisieren
+        alert("Ort erfolgreich gelöscht!");
+      } catch (e) {
+        console.error("Auth0 Fehler beim Löschen:", e);
+        alert("Du hast keine Berechtigung, diesen Ort zu löschen.");
+      }
+    },
+
+    async confirmPublish() {
+      if (this.reason.length >= 10) {
+        try {
+          const token = await this.getAccessTokenSilently();
+
+          // Hier senden wir ein PUT oder POST ans Backend, um den Status zu ändern
+          // Ich nehme an, das Backend erwartet das Token auch hier zur Absicherung
+          const response = await fetch(`${this.apiBaseUrl}/${this.selectedSpot.id}/publish`, {
+            method: 'PUT', // oder 'POST', je nach deiner Backend-API
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reason: this.reason })
+          });
+
+          if (!response.ok) throw new Error("Veröffentlichen fehlgeschlagen");
+
+          alert("Ort erfolgreich mit Begründung veröffentlicht!");
+          this.showOverlay = false;
+          this.currentView = 'list';
+          this.reason = '';
+          await this.fetchSpots();
+        } catch (e) {
+          console.error("Fehler beim Veröffentlichen:", e);
+          alert("Aktion konnte nicht ausgeführt werden.");
+        }
       }
     }
   }
