@@ -102,7 +102,7 @@ const filteredSpots = computed(() => {
 
 <style scoped>
 .top-left-nav { position: absolute; top: 20px; left: 20px; z-index: 100; }
-.spots-page { position: relative; min-height: 100vh; background: linear-gradient(180deg, #f0f7ff 0%, #c9e4ff 100%); padding-top: 80px; display: flex; justify-content: center; }
+.spots-page { position: relative; min-height: 100vh; padding-top: 80px; display: flex; justify-content: center; }
 .content-wrapper { width: 95%; max-width: 650px; }
 .main-title { color: #0084ff; font-size: 48px; font-weight: 800; margin-bottom: 25px; }
 

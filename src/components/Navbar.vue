@@ -14,9 +14,6 @@
         <router-link to="/about">Über uns</router-link>
         <router-link to="/support">Support</router-link>
 
-        <a href="#" class="search-icon">
-          <img src="@/assets/search.svg" alt="Suche">
-        </a>
       </nav>
     </header>
 
@@ -111,14 +108,18 @@ const handleAuth = () => {
 }
 
 .nav a {
-  margin: 0 15px;
+  margin: 0 5px; /* Etwas weniger Margin, da Padding dazukommt */
+  padding: 8px 16px;
   text-decoration: none;
   color: #1c1c1c;
-  font-weight: normal;
+  border-radius: 20px;
+  transition: all 0.3s ease;
 }
 
 .nav a:hover {
-  text-decoration: underline;
+  background-color: rgba(0, 132, 255, 0.1); /* Helles Blau-Transparent */
+  color: #0084ff;
+  transform: translateY(-1px); /* Minimales Anheben */
 }
 
 /* Der Container bekommt jetzt die Position oben rechts */
@@ -169,10 +170,21 @@ const handleAuth = () => {
   }
 
   .header {
-    width: 90%;
-    top: 15px;
-    padding: 15px 20px;
-    flex-direction: column;
+    position: relative;
+    /* Erhöht von 540px auf ca. 700px, damit die Pill-Links Platz haben */
+    max-width: 700px;
+    top: -100px;
+    display: flex;
+    justify-content: center; /* Zentriert die Nav-Links im Header */
+    align-items: center;
+    padding: 15px 30px; /* Padding leicht angepasst */
+    margin: 0 auto;
+    /* Breite von 40% auf 60% erhöht für flexibleres Design */
+    width: 60%;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50px; /* Etwas runder für den Pill-Look */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    backdrop-filter: blur(10px);
   }
 
   .nav {

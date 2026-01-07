@@ -9,6 +9,7 @@ import Datenschutz from "@/components/Datenschutz.vue";
 import { useUserStore } from "@/stores/userStore";
 import Spots from "@/components/Spots.vue";
 import MeineSpots from "@/components/MeineSpots.vue";
+import About from "@/components/About.vue";
 
 // Neue Admin-Komponenten importieren
 import AdminDashboard from "@/components/AdminDashboard.vue";
@@ -39,7 +40,12 @@ const router = createRouter({
         {
             path: "/create-spot",
             name: "spot-create",
-            component: CreateSpot,
+            component: CreateSpot
+        },
+        {
+            path: "/about",
+            name: "about",
+            component: About
         },
         {
             path: "/support",
