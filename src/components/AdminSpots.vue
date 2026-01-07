@@ -279,27 +279,11 @@ export default {
   margin-bottom: 20px; font-size: 16px; outline: none;
 }
 
-/* FIX: Vereinheitlicht Mac und Windows Scrollbar */
+/* Scrollbereich fix: padding-bottom verhindert Abschneiden */
 .spot-list-scroll {
-  flex: 1;
   overflow-y: auto;
-  max-height: 500px;
-  padding-bottom: 30px; /* Erhöhtes Padding damit nichts am Rand klebt */
-  padding-right: 5px;   /* Platzhalter damit Inhalt nicht springt */
-  scrollbar-width: thin; /* Für Firefox */
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-
-/* Chrome, Safari (Mac!) und Edge Scrollbar Styling */
-.spot-list-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.spot-list-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.spot-list-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
+  max-height: 60vh; /* Etwas mehr Platz geben */
+  padding-bottom: 20px; /* NEU: Erzeugt Abstand zum unteren Rand der blauen Karte */
 }
 
 .no-results-msg {
