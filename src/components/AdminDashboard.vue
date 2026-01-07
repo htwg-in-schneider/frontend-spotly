@@ -6,19 +6,19 @@
 
     <div class="menu-container">
       <button @click="router.push('/admin/spots')" class="menu-btn">
-        <span class="icon">🗺️</span>
+        <span class="icon"></span>
         Orte verwalten
         <span class="arrow">>></span>
       </button>
 
       <button @click="router.push('/admin/users')" class="menu-btn">
-        <span class="icon">👤</span>
+        <span class="icon"></span>
         Benutzer verwalten
         <span class="arrow">>></span>
       </button>
 
       <button @click="router.push('/admin/support')" class="menu-btn">
-        <span class="icon">⚙️</span>
+        <span class="icon"></span>
         Support
         <span class="arrow">>></span>
       </button>

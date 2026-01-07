@@ -1,10 +1,12 @@
 <template>
+  <div class="top-left-nav">
+    <router-link to="/admin">
+      <Button variant="secondary" round />
+    </router-link>
+  </div>
+
   <div class="admin-spots-page">
     <div class="header-section">
-      <button @click="goBack" class="back-link">
-        <span class="arrow">←</span> Dashboard
-      </button>
-      <h1 class="page-title-styled">Admin Dashboard</h1>
     </div>
 
     <div class="content-wrapper">
@@ -100,7 +102,14 @@
 </template>
 
 <script>
+// Falls du die Button-Komponente global registriert hast, kannst du den Import löschen.
+// Ansonsten hier importieren:
+// import Button from "@/components/Button.vue";
+
+import Button from "@/components/Button.vue";
+
 export default {
+  components: {Button},
   data() {
     return {
       spots: [],
@@ -128,8 +137,11 @@ export default {
       } catch (e) { console.error(e); }
     },
     goBack() {
-      if (this.currentView === 'detail') this.currentView = 'list';
-      else this.$router.push('/admin');
+      if (this.currentView === 'detail') {
+        this.currentView = 'list';
+      } else {
+        this.$router.push('/admin');
+      }
       this.reason = '';
     },
     openDetail(spot, mode) {
@@ -147,7 +159,7 @@ export default {
     },
     confirmPublish() {
       if (this.reason.length >= 10) {
-        alert("Ort erfolgreich mit Begründung veröffentlicht!");
+        alert("Ort erfolgreich veröffentlicht!");
         this.showOverlay = false;
         this.currentView = 'list';
         this.reason = '';
@@ -158,6 +170,41 @@ export default {
 </script>
 
 <style scoped>
+/* NEUE STYLES FÜR DEN BUTTON */
+.top-left-nav {
+  position: absolute;
+  top: 300px;
+  left: 30px;
+  z-index: 100;
+}
+
+.back-btn-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.back-btn-circle:hover {
+  transform: scale(1.1);
+  background-color: #357abd;
+}
+
+.arrow-icon {
+  font-size: 28px;
+  font-weight: bold;
+  margin-right: 2px; /* Optische Korrektur der Zentrierung */
+}
+
+/* Bestehende Styles */
 .admin-spots-page {
   min-height: 100vh;
   display: flex;
@@ -173,12 +220,6 @@ export default {
   padding: 60px 20px 20px 20px;
   position: relative;
   text-align: center;
-}
-
-.back-link {
-  position: absolute; left: 0; top: 40px;
-  background: none; border: none;
-  color: #4a90e2; font-weight: bold; cursor: pointer; font-size: 16px;
 }
 
 .page-title-styled {
@@ -203,12 +244,13 @@ export default {
   margin-bottom: 20px; font-size: 16px; outline: none;
 }
 
-/* Scrollbereich für die Liste */
 .spot-list-scroll {
-  flex: 1; overflow-y: auto; max-height: 400px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px; /* Etwas mehr Platz geben */
+  padding-bottom: 20px; /* NEU: Erzeugt Abstand zum unteren Rand der blauen Karte */
 }
 
-/* NEU: Styling für die "Kein Ort gefunden" Meldung */
 .no-results-msg {
   text-align: center;
   padding: 40px 20px;
