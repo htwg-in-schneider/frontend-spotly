@@ -1,82 +1,78 @@
 <script setup>
-  import { ref, onMounted } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import {useAuth0} from "@auth0/auth0-vue";
-  import { useUserStore } from '@/stores/userStore';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuth0 } from "@auth0/auth0-vue";
+import { useUserStore } from '@/stores/userStore';
 
-  import SpotReviews from "@/components/SpotReviews.vue";
-  
-  const route = useRoute();
-  const router = useRouter();
-  const userStore = useUserStore();
-  
-  // API-Basis-URL verwenden
-  const API_BASE = import.meta.env.VITE_API_URL; 
-  
-  const spot = ref(null);
-  const user = ref(null);
-  
-  onMounted(async () => {
-    // Die ID des Spots aus der Route
-    const spotId = route.params.id; 
-    
-    try {
-      // KORREKTUR: Aufruf Ihres Backends: /api/spots/{id}
-      const res = await fetch(`${API_BASE}/spots/${spotId}`); 
-      
-      if (!res.ok) {
-          throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
-      }
-      
-      const data = await res.json();
+// Import der Button-Komponente
+import Button from "./Button.vue";
+import SpotReviews from "@/components/SpotReviews.vue";
 
-      spot.value = {
-        id: data.id,
-        title: data.title,
-        category: data.category ?? "Unbekannt", // Verwenden Sie data.category
-        location: data.location ?? "Konstanz", // Verwenden Sie data.location
-        description: data.description || "Keine Beschreibung vorhanden.",
-        image: data.imageUrl, // Verwenden Sie data.imageUrl
-        reviews: data.reviews || [],
-        author: data.authorName || "Ein Spotly-Nutzer",
-        date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt"
-      };
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
 
-      
-    } catch (err) {
-      console.error("Fehler beim Laden des Spots:", err);
-      alert("Konnte Spot-Details nicht vom Backend laden. Prüfen Sie, ob die ID existiert.");
+const API_BASE = import.meta.env.VITE_API_URL;
+
+const spot = ref(null);
+const user = ref(null);
+
+onMounted(async () => {
+  const spotId = route.params.id;
+
+  try {
+    const res = await fetch(`${API_BASE}/spots/${spotId}`);
+
+    if (!res.ok) {
+      throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
     }
-  });
-  
-  function editSpot() {
-    router.push(`/spot/${route.params.id}/edit`);
-  }
-  </script>
 
+    const data = await res.json();
+
+    spot.value = {
+      id: data.id,
+      title: data.title,
+      category: data.category ?? "Unbekannt",
+      location: data.location ?? "Konstanz",
+      description: data.description || "Keine Beschreibung vorhanden.",
+      image: data.imageUrl,
+      reviews: data.reviews || [],
+      author: data.authorName || "Ein Spotly-Nutzer",
+      date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt"
+    };
+
+  } catch (err) {
+    console.error("Fehler beim Laden des Spots:", err);
+    alert("Konnte Spot-Details nicht vom Backend laden.");
+  }
+});
+
+function editSpot() {
+  router.push(`/spot/${route.params.id}/edit`);
+}
+</script>
 
 <template>
+  <div class="top-left-nav">
+    <router-link to="/spots">
+      <Button variant="secondary" round />
+    </router-link>
+  </div>
 
   <div v-if="spot" class="detail-container">
-
     <div class="card">
-
-      <!-- Bild -->
       <img :src="spot.image" class="spot-image" />
 
-      <!-- Titel -->
       <h2 class="spot-name">{{ spot.title }}</h2>
 
       <p class="info-line">
         <strong>Kategorie:</strong> {{ spot.category.name }}
       </p>
 
-      <!-- Standort -->
       <p class="info-line">
         <strong>Standort:</strong> {{ spot.location }}
       </p>
 
-      <!-- Beschreibung -->
       <div class="description-box">
         <strong>Beschreibung:</strong>
         <p>{{ spot.description }}</p>
@@ -88,23 +84,25 @@
         </p>
       </div>
 
-      <!-- ⭐ Bewertungen -->
       <SpotReviews :spotId="spot.id" />
 
-      <!-- Button -->
       <div v-if="userStore.userProfile?.role === 'ADMIN'">
-      <button class="edit-btn" @click="editSpot">Bearbeiten</button>
+        <button class="edit-btn" @click="editSpot">Bearbeiten</button>
       </div>
-
     </div>
-
   </div>
 
   <div v-else class="loading">Lade Spot...</div>
 </template>
 
-
 <style scoped>
+/* Positionierung des Zurück-Buttons */
+.top-left-nav {
+  position: absolute;
+  top: 300px;
+  left: 25px;
+  z-index: 100;
+}
 
 .detail-container {
   max-width: 900px;
@@ -112,7 +110,6 @@
   text-align: center;
 }
 
-/* Karte */
 .card {
   background: rgba(240, 240, 240, 0.95);
   border-radius: 25px;
@@ -128,7 +125,6 @@
   margin-bottom: 25px;
 }
 
-/* Titel */
 .spot-name {
   font-size: 28px;
   font-weight: 700;
@@ -136,7 +132,6 @@
   margin-bottom: 20px;
 }
 
-/* Info */
 .info-line {
   font-size: 18px;
   color: #000;
@@ -145,7 +140,6 @@
   padding-left: 5px;
 }
 
-/* Beschreibung */
 .description-box {
   background: #d8e6f7;
   padding: 20px;
@@ -166,7 +160,6 @@
   line-height: 1.5;
 }
 
-/* Button */
 .edit-btn {
   background: #0084ff;
   border: none;
@@ -192,7 +185,7 @@
 .user-info {
   margin-top: 15px;
   padding-top: 10px;
-  border-top: 1px solid #eee; /* Trennlinie zur Beschreibung */
+  border-top: 1px solid #eee;
 }
 
 .meta-text {
