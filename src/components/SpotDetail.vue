@@ -14,6 +14,7 @@
   const API_BASE = import.meta.env.VITE_API_URL; 
   
   const spot = ref(null);
+  const user = ref(null);
   
   onMounted(async () => {
     // Die ID des Spots aus der Route
@@ -28,8 +29,7 @@
       }
       
       const data = await res.json();
-  
-      // KORREKTUR: Daten-Mapping an Ihr Backend-JSON anpassen
+
       spot.value = {
         id: data.id,
         title: data.title,
@@ -37,12 +37,14 @@
         location: data.location ?? "Konstanz", // Verwenden Sie data.location
         description: data.description || "Keine Beschreibung vorhanden.",
         image: data.imageUrl, // Verwenden Sie data.imageUrl
-        reviews: data.reviews || []
+        reviews: data.reviews || [],
+        author: data.authorName || "Ein Spotly-Nutzer",
+        date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt"
       };
+
       
     } catch (err) {
       console.error("Fehler beim Laden des Spots:", err);
-      // Optional: Fehler-Meldung anzeigen
       alert("Konnte Spot-Details nicht vom Backend laden. Prüfen Sie, ob die ID existiert.");
     }
   });
@@ -78,6 +80,12 @@
       <div class="description-box">
         <strong>Beschreibung:</strong>
         <p>{{ spot.description }}</p>
+      </div>
+
+      <div class="user-info">
+        <p class="meta-text">
+          Erstellt von: <strong>{{ spot.author}}</strong> am {{spot.date}}
+        </p>
       </div>
 
       <!-- ⭐ Bewertungen -->
@@ -179,5 +187,17 @@
   text-align: center;
   margin-top: 150px;
   font-size: 22px;
+}
+
+.user-info {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee; /* Trennlinie zur Beschreibung */
+}
+
+.meta-text {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
 }
 </style>

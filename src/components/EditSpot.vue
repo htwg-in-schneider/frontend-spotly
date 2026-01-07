@@ -33,7 +33,25 @@ onMounted(async () => {
 
 async function saveSpot() {
   try {
+    let lat = null;
+    let lon = null;
+
+    try {
+      const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location.value)}`
+      );
+      const geoData = await geoRes.json();
+
+      if (geoData && geoData.length > 0) {
+        lat = parseFloat(geoData[0].lat);
+        lon = parseFloat(geoData[0].lon);
+      }
+    } catch (geoErr) {
+      console.error(geoErr);
+    }
+
     const token = await getAccessTokenSilently();
+
     const res = await fetch(`${API_BASE}/spots/${route.params.id}`, {
       method: "PUT",
       headers: {
@@ -45,11 +63,13 @@ async function saveSpot() {
         category: category.value,
         location: location.value,
         description: description.value,
-        imageUrl: image.value
+        imageUrl: image.value,
+        latitude: lat,
+        longitude: lon
       })
     });
 
-    if (!res.ok) throw new Error("Fehler beim Speichern: " + res.status);
+    if (!res.ok) throw new Error("Status: " + res.status);
     router.push(`/spot/${route.params.id}`);
   } catch (err) {
     console.error(err);
