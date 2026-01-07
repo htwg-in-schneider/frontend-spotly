@@ -1,9 +1,11 @@
 <template>
+  <div class="top-left-nav">
+    <router-link to="/admin">
+      <Button variant="secondary" round />
+    </router-link>
+  </div>
   <div class="admin-users-page">
     <div class="header-section">
-      <button @click="$router.push('/admin')" class="back-link">
-        <span class="arrow">←</span> Dashboard
-      </button>
       <h1 class="page-title-styled">Benutzer verwalten</h1>
     </div>
 
@@ -78,6 +80,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth0 } from '@auth0/auth0-vue';
+import Button from "@/components/Button.vue";
 
 // Auth0 & Router
 const { getAccessTokenSilently } = useAuth0();
@@ -162,6 +165,12 @@ onMounted(fetchUsers);
 </script>
 
 <style scoped>
+.top-left-nav {
+  position: absolute;
+  top: 300px;
+  left: 30px;
+  z-index: 100;
+}
 .admin-users-page {
   min-height: 100vh;
   display: flex;
