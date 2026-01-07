@@ -1,6 +1,6 @@
 <template>
   <div class="top-left-nav">
-    <router-link to="/spots">
+    <router-link to="/admin">
       <Button variant="secondary" round />
     </router-link>
   </div>
