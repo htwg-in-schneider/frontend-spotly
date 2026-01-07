@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
-import Button from "./Button.vue"; // Import der Button-Komponente
+import Button from "./Button.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -16,12 +16,23 @@ const location = ref("");
 const description = ref("");
 const image = ref("");
 
+// Dieselben Kategorien wie in der Create-Seite
+const categories = [
+  "Natur & Aussicht",
+  "Shops & Märkte",
+  "Events & Kultur",
+  "Cafés & Essen",
+  "Sport & Freizeit",
+  "Andere"
+];
+
 onMounted(async () => {
   try {
     const res = await fetch(`${API_BASE}/spots/${route.params.id}`);
     const data = await res.json();
 
     title.value = data.title;
+    // Mapping: Wir nehmen den Namen, falls es ein Objekt ist, sonst den String direkt
     category.value = typeof data.category === 'object' ? data.category.name : data.category;
     location.value = data.location;
     description.value = data.description;
@@ -68,7 +79,7 @@ async function deleteSpot() {
         }
       });
       if (!res.ok) throw new Error("Fehler beim Löschen");
-      router.push("/my-own-spots"); // Zurück zu den eigenen Spots nach Löschung
+      router.push("/my-own-spots");
     } catch (err) {
       console.error(err);
       alert("Fehler beim Löschen");
@@ -80,7 +91,7 @@ async function deleteSpot() {
 <template>
   <div class="edit-page">
     <div class="top-left-nav">
-      <Button variant="secondary" round @click="router.back()">&lt;</Button>
+      <Button variant="secondary" round @click="router.back()" />
     </div>
 
     <div class="wrapper">
@@ -102,7 +113,12 @@ async function deleteSpot() {
         </div>
 
         <input class="input" v-model="title" placeholder="Titel">
-        <input class="input" v-model="category" placeholder="Kategorie">
+
+        <select class="input select-input" v-model="category">
+          <option value="" disabled>Kategorie wählen</option>
+          <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+        </select>
+
         <input class="input" v-model="location" placeholder="Standort">
 
         <textarea
@@ -138,9 +154,10 @@ async function deleteSpot() {
   padding-bottom: 50px;
 }
 
+/* Position unter dem Logo */
 .top-left-nav {
   position: absolute;
-  top: 20px;
+  top: 150px;
   left: 20px;
   z-index: 100;
 }
@@ -167,7 +184,6 @@ async function deleteSpot() {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* ───────── Bild & Platzhalter ───────── */
 .image-box img {
   width: 100%;
   height: 220px;
@@ -194,7 +210,6 @@ async function deleteSpot() {
   opacity: 0.2;
 }
 
-/* ───────── Inputs ───────── */
 .input {
   width: 100%;
   padding: 14px;
@@ -206,7 +221,12 @@ async function deleteSpot() {
   outline: none;
 }
 
-.input:focus {
+.select-input {
+  cursor: pointer;
+  color: #555;
+}
+
+.input:focus, .textarea:focus {
   border-color: #0084ff;
 }
 

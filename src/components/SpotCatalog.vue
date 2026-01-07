@@ -160,8 +160,8 @@ onMounted(() => fetchSpots());
   justify-content: center;
   position: absolute;
 
-  /* NEU: Exakte Zentrierung */
-  top: 50%;
+  /* ÄNDERUNG HIER: top von 50% auf 40% (oder weniger) setzen */
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
 
@@ -307,7 +307,8 @@ onMounted(() => fetchSpots());
   z-index: 30; /* Absolut am höchsten! */
   width: 10%; /* Etwas breiter für einfachere Bedienung */
   pointer-events: auto; /* Sicherstellen, dass Klicks erlaubt sind */
-  opacity: 1; /* Damit man sie sieht */
+  opacity: 1;
+  top: -20%;/* Damit man sie sieht */
 }
 
 .create-btn-container {

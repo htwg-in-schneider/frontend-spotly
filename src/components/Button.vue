@@ -2,18 +2,32 @@
 const props = defineProps({
   variant: {
     type: String,
-    default: "accent" // accent = blau, secondary = grau
+    default: "accent" // accent = Dunkelblau, secondary = Hellblau (#6eb5f3)
   },
   round: {
     type: Boolean,
-    default: false // Macht den Button kreisrund, wenn 'round' im Tag steht
+    default: false
   }
 })
 </script>
 
 <template>
   <button :class="['btn', variant, { 'round': round }]">
-    <slot></slot>
+    <template v-if="round">
+      <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="arrow-icon"
+      >
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </template>
+    <slot v-else></slot>
   </button>
 </template>
 
@@ -28,7 +42,7 @@ const props = defineProps({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none; /* Falls du den Button mal in einem Link nutzt */
+  text-decoration: none;
 }
 
 /* Runder Button Style */
@@ -37,11 +51,17 @@ const props = defineProps({
   height: 45px;
   padding: 0;
   border-radius: 50%;
-  font-size: 22px;
   flex-shrink: 0;
 }
 
-/* Accent (Blau) */
+/* Der weiße Pfeil im blauen Kreis */
+.arrow-icon {
+  width: 20px;
+  height: 20px;
+  color: white; /* Pfeilfarbe weiß */
+}
+
+/* Accent (Dunkelblau für Haupt-Aktionen) */
 .accent {
   background: #0084ff;
   color: white;
@@ -50,12 +70,12 @@ const props = defineProps({
   background: #1c86ee;
 }
 
-/* Secondary (Grau) */
+/* Secondary (Dein spezielles Blau für den Zurück-Button) */
 .secondary {
-  background: #dcdcdc;
-  color: #333;
+  background: #6eb5f3; /* Farbe wie gewünscht */
+  color: white;
 }
 .secondary:hover {
-  background: #c5c5c5;
+  background: #5a9ed8;
 }
 </style>
