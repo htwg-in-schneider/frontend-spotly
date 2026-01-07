@@ -1,10 +1,13 @@
 <template>
+  <div class="top-left-nav">
+    <router-link to="/spots">
+      <Button variant="secondary" round />
+    </router-link>
+  </div>
+
   <div class="admin-spots-page">
     <div class="header-section">
-      <button @click="goBack" class="back-link">
-        <span class="arrow">←</span> Dashboard
-      </button>
-      <h1 class="page-title-styled">Admin Dashboard</h1>
+
     </div>
 
     <div class="content-wrapper">
@@ -101,9 +104,10 @@
 
 <script>
 import { useAuth0 } from "@auth0/auth0-vue";
+import Button from "@/components/Button.vue";
 
 export default {
-  // Setup wird benötigt, um die Auth0-Funktionen in der Options-API nutzbar zu machen
+  components: { Button },
   setup() {
     const { getAccessTokenSilently } = useAuth0();
     return { getAccessTokenSilently };
@@ -118,7 +122,6 @@ export default {
       selectedSpot: null,
       showOverlay: false,
       reason: '',
-      // Falls du eine .env Datei nutzt, kannst du hier import.meta.env.VITE_API_URL nutzen
       apiBaseUrl: 'http://localhost:8080/api/spots'
     };
   },
@@ -164,9 +167,7 @@ export default {
 
     async confirmDelete() {
       try {
-        // Holt das Token von Auth0
         const token = await this.getAccessTokenSilently();
-
         const response = await fetch(`${this.apiBaseUrl}/${this.selectedSpot.id}`, {
           method: 'DELETE',
           headers: {
@@ -175,15 +176,15 @@ export default {
           }
         });
 
-        if (!response.ok) throw new Error("Löschen fehlgeschlagen (403 oder 401)");
+        if (!response.ok) throw new Error("Löschen fehlgeschlagen");
 
         this.showOverlay = false;
         this.currentView = 'list';
-        await this.fetchSpots(); // Liste aktualisieren
+        await this.fetchSpots();
         alert("Ort erfolgreich gelöscht!");
       } catch (e) {
-        console.error("Auth0 Fehler beim Löschen:", e);
-        alert("Du hast keine Berechtigung, diesen Ort zu löschen.");
+        console.error("Fehler beim Löschen:", e);
+        alert("Keine Berechtigung.");
       }
     },
 
@@ -191,11 +192,8 @@ export default {
       if (this.reason.length >= 10) {
         try {
           const token = await this.getAccessTokenSilently();
-
-          // Hier senden wir ein PUT oder POST ans Backend, um den Status zu ändern
-          // Ich nehme an, das Backend erwartet das Token auch hier zur Absicherung
           const response = await fetch(`${this.apiBaseUrl}/${this.selectedSpot.id}/publish`, {
-            method: 'PUT', // oder 'POST', je nach deiner Backend-API
+            method: 'PUT',
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -205,14 +203,14 @@ export default {
 
           if (!response.ok) throw new Error("Veröffentlichen fehlgeschlagen");
 
-          alert("Ort erfolgreich mit Begründung veröffentlicht!");
+          alert("Ort erfolgreich veröffentlicht!");
           this.showOverlay = false;
           this.currentView = 'list';
           this.reason = '';
           await this.fetchSpots();
         } catch (e) {
           console.error("Fehler beim Veröffentlichen:", e);
-          alert("Aktion konnte nicht ausgeführt werden.");
+          alert("Aktion fehlgeschlagen.");
         }
       }
     }
@@ -221,6 +219,14 @@ export default {
 </script>
 
 <style scoped>
+/* Positionierung für den runden Zurück-Button */
+.top-left-nav {
+  position: absolute;
+  top: 300px;
+  left: 30px;
+  z-index: 100;
+}
+
 .admin-spots-page {
   min-height: 100vh;
   display: flex;
@@ -238,25 +244,32 @@ export default {
   text-align: center;
 }
 
-.back-link {
-  position: absolute; left: 0; top: 40px;
-  background: none; border: none;
-  color: #4a90e2; font-weight: bold; cursor: pointer; font-size: 16px;
-}
-
 .page-title-styled {
-  color: #4a90e2; font-size: 42px; font-weight: 900;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2); margin: 0;
+  color: #4a90e2;
+  font-size: 42px;
+  font-weight: 900;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  margin: 0;
 }
 
 .content-wrapper {
-  flex: 1; width: 100%; display: flex; justify-content: center; padding: 20px;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
 .menu-card {
-  background: #4a90e2; border-radius: 30px; width: 100%; max-width: 380px;
-  padding: 25px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  display: flex; flex-direction: column;
+  background: #4a90e2;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 380px;
+  padding: 25px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-header { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
@@ -266,12 +279,14 @@ export default {
   margin-bottom: 20px; font-size: 16px; outline: none;
 }
 
-/* Scrollbereich für die Liste */
+/* Scrollbereich fix: padding-bottom verhindert Abschneiden */
 .spot-list-scroll {
-  flex: 1; overflow-y: auto; max-height: 400px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px; /* Etwas mehr Platz geben */
+  padding-bottom: 20px; /* NEU: Erzeugt Abstand zum unteren Rand der blauen Karte */
 }
 
-/* NEU: Styling für die "Kein Ort gefunden" Meldung */
 .no-results-msg {
   text-align: center;
   padding: 40px 20px;
