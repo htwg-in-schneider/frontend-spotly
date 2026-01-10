@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchProfile(token) {
             try {
-                const response = await fetch('http://localhost:8080/api/profile', {
+                const response = await fetch('https://backend-spotly.onrender.com/api/profile', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (response.ok) {

@@ -59,7 +59,6 @@ onMounted(() => fetchSpots());
 <template>
 
   <div
-
       id="carouselExampleAutoplaying"
       class="carousel slide"
       data-bs-ride="carousel"
