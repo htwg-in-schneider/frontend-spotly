@@ -42,6 +42,15 @@ function openDetails() {
 </template>
 
 <style scoped>
+.image-container {
+  width: 100%;
+  height: 150px;        /* 🔥 feste Bildhöhe */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .spot-card {
   background: #fff;
   border-radius: 16px;
@@ -85,8 +94,12 @@ function openDetails() {
 }
 
 .card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* 🔥 DAS ist der Schlüssel */
   border-radius: 16px;
 }
+
 
 .details-btn:hover {
   background-color: #463b2d;
