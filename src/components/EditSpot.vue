@@ -3,6 +3,24 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
 import Button from "./Button.vue";
+const imageOptions = [
+  {
+    label: "Café",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/cafe.jpg"
+  },
+  {
+    label: "Event",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/event.jpg"
+  },
+  {
+    label: "Park",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/park.jpg"
+  },
+  {
+    label: "Shop",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/shop.jpg"
+  }
+];
 
 const route = useRoute();
 const router = useRouter();
@@ -36,7 +54,7 @@ onMounted(async () => {
     category.value = typeof data.category === 'object' ? data.category.name : data.category;
     location.value = data.location;
     description.value = data.description;
-    image.value = data.imageUrl;
+    image.value = data.imageUrl || "";
   } catch (err) {
     console.error("Fehler beim Laden:", err);
   }
@@ -124,12 +142,17 @@ async function deleteSpot() {
             <img src="@/assets/img.png" alt="Platzhalter" class="placeholder-icon">
           </div>
 
-          <input
-              type="text"
-              placeholder="Bild-URL eingeben"
-              v-model="image"
-              class="input"
-          >
+          <select v-model="image" class="input select-input">
+            <option value="" disabled>Bild auswählen</option>
+            <option
+                v-for="img in imageOptions"
+                :key="img.url"
+                :value="img.url"
+            >
+              {{ img.label }}
+            </option>
+          </select>
+
         </div>
 
         <input class="input" v-model="title" placeholder="Titel">

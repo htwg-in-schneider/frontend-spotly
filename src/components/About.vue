@@ -1,7 +1,3 @@
-<script setup>
-import Button from "@/components/Button.vue"
-</script>
-
 <template>
   <div class="about-page">
     <!-- SECTION 1: "Story" (wie Vorlage oben) -->
@@ -10,15 +6,11 @@ import Button from "@/components/Button.vue"
         <div class="top-left">
           <p class="kicker">Über uns</p>
           <h1 class="headline">Unsere Spotly Story</h1>
-          <router-link to="/" class="back-btn">
-            <Button variant="secondary" round />
-          </router-link>
-
         </div>
 
         <div class="top-right">
           <p class="lead">
-            Spotly ist als kleines Herzensprojekt in Konstanz gestartet – weil wir finden:
+            Spotly ist als kleines Herzensprojekt in Konstanz gestartet, weil wir finden:
             Die besten Orte entdeckt man nicht über Google, sondern durch Menschen.
           </p>
           <p class="muted">
@@ -41,8 +33,7 @@ import Button from "@/components/Button.vue"
             <h2 class="member-name">Efe-liz</h2>
             <div class="reveal-content">
               <p class="member-text">
-                Hi! Ich bin Efe-liz. Als leidenschaftliche Entdeckerin liebe ich es,
-                verborgene Schätze zu finden und zu teilen.
+                Hi, ich bin Efe-liz. Ich liebe es, neue Lieblingsorte zu entdecken und weiterzugeben. Genau dafür gibt’s Spotly :)
               </p>
             </div>
           </div>
@@ -133,12 +124,6 @@ import Button from "@/components/Button.vue"
 
 
 <style scoped>
-.back-btn {
-  position: absolute;
-  top: 270px;
-  left: 20px;
-  z-index: 100;
-}
 
 /* ========= THEME ========= */
 .about-page {

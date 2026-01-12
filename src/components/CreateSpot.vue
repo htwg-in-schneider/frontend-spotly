@@ -1,4 +1,23 @@
 <script setup>
+const imageOptions = [
+  {
+    label: "Café",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/cafe.jpeg"
+  },
+  {
+    label: "Event",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/event.jpg"
+  },
+  {
+    label: "Park",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/park.jpg"
+  },
+  {
+    label: "Shop",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/shop.jpg"
+  }
+];
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
@@ -36,6 +55,7 @@ async function createSpot() {
     imageUrl: image.value,
     location: location.value,
   };
+
 
   try {
     const token = await getAccessTokenSilently();
@@ -77,12 +97,17 @@ async function createSpot() {
             <img src="@/assets/img.png" alt="Platzhalter" class="placeholder-icon">
           </div>
 
-          <input
-              type="text"
-              placeholder="Bild-URL eingeben"
-              v-model="image"
-              class="input"
-          >
+          <select v-model="image" class="input select-input">
+            <option value="" disabled>Bild auswählen</option>
+            <option
+                v-for="img in imageOptions"
+                :key="img.url"
+                :value="img.url"
+            >
+              {{ img.label }}
+            </option>
+          </select>
+
         </div>
 
         <input class="input" type="text" placeholder="Name" v-model="title">
