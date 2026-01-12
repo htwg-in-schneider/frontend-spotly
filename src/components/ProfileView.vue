@@ -88,7 +88,7 @@ async function loadUserData() {
 async function saveProfile() {
   try {
     const token = await getAccessTokenSilently();
-    const res = await fetch(`${API}/profile`, {
+    const res = await fetch(`${API}/users/me`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

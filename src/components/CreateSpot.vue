@@ -67,10 +67,12 @@ async function createSpot() {
       },
       body: JSON.stringify(spotData),
     });
-
     if (res.ok) {
       alert(`Spot '${title.value}' wurde erfolgreich erstellt!`);
       router.push('/spots');
+    } else if (res.status === 403) {
+      const errorMsg = await res.text();
+      alert(`Zugriff verweigert: ${errorMsg}`);
     } else {
       alert(`Fehler beim Erstellen: ${res.status}`);
     }

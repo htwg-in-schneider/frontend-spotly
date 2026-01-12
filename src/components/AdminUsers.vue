@@ -1,7 +1,7 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <div class="top-left-nav">
     <router-link to="/admin">
-      <Button variant="secondary" round />
+      <Button variant="secondary" round>&lt;</Button>
     </router-link>
   </div>
   <div class="admin-users-page">
@@ -24,14 +24,28 @@
 
         <div class="table-body">
           <div v-if="filteredUsers.length === 0" class="no-data-row">
-            <span class="no-data-icon"></span> Keine Benutzer gefunden.
+            Keine Benutzer gefunden.
           </div>
 
-          <div v-for="user in filteredUsers" :key="user.id" class="table-row">
-            <div class="col username">{{ user.username }}</div>
+          <div v-for="user in filteredUsers" :key="user.id" class="table-row" :class="{ 'row-locked': user.enabled === false }">
+            <div class="col username">
+              {{ user.username }}
+              <span v-if="user.enabled === false" class="lock-badge">Gesperrt</span>
+            </div>
             <div class="col email">{{ user.email || 'keine@mail.de' }}</div>
             <div class="col actions">
-              <button @click="triggerAction(user, 'lock')" class="btn-table">sperren</button>
+              <button
+                  v-if="user.enabled !== false"
+                  @click="triggerAction(user, 'lock')"
+                  class="btn-table"
+              >sperren</button>
+
+              <button
+                  v-else
+                  @click="triggerAction(user, 'unlock')"
+                  class="btn-table btn-green"
+              >freigeben</button>
+
               <button @click="triggerAction(user, 'delete')" class="btn-table btn-red">löschen</button>
             </div>
           </div>
@@ -43,6 +57,9 @@
       <div class="overlay-card">
         <p v-if="activeMode === 'delete'">
           Benutzer <strong>{{ selectedUser?.username }}</strong> wirklich löschen?
+        </p>
+        <p v-else-if="activeMode === 'unlock'">
+          Benutzer <strong>{{ selectedUser?.username }}</strong> wieder freigeben?
         </p>
         <div v-else>
           <p>Warum wird <strong>{{ selectedUser?.username }}</strong> gesperrt?</p>
@@ -61,21 +78,15 @@
           <button
               @click="handleConfirm"
               class="btn-overlay"
-              :disabled="activeMode === 'lock' && reason.length < 10"
-          >
-            Bestätigen
-          </button>
-          <button @click="showOverlay = false" class="btn-overlay-alt">Abbrechen</button>
+              :disabled="activeMode === 'lock' && reason.length < 10" >
+        </button>
         </div>
       </div>
     </div>
-
-    <footer class="admin-footer">
-      <p>© 2025 Spotly – Admin Panel</p>
-    </footer>
   </div>
-</template>
 
+
+</template>
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -108,7 +119,7 @@ const fetchUsers = async () => {
     const token = await getAccessTokenSilently();
 
     // 2. Mit Token anfragen
-    const res = await fetch('http://localhost:8080/api/users', {
+    const res = await fetch('https://backend-spotly.onrender.com/api/users', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -136,12 +147,24 @@ const triggerAction = (user, mode) => {
 const handleConfirm = async () => {
   try {
     const token = await getAccessTokenSilently();
-    const url = `http://localhost:8080/api/users/${selectedUser.value.id}`;
+    const url = `https://backend-spotly.onrender.com/api/users/${selectedUser.value.id}`;
 
-    const method = activeMode.value === 'delete' ? 'DELETE' : 'PUT';
-    const body = activeMode.value === 'lock'
-        ? JSON.stringify({ ...selectedUser.value, role: 'LOCKED', lockReason: reason.value })
-        : null;
+    let method = activeMode.value === 'delete' ? 'DELETE' : 'PUT';
+    let body = null;
+
+    if (activeMode.value === 'lock') {
+      body = JSON.stringify({
+        ...selectedUser.value,
+        enabled: false,
+        role: 'LOCKED' // Wir behalten die Rolle zur Sicherheit bei
+      });
+    } else if (activeMode.value === 'unlock') {
+      body = JSON.stringify({
+        ...selectedUser.value,
+        enabled: true,
+        role: 'USER'
+      });
+    }
 
     const res = await fetch(url, {
       method: method,
@@ -154,7 +177,7 @@ const handleConfirm = async () => {
 
     if (res.ok) {
       showOverlay.value = false;
-      await fetchUsers(); // Liste aktualisieren
+      await fetchUsers();
     }
   } catch (e) {
     console.error("Aktion fehlgeschlagen:", e);
