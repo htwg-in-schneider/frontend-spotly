@@ -122,7 +122,7 @@ export default {
       selectedSpot: null,
       showOverlay: false,
       reason: '',
-      apiBaseUrl: 'http://localhost:8080/api/spots'
+      apiBaseUrl: 'https://backend-spotly.onrender.com/api/spots'
     };
   },
 

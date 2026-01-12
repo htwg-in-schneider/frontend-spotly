@@ -14,13 +14,14 @@ import Button from "@/components/Button.vue";
 const API = import.meta.env.VITE_API_URL; // z.B. http://localhost:8081/api
 
 const router = useRouter();
-
 const spots = ref([]);
+const isLoading = ref(false);
 
 
 
 // Spots vom Backend laden
 async function fetchSpots({ title = "", category = "" } = {}) {
+  isLoading.value = true;
   try {
     const params = new URLSearchParams();
     if (title) params.append("title", title);
@@ -50,6 +51,8 @@ async function fetchSpots({ title = "", category = "" } = {}) {
   } catch (err) {
     console.error(err);
     alert("Spots konnten nicht vom Backend geladen werden.");
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -145,6 +148,11 @@ onMounted(() => fetchSpots());
     <section class="spots">
       <div class="spots-container">
         <SpotCard v-for="spot in spots" :key="spot.id" :spot="spot"/>
+      </div>
+
+      <div v-if="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Spots werden geladen...</p>
       </div>
     </section>
   </main>
@@ -321,6 +329,35 @@ onMounted(() => fetchSpots());
 .spots {
   display: flex;
   justify-content: center;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #0084ff;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 132, 255, 0.1);
+  border-left-color: #0084ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.no-results {
+  text-align: center;
+  padding: 20px;
+  color: #666;
 }
 
 /* Mobile optimieren */
