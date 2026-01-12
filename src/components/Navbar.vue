@@ -32,6 +32,13 @@
           @click="router.push('/admin')"
       >Dashboard
       </Button>
+
+      <Button
+        v-if="userStore.userProfile?.role === 'USER'"
+        class="login-btn"
+        @click="router.push('/profileview')"
+        >Profil
+      </Button>
     </div>
   </div>
 </template>

@@ -16,6 +16,7 @@ import AdminDashboard from "@/components/AdminDashboard.vue";
 import AdminUsers from "@/components/AdminUsers.vue";
 import AdminSpots from "@/components/AdminSpots.vue";
 import AdminSupport from "@/components/AdminSupport.vue";
+import ProfileView from "@/components/ProfileView.vue";
 
 const router = createRouter({
     history: createWebHistory("/frontend-spotly/"),
@@ -104,6 +105,12 @@ const router = createRouter({
             path: "/meine-spots", // <--- NEU: Die Seite für die eigenen erstellten Spots
             name: "meine-spots",
             component: MeineSpots,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: "/profileview", // <--- NEU: Die Seite für die eigenen erstellten Spots
+            name: "profile-view",
+            component: ProfileView,
             meta: { requiresAuth: true }
         }
     ],
