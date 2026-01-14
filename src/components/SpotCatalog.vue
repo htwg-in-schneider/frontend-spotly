@@ -163,6 +163,8 @@ function sendMail() {
   overflow: hidden;
   color: white;
   text-align: center;
+  /* Sorgt dafür, dass die gesamte Sektion hinter dem Navbar-Dropdown bleibt */
+  z-index: 1;
 }
 
 .hero-slide {
@@ -176,6 +178,8 @@ function sendMail() {
   opacity: 0;
   transition: opacity 1.5s ease-in-out, transform 6s ease-out;
   transform: scale(1.05);
+  /* Slides ganz nach hinten */
+  z-index: -1;
 }
 
 .hero-slide.active {
@@ -185,7 +189,8 @@ function sendMail() {
 
 .hero-content {
   position: relative;
-  z-index: 10;
+  /* Höher als die Slides, aber niedriger als ein typisches Dropdown (100+) */
+  z-index: 2;
   max-width: 800px;
   padding: 0 20px;
 }

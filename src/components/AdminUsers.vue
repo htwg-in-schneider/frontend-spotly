@@ -200,7 +200,7 @@ CSS
   width: 100%;
 }
 
-/* HEADER MIT ZENTRIERTEM TITEL UND ABSOLUTEM BUTTON */
+/* HEADER SECTION */
 .header-section {
   width: 100%;
   max-width: 1000px;
@@ -208,22 +208,21 @@ CSS
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative; /* Wichtig für die Positionierung von top-left-nav */
+  position: relative;
 }
 
 .top-left-nav {
   position: absolute;
-  left: 0;
+  left: 20px;
   display: flex;
   align-items: center;
 }
 
 .page-title-styled {
   color: #5daae0;
-  font-size: 42px;
+  font-size: clamp(24px, 6vw, 42px); /* Flüssige Größe */
   font-weight: 900;
   margin: 0;
-  line-height: 1;
   text-align: center;
 }
 
@@ -235,18 +234,19 @@ CSS
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .search-pill {
   background: white;
   padding: 12px 25px;
-  border-radius: 25px;
+  border-radius: 50px;
   display: flex;
   align-items: center;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .search-input {
@@ -257,7 +257,7 @@ CSS
   font-size: 16px;
 }
 
-/* TABLE CARD & GRID */
+/* TABLE CARD */
 .table-card {
   background-color: #2a8df2;
   border-radius: 30px;
@@ -267,7 +267,7 @@ CSS
   color: white;
 }
 
-/* Symmetrisches Grid für eine zentrierte Optik */
+/* GRID LAYOUT (DESKTOP) */
 .table-header, .table-row {
   display: grid;
   grid-template-columns: 1.2fr 1.5fr 1.2fr;
@@ -278,29 +278,19 @@ CSS
 .table-header {
   font-weight: 900;
   font-size: 18px;
-  background: rgba(0,0,0,0.05);
+  background: rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-.table-body {
-  max-height: 60vh;
-  overflow-y: auto;
 }
 
 .table-row {
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  transition: 0.2s;
+  transition: background 0.2s;
 }
 
 .table-row:hover {
   background: rgba(255,255,255,0.05);
 }
 
-.row-locked {
-  background: rgba(0,0,0,0.1);
-}
-
-/* USER DATA & BADGES */
 .username {
   font-weight: bold;
   font-size: 17px;
@@ -309,17 +299,9 @@ CSS
   gap: 10px;
 }
 
-.lock-badge {
-  background: #ff4d4d;
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-}
-
 .email {
   font-size: 15px;
-  color: rgba(255,255,255,0.9);
+  word-break: break-all; /* Verhindert Überlaufen langer Mails */
 }
 
 .actions {
@@ -338,27 +320,75 @@ CSS
   font-size: 13px;
   color: white;
   background: #a1c9f1;
-  transition: 0.2s;
-}
-
-.btn-table:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
+  white-space: nowrap;
 }
 
 .btn-green { background: #4cd137; }
 .btn-red { background: #ff6b6b; }
 
-/* OVERLAY / MODAL */
+/* RESPONSIVE BREAKPOINT (TABLET/MOBILE) */
+@media (max-width: 768px) {
+  .table-header {
+    display: none; /* Header ausblenden auf Mobilgeräten */
+  }
+
+  .table-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 25px;
+  }
+
+  .username {
+    font-size: 1.2rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .email {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 5px;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-start;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-table {
+    flex: 1; /* Buttons nehmen gleichmäßig Platz ein */
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-section {
+    padding-top: 80px; /* Mehr Platz für den Back-Button */
+  }
+
+  .top-left-nav {
+    top: 20px;
+  }
+
+  .overlay-card {
+    padding: 25px;
+  }
+}
+
+/* OVERLAY MODAL */
 .overlay-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  padding: 20px;
 }
 
 .overlay-card {
@@ -366,7 +396,7 @@ CSS
   color: white;
   padding: 40px;
   border-radius: 30px;
-  width: 90%;
+  width: 100%;
   max-width: 400px;
   text-align: center;
 }
@@ -378,20 +408,8 @@ CSS
   padding: 15px;
   margin: 15px 0 5px;
   border: none;
-  outline: none;
-  resize: none;
-}
-
-.input-error {
-  border: 2px solid #ff4d4d;
-  background: #fff0f0;
-}
-
-.validation-msg {
-  font-size: 12px;
-  color: #ffcccc;
-  margin-bottom: 15px;
-  text-align: left;
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .overlay-btns {
@@ -400,38 +418,20 @@ CSS
   margin-top: 20px;
 }
 
-.btn-overlay {
-  background: #ff4757;
-  border: none;
-  color: white;
+.btn-overlay, .btn-overlay-alt {
   padding: 14px;
   border-radius: 20px;
   flex: 1;
-  cursor: pointer;
   font-weight: bold;
+  border: none;
+  cursor: pointer;
 }
 
-.btn-overlay-alt {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: white;
-  padding: 14px;
-  border-radius: 20px;
-  flex: 1;
-  cursor: pointer;
-  font-weight: bold;
-}
+.btn-overlay { background: #ff4757; color: white; }
+.btn-overlay-alt { background: rgba(255,255,255,0.2); color: white; }
 
 .btn-overlay:disabled {
   background: #888;
-  cursor: not-allowed;
   opacity: 0.6;
-}
-
-.no-data-row {
-  padding: 60px 20px;
-  text-align: center;
-  font-weight: bold;
-  opacity: 0.8;
 }
 </style>
