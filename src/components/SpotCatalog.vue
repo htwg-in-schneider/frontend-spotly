@@ -1,431 +1,215 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { useAuth0 } from '@auth0/auth0-vue';
-const userStore = useUserStore();
-
-
-import SpotCard from "@/components/SpotCard.vue";
-import SpotFilter from "@/components/SpotFilter.vue";
-import {useUserStore} from "@/stores/userStore.js";
 import Button from "@/components/Button.vue";
 
-
-const API = import.meta.env.VITE_API_URL; // z.B. http://localhost:8081/api
-
 const router = useRouter();
-const spots = ref([]);
-const isLoading = ref(false);
 
+// 1. Hintergrund-Slider Logik
+const currentSlide = ref(0);
+const slides = ref([
+  new URL('@/assets/shop.jpg', import.meta.url).href,
+  new URL('@/assets/cafe.jpeg', import.meta.url).href,
+  new URL('@/assets/event.jpg', import.meta.url).href,
+  new URL('@/assets/park.jpg', import.meta.url).href
+]);
 
+let slideInterval;
+onMounted(() => {
+  slideInterval = setInterval(() => {
+    currentSlide.value = (currentSlide.value + 1) % slides.value.length;
+  }, 5000);
+});
+onUnmounted(() => clearInterval(slideInterval));
 
-// Spots vom Backend laden
-async function fetchSpots({ title = "", category = "" } = {}) {
-  isLoading.value = true;
-  try {
-    const params = new URLSearchParams();
-    if (title) params.append("title", title);
-    if (category) params.append("category", category);
+// 2. Kategorien Daten
+const categories = [
+  { name: "Natur & See",  img: new URL('@/assets/park.jpg', import.meta.url).href },
+  { name: "Essen & Trinken", img: new URL('@/assets/cafe.jpeg', import.meta.url).href },
+  { name: "Kultur & Events", img: new URL('@/assets/event.jpg', import.meta.url).href },
+  { name: "Shops & Märkte", img: new URL('@/assets/shop.jpg', import.meta.url).href },
+];
 
-    // KORREKTE URL
-    const url = `${API}/spots${params.toString() ? `?${params.toString()}` : ""}`;
+// 3. Support Logik
+const contactForm = ref({
+  name: '',
+  email: '',
+  message: ''
+});
 
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error(`Fehler beim Laden der Spots: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    // Mapping Backend → Frontend
-    spots.value = Array.isArray(data)
-      ? data.map((s) => ({
-          id: s.id,
-          title: s.title,             // Backend nutzt title
-          description: s.description,
-          imageUrl: s.imageUrl ?? "",
-          category: s.category ?? "",
-        }))
-      : [];
-  } catch (err) {
-    console.error(err);
-    alert("Spots konnten nicht vom Backend geladen werden.");
-  } finally {
-    isLoading.value = false;
-  }
+function sendMail() {
+  const recipient = "support@spotly-konstanz.de";
+  const subject = encodeURIComponent(`Support-Anfrage: ${contactForm.value.name}`);
+  const body = encodeURIComponent(
+      `Name: ${contactForm.value.name}\n` +
+      `E-Mail: ${contactForm.value.email}\n\n` +
+      `Nachricht:\n${contactForm.value.message}`
+  );
+  window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
 }
-
-onMounted(() => fetchSpots());
 </script>
 
 <template>
+  <div class="home-container">
 
-  <div
-      id="carouselExampleAutoplaying"
-      class="carousel slide"
-      data-bs-ride="carousel"
-  >
-    <div class="slogan">
-      <h1>Entdecke Konstanz neu!</h1>
-    </div>
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="@/assets/park.jpg" class="d-block w-100" alt="Park"/>
+    <header class="hero">
+      <div
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="hero-slide"
+          :class="{ active: currentSlide === index }"
+          :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${slide})` }"
+      ></div>
+      <div class="hero-content">
+        <h1>Entdecke Konstanz neu!</h1>
+        <p>Finde die besten Geheimtipps von Locals für Locals.</p>
+        <Button style="margin-top: 20px; padding: 15px 40px;" @click="router.push('/spots')">
+          Spots ansehen
+        </Button>
       </div>
-      <div class="carousel-item">
-        <img src="@/assets/shop.jpg" class="d-block w-100" alt="Shop"/>
-      </div>
-      <div class="carousel-item">
-        <img src="@/assets/event.jpg" class="d-block w-100" alt="Event"/>
-      </div>
-      <div class="carousel-item">
-        <img src="@/assets/cafe.jpeg" class="d-block w-100" alt="Café"/>
-      </div>
-    </div>
+    </header>
 
-   <div class="cta-container">
-      <router-link to="/spots" class="spots-link">>> Hier mehr Spots entdecken</router-link>
-    </div>
-
-    <button
-        class="carousel-control-prev"
-        type="button"
-        data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="prev"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-
-    <button
-        class="carousel-control-next"
-        type="button"
-        data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="next"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-
-  <!-- Intro Wave -->
-  <main>
-    <section class="intro-wave">
-      <div class="intro-container">
-        <!-- Linkes Bild (Moritz) -->
-        <div class="intro-image">
-          <img src="@/assets/Moritz.jpg" alt="Moritz" class="circle-image"/>
+    <section class="section">
+      <div class="content-wrapper">
+        <h2 class="section-title">Spot der Woche: Herosé Park</h2>
+        <div class="spot-highlight-card">
+          <div class="spot-image">
+            <img src="@/assets/park.jpg" alt="Herosé Park">
+          </div>
+          <div class="spot-info">
+            <h3>Entspannen am Seerhein</h3>
+            <p>Der Herosé Park ist der perfekte Ort für ein Picknick im Sommer oder einen langen Spaziergang direkt am Wasser.</p>
+            <Button variant="secondary" @click="router.push('/spots')">Details ansehen</Button>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Text mittig -->
-        <div class="intro-text">
-          <h2>Unsere Idee hinter Spotly:</h2>
-          <p>
-            Spotly ist unsere Art, Konstanz neu zu entdecken durch echte Tipps
-            von echten Menschen. Wir, Efe-liz und Moritz, haben Spotly
-            entwickelt, weil wir gemerkt haben, wie schwer es ist, gute Orte zu
-            finden, wenn man neu in der Stadt ist. Auf Spotly teilen Locals
-            ihre Lieblingsplätze, von kleinen Cafés bis zu geheimen Spots am
-            See.
+    <section class="section">
+      <div class="content-wrapper">
+        <h2 class="section-title">Kategorien entdecken</h2>
+        <div class="category-grid">
+          <div
+              v-for="cat in categories"
+              :key="cat.name"
+              class="category-card"
+              :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${cat.img})` }"
+              @click="router.push({ path: '/spots', query: { category: cat.name }})"
+          >
+            <h3>{{ cat.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about-section">
+      <div class="content-wrapper">
+        <h2 class="section-title-blue">Unsere Idee hinter Spotly:</h2>
+        <div class="about-container">
+          <div class="team-wrapper">
+            <img src="@/assets/Moritz.jpg" class="team-img" alt="Moritz">
+            <span class="team-name">Moritz</span>
+          </div>
+
+          <p class="about-text-content">
+            Spotly ist unsere Art, Konstanz neu zu entdecken durch echte Tipps von echten Menschen.
+            Wir, Efe-liz und Moritz, haben Spotly entwickelt, weil wir gemerkt haben, wie schwer es ist,
+            gute Orte zu finden, wenn man neu in der Stadt ist. Auf Spotly teilen Locals ihre Lieblingsplätze,
+            von kleinen Cafés bis zu geheimen Spots am See.
           </p>
-        </div>
 
-        <!-- Rechtes Bild (Du) -->
-        <div class="intro-image">
-          <img src="@/assets/Efeliz.jpg" alt="Efe-liz" class="circle-image"/>
+          <div class="team-wrapper">
+            <img src="@/assets/Efeliz.jpg" class="team-img" alt="Efe-liz">
+            <span class="team-name">Efe-liz</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="scroll-space"></section>
+    <div class="full-divider"></div>
 
-    <div class="top-controls">
-      <!-- Filter -->
-      <SpotFilter @search-changed="fetchSpots"/>
+    <div class="support-wrapper-box">
+      <h1 class="support-header-title">Support & Kontakt</h1>
+      <div class="support-card-brown">
+        <form @submit.prevent="sendMail">
+          <input v-model="contactForm.name" type="text" class="support-input-field" placeholder="Dein Name" required />
+          <input v-model="contactForm.email" type="email" class="support-input-field" placeholder="Deine E-Mail Adresse" required />
+          <textarea v-model="contactForm.message" class="support-textarea-field" placeholder="Wie können wir dir helfen?" required></textarea>
+          <button type="submit" class="support-submit-btn">E-Mail Programm öffnen</button>
+        </form>
+      </div>
     </div>
-    <!-- Spot-Karten -->
-    <section class="spots">
-      <div v-if="!isLoading" class="spots-container">
-        <SpotCard v-for="spot in spots" :key="spot.id" :spot="spot"/>
-      </div>
 
-      <div v-if="isLoading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Spots werden geladen...</p>
-      </div>
-    </section>
-  </main>
+  </div>
 </template>
 
-
 <style scoped>
-.slogan {
+.home-container { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+/* HERO */
+.hero { position: relative; height: 85vh; display: flex; align-items: center; justify-content: center; overflow: hidden; color: white; text-align: center; }
+.hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
+.hero-slide.active { opacity: 1; }
+.hero-content { position: relative; z-index: 10; }
+.hero-content h1 { font-size: 4rem; font-weight: 800; }
+
+/* SPOT HIGHLIGHT (Neu hinzugefügt für das alte Design) */
+.spot-highlight-card {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-
-  /* ÄNDERUNG HIER: top von 50% auf 40% (oder weniger) setzen */
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  text-align: center;
-  z-index: 10;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  pointer-events: none;
+  background: white;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  margin-top: 30px;
 }
-
-.slogan h1 {
-  font-size: 60px;
-  font-weight: 700;
-  color: #f5f5f5;
-  text-shadow: 5px 5px 8px rgba(0, 0, 0, 0.75);
-  margin: 0;
-  line-height: 1.2;
-}
-
-.top-controls {
-  display: flex;
-  flex-direction: column; /* Elemente untereinander */
-  align-items: center;    /* Horizontal zentrieren */
-  gap: 20px;              /* Abstand zwischen Button und Filter */
-  margin: 20px 0 40px;    /* Abstand nach oben und unten */
-  width: 100%;
-}
-
-.cta-container {
-  display: flex;
-  justify-content: center;
-  margin: 30px 0 60px; /* Abstand zum Carousel und nachfolgendem Text */
-}
-
-.spots-link {
-  pointer-events: auto; /* WICHTIG: Damit der Button klickbar bleibt */
-  display: inline-block;
-  background: #0084ff;
-  color: #fff;
-  font-weight: 600;
-  font-size: 20px;
-  padding: 15px 40px; /* Etwas kompaktere Maße für bessere Responsivität */
-  border-radius: 50px;
-  text-decoration: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  white-space: nowrap;
-}
-
-.create-btn {
-  background: #0084ff;
-  color: white;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 25px;
-  font-size: 18px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: 0.2s ease;
-}
-
-.create-btn:hover {
-  background: #1c86ee;
-  transform: translateY(-2px);
-}
-
-/* Intro Section */
-.intro-wave {
-  width: 100%;
-  padding: 40px 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.intro-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  max-width: 1100px;
-  width: 100%;
-}
-
-/* Profilbilder */
-.circle-image {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
+.spot-image img {
+  width: 450px;
+  height: 300px;
   object-fit: cover;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
-
-/* Text in der Mitte */
-.intro-text {
-  max-width: 420px;
-  text-align: center;
-}
-
-.intro-text h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #0078ff;
-}
-
-.intro-text p {
-  font-size: 17px;
-  line-height: 1.6;
-  color: #000;
-}
-
-.intro-wave {
-  margin-top: 400px;
-}
-
-.spots-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto 60px;
-  padding: 25px 10px;
-}
-
-.carousel {
-  position: relative;
-  z-index: 5; /* WICHTIG: Macht Buttons klickbar */ /* Verhindert, dass es zu breit wird */
-  margin: 80px auto;
-  width: 100%;
-  overflow: hidden; /* Zentriert das Carousel mit Abstand */
-}
-
-/* Bild-Styling */
-.carousel-item img {
-  height: 450px;
-  object-fit: cover; /* Bilder werden nicht verzerrt */
-}
-
-/* Die Steuerungspfeile (optional: schöner machen) */
-/* 2. Carousel-Pfeile fixieren */
-.carousel-control-prev,
-.carousel-control-next {
-  z-index: 30; /* Absolut am höchsten! */
-  width: 10%; /* Etwas breiter für einfachere Bedienung */
-  pointer-events: auto; /* Sicherstellen, dass Klicks erlaubt sind */
-  opacity: 1;
-  top: -20%;/* Damit man sie sieht */
-}
-
-.create-btn-container {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-/* Karten-Zentrierung */
-.spots {
-  display: flex;
-  justify-content: center;
-}
-
-.loading-state {
+.spot-info {
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 40px;
-  color: #0084ff;
+  align-items: flex-start;
+  text-align: left;
 }
+.spot-info h3 { font-size: 1.8rem; margin-bottom: 15px; color: #0084ff; }
+.spot-info p { margin-bottom: 20px; color: #666; line-height: 1.6; }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 132, 255, 0.1);
-  border-left-color: #0084ff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
+/* KATEGORIEN */
+.section { padding: 60px 20px; }
+.content-wrapper { max-width: 1100px; margin: 0 auto; }
+.section-title { font-size: 2.5rem; text-align: center; color: #333; margin-bottom: 30px; }
+.category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+.category-card { height: 200px; border-radius: 20px; background-size: cover; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; }
+
+/* STORY / ÜBER UNS */
+.section-title-blue { font-size: 2.2rem; text-align: center; color: #0084ff; font-weight: 700; margin-bottom: 40px; }
+.about-container { display: flex; align-items: center; justify-content: center; gap: 40px; }
+.team-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.team-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.team-name { font-weight: 600; color: #333; }
+.about-text-content { max-width: 600px; text-align: center; font-size: 1.15rem; color: #444; line-height: 1.6; }
+
+/* LINIE */
+.full-divider { width: 100%; height: 1px; background-color: #0084ff; opacity: 0.2; margin: 20px 0; }
+
+/* SUPPORT */
+.support-wrapper-box { text-align: center; padding: 40px 20px 80px 20px; }
+.support-header-title { font-size: 32px; font-weight: 700; color: #0084ff; margin-bottom: 30px; }
+.support-card-brown { width: 100%; max-width: 420px; margin: 0 auto; background: #b19884; padding: 30px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.support-input-field { width: 100%; padding: 12px 20px; border-radius: 30px; border: none; margin-bottom: 15px; outline: none; font-family: inherit; }
+.support-textarea-field { width: 100%; height: 120px; padding: 15px 20px; border-radius: 20px; border: none; margin-bottom: 15px; resize: none; outline: none; font-family: inherit; }
+.support-submit-btn { width: 100%; background: #0084ff; color: white; padding: 14px; border: none; border-radius: 30px; font-size: 18px; font-weight: 600; cursor: pointer; }
+
+@media (max-width: 850px) {
+  .spot-highlight-card { flex-direction: column; }
+  .spot-image img { width: 100%; }
+  .about-container { flex-direction: column; }
+  .about-text-content { order: 2; }
+  .team-wrapper:first-of-type { order: 1; }
+  .team-wrapper:last-of-type { order: 3; }
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.no-results {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-}
-
-/* Mobile optimieren */
-@media (max-width: 768px) {
-  .spots-container {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-  }
-
-  .create-btn {
-    width: 90%;
-    font-size: 16px;
-  }
-}
-
-/* Extra Mobile (<480px) */
-@media (max-width: 480px) {
-  .spots-container {
-    grid-template-columns: 1fr;
-  }
-
-  .carousel-item img {
-    height: 250px;
-  }
-}
-
-/* ===== RESPONSIVE FIX: Intro Section ===== */
-@media (max-width: 768px) {
-  .intro-container {
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  /* Bilder nebeneinander */
-  .intro-image {
-    display: flex;
-    justify-content: center;
-  }
-
-  .intro-container {
-    align-items: center;
-  }
-
-  /* Bilder kleiner & nebeneinander */
-  .intro-container > .intro-image {
-    display: inline-flex;
-  }
-
-  .circle-image {
-    width: 120px;
-    height: 120px;
-  }
-
-  /* Text darunter & kleiner */
-  .intro-text {
-    max-width: 90%;
-    text-align: center;
-  }
-
-  .intro-text h2 {
-    font-size: 22px;
-  }
-
-  .intro-text p {
-    font-size: 15px;
-    line-height: 1.5;
-  }
-}
-
-
 </style>
