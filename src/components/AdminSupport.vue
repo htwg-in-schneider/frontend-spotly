@@ -145,9 +145,23 @@ onMounted(fetchLogs);
 }
 
 .top-left-nav { position: absolute; left: 20px; }
-.page-title-styled { color: #5daae0; font-size: 42px; font-weight: 900; margin: 0; }
+.page-title-styled {
+  color: #5daae0;
+  font-size: clamp(24px, 6vw, 42px); /* Flüssige Größe für Mobile */
+  font-weight: 900;
+  margin: 0;
+  text-align: center;
+}
 
-.content-wrapper { width: 100%; max-width: 1000px; padding: 20px; }
+.content-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 /* Status Kacheln */
 .status-grid {
@@ -169,13 +183,34 @@ onMounted(fetchLogs);
 }
 
 .status-icon { font-size: 32px; }
-.status-info label { display: block; font-size: 12px; color: #888; font-weight: bold; text-transform: uppercase; }
+.status-info label { display: block; font-size: 10px; color: #888; font-weight: bold; text-transform: uppercase; }
 .status-badge { font-weight: 900; font-size: 16px; text-transform: uppercase; }
 .status-badge.online { color: #4cd137; }
 .status-badge.checking { color: #f1c40f; }
 .status-badge.offline, .status-badge.error { color: #ff4d4d; }
 
-/* Tabelle im Stil von Benutzer verwalten */
+/* Suche */
+.search-pill {
+  background: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  margin-left: 10px;
+  width: 100%;
+  font-size: 16px;
+}
+
+/* Tabelle */
 .table-card {
   background-color: #2a8df2;
   border-radius: 30px;
@@ -187,15 +222,15 @@ onMounted(fetchLogs);
 
 .table-header, .table-row {
   display: grid;
-  grid-template-columns: 100px 180px 1fr;
+  grid-template-columns: 100px 150px 1fr; /* Spaltenbreiten optimiert */
   padding: 20px 30px;
   align-items: center;
 }
 
 .table-header {
   font-weight: 900;
-  font-size: 18px;
-  background: rgba(0,0,0,0.05);
+  font-size: 16px;
+  background: rgba(0,0,0,0.1);
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
@@ -204,28 +239,41 @@ onMounted(fetchLogs);
 .table-row:hover { background: rgba(255,255,255,0.05); }
 
 .action-tag {
-  background: rgba(255, 255, 255, 0.2);
   padding: 4px 10px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
+  text-align: center;
+  display: inline-block;
 }
 
-.l-time { font-family: monospace; font-weight: bold; opacity: 0.9; }
-.l-msg { font-size: 15px; }
-.l-msg strong { color: #b2f2bb; margin-right: 5px; }
+.tag-red { background: #ff4d4d !important; color: white; }
+.tag-green { background: #4cd137 !important; color: white; }
+.tag-default { background: rgba(255, 255, 255, 0.2); }
+
+.l-time { font-family: monospace; font-weight: bold; opacity: 0.9; font-size: 14px; }
+.l-msg { font-size: 15px; line-height: 1.4; }
+.l-msg strong { color: #b2f2bb; font-weight: bold; margin-right: 5px; }
 
 .no-data-row { padding: 60px 20px; text-align: center; font-weight: bold; opacity: 0.8; }
 
-.action-footer { display: flex; gap: 15px; margin-top: 30px; justify-content: center; }
+/* Footer Buttons */
+.action-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: center;
+  width: 100%;
+}
 
 .btn-tool {
   background: #5daae0;
   color: white;
   border: none;
   padding: 14px 30px;
-  border-radius: 20px;
+  border-radius: 50px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
@@ -233,41 +281,40 @@ onMounted(fetchLogs);
 }
 
 .btn-tool:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(93, 170, 224, 0.4); }
-.search-pill {
-  background: white;
-  padding: 12px 25px;
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
+
+/* RESPONSIVE ANPASSUNGEN */
+@media (max-width: 850px) {
+  .table-header { display: none; } /* Versteckt Header auf kleinen Screens */
+
+  .table-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 8px;
+  }
+
+  .l-time { font-size: 12px; opacity: 0.7; }
+
+  .action-tag { margin-bottom: 5px; }
 }
 
-.search-input {
-  border: none;
-  outline: none;
-  margin-left: 10px;
-  width: 100%;
-  font-size: 16px;
-}
+@media (max-width: 600px) {
+  .status-grid {
+    grid-template-columns: 1fr; /* Kacheln untereinander */
+  }
 
-.action-tag {
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.2);
-}
+  .header-section {
+    padding-top: 80px;
+  }
 
-/* Spezialfarben für die Tags */
-.tag-red { background: #ff4d4d !important; color: white; }
-.tag-green { background: #4cd137 !important; color: white; }
-.tag-default { background: rgba(255, 255, 255, 0.2); }
+  .top-left-nav {
+    top: 20px;
+  }
 
-.l-msg strong {
-  color: #b2f2bb;
-  font-weight: bold;
+  .btn-tool {
+    width: 100%; /* Buttons auf Handy volle Breite */
+    max-width: 300px;
+  }
 }
 </style>
