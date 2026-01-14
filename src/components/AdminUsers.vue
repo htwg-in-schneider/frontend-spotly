@@ -187,7 +187,20 @@ const handleConfirm = async () => {
 onMounted(fetchUsers);
 </script>
 
+Hier ist der bereinigte CSS-Code, der exakt auf dein Template abgestimmt ist. Ich habe die Fehler in der Verschachtelung korrigiert (die .admin-users-page saß fälschlicherweise innerhalb der .header-section) und die absolute Positionierung für den Button sowie die Zentrierung der Tabelle umgesetzt.
+CSS
+
 <style scoped>
+/* PAGE LAYOUT */
+.admin-users-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* HEADER MIT ZENTRIERTEM TITEL UND ABSOLUTEM BUTTON */
 .header-section {
   width: 100%;
   max-width: 1000px;
@@ -195,11 +208,12 @@ onMounted(fetchUsers);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  position: relative;
+  position: relative; /* Wichtig für die Positionierung von top-left-nav */
 }
 
 .top-left-nav {
+  position: absolute;
+  left: 0;
   display: flex;
   align-items: center;
 }
@@ -210,8 +224,10 @@ onMounted(fetchUsers);
   font-weight: 900;
   margin: 0;
   line-height: 1;
+  text-align: center;
 }
 
+/* CONTENT & SEARCH */
 .content-wrapper {
   width: 100%;
   max-width: 1000px;
@@ -241,6 +257,7 @@ onMounted(fetchUsers);
   font-size: 16px;
 }
 
+/* TABLE CARD & GRID */
 .table-card {
   background-color: #2a8df2;
   border-radius: 30px;
@@ -250,9 +267,10 @@ onMounted(fetchUsers);
   color: white;
 }
 
+/* Symmetrisches Grid für eine zentrierte Optik */
 .table-header, .table-row {
   display: grid;
-  grid-template-columns: 1.5fr 2fr 1.5fr;
+  grid-template-columns: 1.2fr 1.5fr 1.2fr;
   padding: 20px 30px;
   align-items: center;
 }
@@ -282,6 +300,7 @@ onMounted(fetchUsers);
   background: rgba(0,0,0,0.1);
 }
 
+/* USER DATA & BADGES */
 .username {
   font-weight: bold;
   font-size: 17px;
@@ -309,6 +328,7 @@ onMounted(fetchUsers);
   justify-content: flex-end;
 }
 
+/* BUTTONS */
 .btn-table {
   border: none;
   padding: 10px 18px;
@@ -329,6 +349,7 @@ onMounted(fetchUsers);
 .btn-green { background: #4cd137; }
 .btn-red { background: #ff6b6b; }
 
+/* OVERLAY / MODAL */
 .overlay-backdrop {
   position: fixed;
   inset: 0;
@@ -381,6 +402,17 @@ onMounted(fetchUsers);
 
 .btn-overlay {
   background: #ff4757;
+  border: none;
+  color: white;
+  padding: 14px;
+  border-radius: 20px;
+  flex: 1;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-overlay-alt {
+  background: rgba(255,255,255,0.2);
   border: none;
   color: white;
   padding: 14px;
