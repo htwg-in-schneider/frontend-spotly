@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useAuth0 } from '@auth0/auth0-vue';
+import {ref, onMounted, computed} from "vue";
+import {useAuth0} from '@auth0/auth0-vue';
 import Button from "./Button.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL;
-const { isAuthenticated } = useAuth0();
+const {isAuthenticated} = useAuth0();
 
 const allSpots = ref([]);
 const categories = ref([]);
@@ -20,12 +20,12 @@ onMounted(async () => {
     const catRes = await fetch(`${API_BASE}/category`);
     if (catRes.ok) {
       const catData = await catRes.json();
-      categories.value = catData.map(c => typeof c === 'string' ? { name: c } : c);
+      categories.value = catData.map(c => typeof c === 'string' ? {name: c} : c);
     } else {
       categories.value = [
-        { name: "Natur & Aussicht" }, { name: "Shops & Märkte" },
-        { name: "Events & Kultur" }, { name: "Cafés & Essen" },
-        { name: "Sport & Freizeit" }, { name: "Andere" }
+        {name: "Natur & Aussicht"}, {name: "Shops & Märkte"},
+        {name: "Events & Kultur"}, {name: "Cafés & Essen"},
+        {name: "Sport & Freizeit"}, {name: "Andere"}
       ];
     }
   } catch (err) {
@@ -106,13 +106,46 @@ const filteredSpots = computed(() => {
 </template>
 
 <style scoped>
-.top-left-nav { position: absolute; top: 20px; left: 20px; z-index: 100; }
-.spots-page { position: relative; min-height: 100vh; padding-top: 80px; display: flex; justify-content: center; }
-.content-wrapper { width: 95%; max-width: 650px; }
-.main-title { color: #0084ff; font-size: 48px; font-weight: 800; margin-bottom: 25px; }
+.top-left-nav {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
 
-.header-controls { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 30px; }
-.search-filter-card { background: #6eb5f3; padding: 15px; border-radius: 25px; flex: 1; }
+.spots-page {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.content-wrapper {
+  width: 95%;
+  max-width: 650px;
+}
+
+.main-title {
+  color: #0084ff;
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.search-filter-card {
+  background: #6eb5f3;
+  padding: 15px;
+  border-radius: 25px;
+  flex: 1;
+}
 
 .search-input-group, .filter-input-group {
   background: rgba(255, 255, 255, 0.4);
@@ -131,18 +164,63 @@ const filteredSpots = computed(() => {
   display: block;
 }
 
-.filter-select { background: transparent; border: none; color: white; width: 100%; margin-left: 10px; outline: none; cursor: pointer; }
-.filter-select option { color: #333; }
+.filter-select {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 100%;
+  margin-left: 10px;
+  outline: none;
+  cursor: pointer;
+}
 
-input { background: transparent; border: none; color: white; margin-left: 10px; outline: none; width: 100%; }
-input::placeholder { color: white; }
+.filter-select option {
+  color: #333;
+}
 
-.auth-buttons-column { display: flex; flex-direction: column; gap: 10px; min-width: 180px; }
+input {
+  background: transparent;
+  border: none;
+  color: white;
+  margin-left: 10px;
+  outline: none;
+  width: 100%;
+}
 
-.spot-card { display: block; background: white; border-radius: 25px; padding: 15px; margin-bottom: 15px; text-decoration: none; color: inherit; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-.card-content { display: flex; gap: 15px; align-items: center; }
+input::placeholder {
+  color: white;
+}
 
-.image-container img { width: 130px; height: 95px; border-radius: 15px; object-fit: cover; }
+.auth-buttons-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.spot-card {
+  display: block;
+  background: white;
+  border-radius: 25px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card-content {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.image-container img {
+  width: 130px;
+  height: 95px;
+  border-radius: 15px;
+  object-fit: cover;
+}
 
 .placeholder-container {
   width: 130px;
@@ -162,8 +240,18 @@ input::placeholder { color: white; }
   object-fit: contain !important;
 }
 
-.text-container h3 { margin: 0; font-size: 18px; font-weight: 700; }
-.text-container p { margin-top: 5px; font-size: 13px; color: #666; }
+.text-container h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.text-container p {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #666;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;

@@ -132,7 +132,7 @@ const handleAuth = () => {
   color: #1c1c1c;
   border-radius: 20px;
   transition: all 0.3s ease;
-  font-weight: 550;
+  font-weight: 510;
 }
 
 .nav a:hover {

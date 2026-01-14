@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue";
-import { useUserStore } from '@/stores/userStore';
+import {ref, onMounted} from "vue";
+import {useAuth0} from "@auth0/auth0-vue";
+import {useUserStore} from '@/stores/userStore';
 
 const props = defineProps({
   spotId: Number,
@@ -10,7 +10,7 @@ const props = defineProps({
 
 const emit = defineEmits(['review-posted']);
 const API_BASE = import.meta.env.VITE_API_URL;
-const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+const {getAccessTokenSilently, isAuthenticated} = useAuth0();
 const userStore = useUserStore();
 
 const reviews = ref([]);
@@ -21,7 +21,9 @@ async function fetchReviews() {
   try {
     const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
     if (res.ok) reviews.value = await res.json();
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function deleteReview(reviewId) {
@@ -30,13 +32,15 @@ async function deleteReview(reviewId) {
     const token = await getAccessTokenSilently();
     const res = await fetch(`${API_BASE}/spots/reviews/${reviewId}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+      headers: {'Authorization': `Bearer ${token}`}
     });
     if (res.ok) {
       await fetchReviews();
       emit('review-posted');
     }
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function submitReview() {
@@ -63,7 +67,9 @@ async function submitReview() {
       await fetchReviews();
       emit('review-posted');
     }
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 onMounted(fetchReviews);
@@ -78,7 +84,7 @@ onMounted(fetchReviews);
 
       <div class="rating-input">
         <label>Sterne (1-5):</label>
-        <input type="number" v-model.number="rating" min="1" max="5" />
+        <input type="number" v-model.number="rating" min="1" max="5"/>
       </div>
 
       <button class="submit-btn" @click="submitReview">Senden</button>
@@ -108,141 +114,131 @@ onMounted(fetchReviews);
   </div>
 </template>
 
-<<style scoped>
-  /* --- Reviews Wrapper und Titel --- */
-  .reviews-wrapper {
-    text-align: left;
-    margin-top: 30px;
-    /* Fügt etwas Innenabstand hinzu, damit es nicht direkt am Rand klebt */
-    padding: 0 10px;
-  }
-  
-  .title, .review-form h4, .review-list h3 {
-    font-size: 24px; /* Etwas kleiner als der Haupt-Titel des Spots */
-    font-weight: 700;
-    margin-top: 25px;
-    margin-bottom: 15px;
-    color: #000;
-  }
-  
-  /* --- Bewertungskarte (Bestehende Reviews) --- */
-  .review-card {
-    /* Passt zum Hintergrund der Hauptkarte, aber etwas heller/transparenter */
-    background: rgba(255, 255, 255, 0.9);
-    padding: 18px;
-    border-radius: 15px; /* Etwas runder */
-    margin-bottom: 16px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  }
-  
-  .stars {
-    margin-bottom: 10px;
-  }
-  
-  .star {
-    font-size: 22px;
-    color: #ccc;
-    margin-right: 3px;
-  }
-  
-  .star.active {
-    color: #ffcc00; /* Goldgelb */
-  }
-  
-  .review-text {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.5;
-  }
-  
-  /* --- NEU: Eingabeformular (Review-Form) --- */
-  
-  .review-form {
-      background: #e8f0f8; /* Hellblauer/grauer Hintergrund, ähnlich der Beschreibung */
-      padding: 25px;
-      border-radius: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }
-  
-  .review-form h4 {
-      font-size: 20px;
-      margin-bottom: 15px;
-  }
-  
-  /* Textarea */
-  .review-form textarea {
-      width: 100%;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #c0d9eb;
-      margin-bottom: 15px;
-      font-size: 16px;
-      resize: vertical;
-      box-sizing: border-box; /* Wichtig für korrekte Breite */
-  }
-  
-  /* Rating Input */
-  .rating-input {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-  }
-  
-  .rating-input label {
-      font-weight: 600;
-      margin-right: 15px;
-      color: #333;
-  }
-  
-  .rating-input input[type="number"] {
-      width: 60px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      text-align: center;
-  }
-  
-  /* Submit Button (passt zum edit-btn in SpotDetail) */
-  .submit-btn {
-      background: #0084ff;
-      border: none;
-      color: white;
-      padding: 10px 30px;
-      border-radius: 40px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.2s;
-      /* Damit er linksbündig mit dem Formular ist */
-      display: inline-block;
-  }
-  
-  .submit-btn:hover {
-      background: #0072d6;
-  }
+<
+<style scoped>
+.reviews-wrapper {
+  text-align: left;
+  margin-top: 30px;
+  padding: 0 10px;
+}
 
-  .delete-btn {
-    background: red;
-    border: none;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 40px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s;
-    /* Damit er linksbündig mit dem Formular ist */
-    display: inline-block;
-  }
+.title, .review-form h4, .review-list h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #000;
+}
 
-  .delete-btn:hover {
-    background: darkred;
-  }
-  
-  /* Keine Reviews Platzhalter */
-  .no-reviews {
-      padding: 20px;
-      text-align: center;
-      color: #666;
-      font-style: italic;
-  }
-  </style>
+.review-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 18px;
+  border-radius: 15px; /* Etwas runder */
+  margin-bottom: 16px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stars {
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 22px;
+  color: #ccc;
+  margin-right: 3px;
+}
+
+.star.active {
+  color: #ffcc00;
+}
+
+.review-text {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
+}
+
+
+.review-form {
+  background: #e8f0f8;
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.review-form h4 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #c0d9eb;
+  margin-bottom: 15px;
+  font-size: 16px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.rating-input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rating-input label {
+  font-weight: 600;
+  margin-right: 15px;
+  color: #333;
+}
+
+.rating-input input[type="number"] {
+  width: 60px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.submit-btn {
+  background: #0084ff;
+  border: none;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-block;
+}
+
+.submit-btn:hover {
+  background: #0072d6;
+}
+
+.delete-btn {
+  background: red;
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 40px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-block;
+}
+
+.delete-btn:hover {
+  background: darkred;
+}
+
+.no-reviews {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+</style>

@@ -1,56 +1,53 @@
 <script setup>
-  import { ref, onMounted } from "vue";
-  import { useRoute, useRouter } from "vue-router";
-  import { useUserStore } from '@/stores/userStore';
-  import Button from "./Button.vue";
-  import SpotReviews from "@/components/SpotReviews.vue";
+import {ref, onMounted} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {useUserStore} from '@/stores/userStore';
+import Button from "./Button.vue";
+import SpotReviews from "@/components/SpotReviews.vue";
 
-  const route = useRoute();
-  const router = useRouter();
-  const userStore = useUserStore();
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
 
-  const API_BASE = import.meta.env.VITE_API_URL;
-  const spot = ref(null);
+const API_BASE = import.meta.env.VITE_API_URL;
+const spot = ref(null);
 
-  // 1. Die Funktion muss exakt so heißen wie im Template (@review-posted="loadSpotData")
-  async function loadSpotData() {
+async function loadSpotData() {
   const spotId = route.params.id;
 
   try {
-  const res = await fetch(`${API_BASE}/spots/${spotId}`);
+    const res = await fetch(`${API_BASE}/spots/${spotId}`);
 
-  if (!res.ok) {
-  throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
+    if (!res.ok) {
+      throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
+    }
+
+    const data = await res.json();
+
+    spot.value = {
+      id: data.id,
+      title: data.title,
+      category: data.category?.name || data.category || "Unbekannt",
+      location: data.location ?? "Konstanz",
+      description: data.description || "Keine Beschreibung vorhanden.",
+      image: data.imageUrl,
+      reviews: data.reviews || [],
+      author: data.authorName || "Ein Spotly-Nutzer",
+      date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt",
+      averageRating: data.averageRating,
+      reviewCount: data.reviewCount
+    };
+
+  } catch (err) {
+    console.error("Fehler beim Laden des Spots:", err);
+  }
 }
 
-  const data = await res.json();
-
-  spot.value = {
-  id: data.id,
-  title: data.title,
-  // Beachte: Falls data.category ein Objekt ist, nimm data.category.name
-  category: data.category?.name || data.category || "Unbekannt",
-  location: data.location ?? "Konstanz",
-  description: data.description || "Keine Beschreibung vorhanden.",
-  image: data.imageUrl,
-  reviews: data.reviews || [],
-  author: data.authorName || "Ein Spotly-Nutzer",
-  date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt",
-  averageRating: data.averageRating,
-  reviewCount: data.reviewCount
-};
-
-} catch (err) {
-  console.error("Fehler beim Laden des Spots:", err);
-}
-}
-
-  // 2. Beim ersten Laden der Seite die Funktion aufrufen
-  onMounted(() => {
+onMounted(() => {
   loadSpotData();
 });
 
-  function editSpot() {
+function editSpot() {
   router.push(`/spot/${route.params.id}/edit`);
 }
 
@@ -59,13 +56,13 @@
 <template>
   <div class="top-left-nav">
     <router-link to="/spots">
-      <Button variant="secondary" round />
+      <Button variant="secondary" round/>
     </router-link>
   </div>
 
   <div v-if="spot" class="detail-container">
     <div class="card">
-      <img :src="spot.image" class="spot-image" />
+      <img :src="spot.image" class="spot-image"/>
 
       <h2 class="spot-name">{{ spot.title }}</h2>
 
@@ -93,11 +90,11 @@
 
       <div class="user-info">
         <p class="meta-text">
-          Erstellt von: <strong>{{ spot.author}}</strong> am {{spot.date}}
+          Erstellt von: <strong>{{ spot.author }}</strong> am {{ spot.date }}
         </p>
       </div>
 
-      <SpotReviews :spotId="spot.id" @review-posted="loadSpotData" />
+      <SpotReviews :spotId="spot.id" @review-posted="loadSpotData"/>
 
       <div v-if="userStore.userProfile?.role === 'ADMIN'">
         <button class="edit-btn" @click="editSpot">Bearbeiten</button>
@@ -109,7 +106,6 @@
 </template>
 
 <style scoped>
-/* Positionierung des Zurück-Buttons */
 .top-left-nav {
   position: absolute;
   top: 300px;
@@ -129,7 +125,7 @@
   padding: 30px;
   width: 85%;
   margin: 0 auto;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .spot-image {
@@ -207,18 +203,18 @@
   font-style: italic;
 }
 
- .rating-badge {
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   background-color: #f8f9fa;
-   padding: 6px 12px;
-   border-radius: 20px;
-   width: fit-content;
-   margin: 10px 0;
-   font-weight: 600;
-   border: 1px solid #e9ecef;
- }
+.rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  width: fit-content;
+  margin: 10px 0;
+  font-weight: 600;
+  border: 1px solid #e9ecef;
+}
 
 .star-icon {
   color: #ffc107;

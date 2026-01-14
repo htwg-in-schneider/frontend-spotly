@@ -1,19 +1,19 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import {ref, onMounted} from "vue";
 
 const emit = defineEmits(["search-changed"]);
 
-// ENV API URL
+
 const API = import.meta.env.VITE_API_URL;
 
-// Suchfelder
+
 const searchName = ref("");
 const searchCategory = ref("");
 
-// Kategorien
+
 const categories = ref([]);
 
-// Kategorien laden — zuerst Backend, falls Fehler: Fallback
+
 async function fetchCategories() {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/category`);
@@ -28,12 +28,12 @@ async function fetchCategories() {
     console.warn("⚠ Kategorie-Fetch fehlgeschlagen. Dummy wird genutzt.");
 
     categories.value = [
-      { id: "nature", name: "Natur & Aussicht" },
-      { id: "shops", name: "Shops & Märkte" },
-      { id: "events", name: "Events & Kultur" },
-      { id: "cafes", name: "Cafés & Essen" },
-      { id: "sport", name: "Sport & Freizeit"},
-      { id: "andere", name: "Andere" },
+      {id: "nature", name: "Natur & Aussicht"},
+      {id: "shops", name: "Shops & Märkte"},
+      {id: "events", name: "Events & Kultur"},
+      {id: "cafes", name: "Cafés & Essen"},
+      {id: "sport", name: "Sport & Freizeit"},
+      {id: "andere", name: "Andere"},
 
     ];
   }
@@ -45,6 +45,7 @@ function updateSearch() {
     category: searchCategory.value
   });
 }
+
 function resetFilter() {
   searchName.value = "";
   searchCategory.value = "";
@@ -58,27 +59,26 @@ onMounted(fetchCategories);
 <template>
   <div class="filter-wrapper">
 
-    <!-- Suche -->
-    <input 
-      class="filter-input"
-      type="text"
-      placeholder="🔎 Spots suchen..."
-      v-model="searchName"
-      @input="updateSearch"
+
+    <input
+        class="filter-input"
+        type="text"
+        placeholder="🔎 Spots suchen..."
+        v-model="searchName"
+        @input="updateSearch"
     >
 
-    <!-- Kategorien -->
-    <select 
-      class="filter-select"
-      v-model="searchCategory"
-      @change="updateSearch"
+    <select
+        class="filter-select"
+        v-model="searchCategory"
+        @change="updateSearch"
     >
       <option value="">Alle Kategorien</option>
 
       <option
-        v-for="c in categories"
-        :key="c.id"
-        :value="c.id"
+          v-for="c in categories"
+          :key="c.id"
+          :value="c.id"
       >
         {{ c.name }}
       </option>
@@ -110,7 +110,7 @@ onMounted(fetchCategories);
   border: none;
   background: white;
   font-size: 16px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
 }
 
 .reset-btn {
@@ -121,7 +121,7 @@ onMounted(fetchCategories);
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transition: 0.2s;
 }
 

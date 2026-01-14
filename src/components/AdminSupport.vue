@@ -1,79 +1,127 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth0 } from '@auth0/auth0-vue';
+import Button from "@/components/Button.vue";
 
 const router = useRouter();
+const { getAccessTokenSilently } = useAuth0();
 
-// Logs als reaktive Referenz
-const logs = ref([
-  { time: "14:02", msg: "Admin eingeloggt." },
-  { time: "14:05", msg: "GET /api/users erfolgreich (200 OK)" },
-  { time: "14:10", msg: "Neuer Spot 'Campus Festival' zur Prüfung eingereicht." },
-  { time: "14:12", msg: "Datenbank-Synchronisation abgeschlossen." }
-]);
+const systemStatus = ref({ db: 'checking', backend: 'checking' });
+const logs = ref([]);
+const searchQuery = ref('');
 
-const contactSupport = () => {
-  alert("Support-Anfrage wurde an support@spotly.de gesendet.");
+// Echte Logs vom Backend laden
+const fetchLogs = async () => {
+  try {
+    const token = await getAccessTokenSilently();
+    const res = await fetch('https://backend-spotly.onrender.com/api/admin/logs', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.ok) {
+      logs.value = await res.json();
+      systemStatus.value = { db: 'online', backend: 'online' };
+    } else {
+      systemStatus.value = { db: 'error', backend: 'offline' };
+    }
+  } catch (e) {
+    console.error("Fehler beim Laden der Logs:", e);
+    systemStatus.value = { db: 'offline', backend: 'offline' };
+  }
 };
 
-const clearLogs = () => {
-  logs.value = [{ time: "JETZT", msg: "Logs wurden vom Administrator bereinigt." }];
+// Filter-Logik für die Suche (sucht in Aktion, Admin-Name und Details)
+const filteredLogs = computed(() => {
+  return logs.value.filter(log => {
+    const term = searchQuery.value.toLowerCase();
+    return log.action.toLowerCase().includes(term) ||
+        log.adminName.toLowerCase().includes(term) ||
+        log.details.toLowerCase().includes(term);
+  });
+});
+
+const formatTime = (timestamp) => {
+  if (!timestamp) return "--:--";
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-const goBack = () => {
-  router.push('/admin');
+// Hilfsfunktion für farbige Badges je nach Aktion
+const getActionClass = (action) => {
+  if (action.includes('LOCKED') || action.includes('DELETE')) return 'tag-red';
+  if (action.includes('CREATED') || action.includes('UNLOCKED')) return 'tag-green';
+  return 'tag-default';
 };
+
+const goBack = () => router.push('/admin');
+
+onMounted(fetchLogs);
 </script>
 
 <template>
   <div class="admin-support-page">
-    <div class="header-section">
-      <button @click="goBack" class="back-link">
-        <span class="arrow">←</span> Dashboard
-      </button>
-      <h1 class="page-title-styled">Support & Logs</h1>
-    </div>
+    <header class="header-section">
+      <div class="top-left-nav">
+        <Button variant="secondary" round @click="goBack">&lt;</Button>
+      </div>
+      <h1 class="page-title-styled">System & Support</h1>
+    </header>
 
     <div class="content-wrapper">
-      <div class="support-card">
-        <div class="menu-header">
-          System Status <span class="icon">🛠️</span>
-        </div>
-
-        <div class="status-box">
-          <div class="status-item">
-            <span>Datenbank (MariaDB):</span>
-            <span class="status-tag online">Verbunden</span>
-          </div>
-          <div class="status-item">
-            <span>Backend (Spring Boot):</span>
-            <span class="status-tag online">Aktiv</span>
+      <div class="status-grid">
+        <div class="status-card">
+          <span class="status-icon">🗄️</span>
+          <div class="status-info">
+            <label>Datenbank Status</label>
+            <span :class="['status-badge', systemStatus.db]">{{ systemStatus.db }}</span>
           </div>
         </div>
+        <div class="status-card">
+          <span class="status-icon">🚀</span>
+          <div class="status-info">
+            <label>Backend API</label>
+            <span :class="['status-badge', systemStatus.backend]">{{ systemStatus.backend }}</span>
+          </div>
+        </div>
+      </div>
 
-        <div class="log-container">
-          <div class="log-header">System-Logs (Echtzeit)</div>
-          <div class="log-screen">
-            <div v-for="(log, index) in logs" :key="index" class="log-line">
-              <span class="log-time">[{{ log.time }}]</span> {{ log.msg }}
+      <div class="search-pill">
+        <span class="icon">🔍</span>
+        <input v-model="searchQuery" placeholder="Logs durchsuchen..." class="search-input" />
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="col">Zeit</div>
+          <div class="col">Aktion</div>
+          <div class="col">Details</div>
+        </div>
+
+        <div class="table-body">
+          <div v-if="filteredLogs.length === 0" class="no-data-row">
+            Keine passenden System-Ereignisse gefunden.
+          </div>
+
+          <div v-for="log in filteredLogs" :key="log.id" class="table-row">
+            <div class="col l-time">{{ formatTime(log.timestamp) }}</div>
+            <div class="col">
+              <span class="action-tag" :class="getActionClass(log.action)">{{ log.action }}</span>
+            </div>
+            <div class="col l-msg">
+              <strong>{{ log.adminName }}:</strong> {{ log.details }}
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="support-actions">
-          <button @click="contactSupport" class="btn-support-white">
-            📧 Hilfe anfordern
-          </button>
-          <button @click="clearLogs" class="btn-support-white">
-            🗑️ Logs leeren
-          </button>
-        </div>
+      <div class="action-footer">
+        <button @click="fetchLogs" class="btn-tool">Aktualisieren 🔄</button>
       </div>
     </div>
-
-    <footer class="admin-footer">
-      <p>© 2026 Spotly – Admin Support Panel</p>
-    </footer>
   </div>
 </template>
 
@@ -83,81 +131,143 @@ const goBack = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  background: transparent;
+  padding-bottom: 80px;
 }
 
 .header-section {
   width: 100%;
-  max-width: 500px;
+  max-width: 1000px;
   padding: 60px 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  text-align: center;
 }
 
-.back-link {
-  position: absolute; left: 0; top: 40px;
-  background: none; border: none;
-  color: #4a90e2; font-weight: bold; cursor: pointer;
+.top-left-nav { position: absolute; left: 20px; }
+.page-title-styled { color: #5daae0; font-size: 42px; font-weight: 900; margin: 0; }
+
+.content-wrapper { width: 100%; max-width: 1000px; padding: 20px; }
+
+/* Status Kacheln */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+  width: 100%;
 }
 
-.page-title-styled {
-  color: #4a90e2;
-  font-size: 42px;
-  font-weight: 900;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+.status-card {
+  background: white;
+  border-radius: 25px;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-.content-wrapper { padding: 20px; width: 100%; display: flex; justify-content: center; }
+.status-icon { font-size: 32px; }
+.status-info label { display: block; font-size: 12px; color: #888; font-weight: bold; text-transform: uppercase; }
+.status-badge { font-weight: 900; font-size: 16px; text-transform: uppercase; }
+.status-badge.online { color: #4cd137; }
+.status-badge.checking { color: #f1c40f; }
+.status-badge.offline, .status-badge.error { color: #ff4d4d; }
 
-/* Blaue Karte passend zu Orte/Dashboard */
-.support-card {
-  background: #4a90e2;
+/* Tabelle im Stil von Benutzer verwalten */
+.table-card {
+  background-color: #2a8df2;
   border-radius: 30px;
   width: 100%;
-  max-width: 380px;
-  padding: 25px;
-  color: white;
+  overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  color: white;
 }
 
-.menu-header { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: flex; justify-content: space-between; }
-
-.status-box { margin-bottom: 20px; }
-.status-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-
-.status-tag.online { color: #00ff00; font-weight: bold; }
-
-/* Log Screen Design */
-.log-container {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  padding: 15px;
-  margin-bottom: 20px;
+.table-header, .table-row {
+  display: grid;
+  grid-template-columns: 100px 180px 1fr;
+  padding: 20px 30px;
+  align-items: center;
 }
-.log-header { font-size: 12px; font-weight: bold; margin-bottom: 10px; opacity: 0.8; }
-.log-screen {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 11px;
-  height: 100px;
-  overflow-y: auto;
+
+.table-header {
+  font-weight: 900;
+  font-size: 18px;
+  background: rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
-.log-line { margin-bottom: 4px; }
-.log-time { color: #a1c9f1; }
 
-.support-actions { display: flex; gap: 10px; }
+.table-body { max-height: 50vh; overflow-y: auto; }
+.table-row { border-bottom: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
+.table-row:hover { background: rgba(255,255,255,0.05); }
 
-.btn-support-white {
-  background: white;
-  color: #4a90e2;
+.action-tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.l-time { font-family: monospace; font-weight: bold; opacity: 0.9; }
+.l-msg { font-size: 15px; }
+.l-msg strong { color: #b2f2bb; margin-right: 5px; }
+
+.no-data-row { padding: 60px 20px; text-align: center; font-weight: bold; opacity: 0.8; }
+
+.action-footer { display: flex; gap: 15px; margin-top: 30px; justify-content: center; }
+
+.btn-tool {
+  background: #5daae0;
+  color: white;
   border: none;
-  padding: 12px;
+  padding: 14px 30px;
   border-radius: 20px;
-  flex: 1;
   font-weight: bold;
   cursor: pointer;
-  font-size: 13px;
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(93, 170, 224, 0.3);
 }
 
-.admin-footer { position: absolute; bottom: 20px; color: #888; font-size: 14px; }
+.btn-tool:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(93, 170, 224, 0.4); }
+.search-pill {
+  background: white;
+  padding: 12px 25px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  margin-left: 10px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.action-tag {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Spezialfarben für die Tags */
+.tag-red { background: #ff4d4d !important; color: white; }
+.tag-green { background: #4cd137 !important; color: white; }
+.tag-default { background: rgba(255, 255, 255, 0.2); }
+
+.l-msg strong {
+  color: #b2f2bb;
+  font-weight: bold;
+}
 </style>

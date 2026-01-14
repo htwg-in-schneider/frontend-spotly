@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const contactForm = ref({
   name: '',
@@ -20,41 +20,41 @@ function sendMail() {
 </script>
 
 <template>
-    <div class="wrapper">
-      <h1 class="title">Support & Kontakt</h1>
+  <div class="wrapper">
+    <h1 class="title">Support & Kontakt</h1>
 
-      <div class="card">
-        <div class="image-box">
-        </div>
-
-        <form @submit.prevent="sendMail">
-          <input
-              v-model="contactForm.name"
-              type="text"
-              class="input"
-              placeholder="Dein Name"
-              required
-          />
-          <input
-              v-model="contactForm.email"
-              type="email"
-              class="input"
-              placeholder="Deine E-Mail Adresse"
-              required
-          />
-          <textarea
-              v-model="contactForm.message"
-              class="textarea"
-              placeholder="Wie können wir dir helfen?"
-              required
-          ></textarea>
-
-          <button type="submit" class="create-btn">
-            E-Mail Programm öffnen
-          </button>
-        </form>
+    <div class="card">
+      <div class="image-box">
       </div>
+
+      <form @submit.prevent="sendMail">
+        <input
+            v-model="contactForm.name"
+            type="text"
+            class="input"
+            placeholder="Dein Name"
+            required
+        />
+        <input
+            v-model="contactForm.email"
+            type="email"
+            class="input"
+            placeholder="Deine E-Mail Adresse"
+            required
+        />
+        <textarea
+            v-model="contactForm.message"
+            class="textarea"
+            placeholder="Wie können wir dir helfen?"
+            required
+        ></textarea>
+
+        <button type="submit" class="create-btn">
+          E-Mail Programm öffnen
+        </button>
+      </form>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -89,10 +89,10 @@ function sendMail() {
 }
 
 .title2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 30px;
 }
 
 .card {
@@ -102,7 +102,7 @@ function sendMail() {
   background: #b19884;
   padding: 30px;
   border-radius: 25px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .image-box {
@@ -120,7 +120,6 @@ function sendMail() {
   color: #b19884;
 }
 
-/* --- INPUTS --- */
 .input {
   width: 100%;
   padding: 12px 20px;
@@ -141,7 +140,6 @@ function sendMail() {
   resize: none;
 }
 
-/* --- BUTTON --- */
 .create-btn {
   width: 100%;
   background: #0084ff;
@@ -159,11 +157,11 @@ function sendMail() {
   background: #5dade2;
 }
 
-/* Responsive Fix */
 @media (max-width: 480px) {
   .card {
     padding: 20px;
   }
+
   .title {
     font-size: 26px;
   }
