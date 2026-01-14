@@ -149,7 +149,9 @@ function sendMail() {
 .home-container {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  background-color: #f8fbff; /* Ganz leichter blauer Tint für den Hintergrund */
+  /* 0.3 steht für 30% Deckkraft - so ist es fast durchsichtig,
+     behält aber einen ganz leichten Blaustich */
+  background-color: rgba(248, 251, 255, 0.6);
 }
 
 /* HERO SECTION */
@@ -327,7 +329,13 @@ function sendMail() {
 }
 
 /* STORY / ÜBER UNS */
-.about-section { background-color: white; }
+.about-section {
+  /* 0.2 steht für 20% Deckkraft, also fast durchsichtig */
+  background-color: rgba(255, 255, 255, 0.6);
+  /* Optional: Ein leichter Blur-Effekt macht den Text besser lesbar */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
 .about-container {
   display: flex;
   align-items: center;
@@ -363,7 +371,12 @@ function sendMail() {
 .support-wrapper-box {
   text-align: center;
   padding: 100px 20px;
-  background: linear-gradient(to bottom, rgba(248, 251, 255, 0.5), rgba(230, 242, 255, 0.5));
+  /* Die Farbe (leichtes Blau) */
+  background: rgba(230, 242, 255, 0.1);
+  /* Das erzeugt den Weichzeichner-Effekt für alles, was dahinter liegt */
+  backdrop-filter: blur(5px);
+  /* Für Safari-Unterstützung */
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .support-header-title {
