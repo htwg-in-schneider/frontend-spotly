@@ -34,7 +34,7 @@ const location = ref("");
 const description = ref("");
 const image = ref("");
 
-// Dieselben Kategorien wie in der Create-Seite
+//Kategorien
 const categories = [
   "Natur & Aussicht",
   "Shops & Märkte",
@@ -50,7 +50,7 @@ onMounted(async () => {
     const data = await res.json();
 
     title.value = data.title;
-    // Mapping: Wir nehmen den Namen, falls es ein Objekt ist, sonst den String direkt
+
     category.value = typeof data.category === 'object' ? data.category.name : data.category;
     location.value = data.location;
     description.value = data.description;
@@ -197,7 +197,6 @@ async function deleteSpot() {
   padding-bottom: 50px;
 }
 
-/* Position unter dem Logo */
 .top-left-nav {
   position: absolute;
   top: 150px;

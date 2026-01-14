@@ -15,7 +15,7 @@ const userStore = useUserStore();
 
 const reviews = ref([]);
 const reviewText = ref("");
-const rating = ref(5); // Standardwert 5 Sterne
+const rating = ref(5);
 
 async function fetchReviews() {
   try {
@@ -122,7 +122,7 @@ onMounted(fetchReviews);
   padding: 0 10px;
 }
 
-.title, .review-form h4, .review-list h3 {
+.review-form h4, .review-list h3 {
   font-size: 24px;
   font-weight: 700;
   margin-top: 25px;
@@ -133,7 +133,7 @@ onMounted(fetchReviews);
 .review-card {
   background: rgba(255, 255, 255, 0.9);
   padding: 18px;
-  border-radius: 15px; /* Etwas runder */
+  border-radius: 15px;
   margin-bottom: 16px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }

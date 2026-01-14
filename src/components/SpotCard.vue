@@ -44,7 +44,7 @@ function openDetails() {
 <style scoped>
 .image-container {
   width: 100%;
-  height: 150px;        /* 🔥 feste Bildhöhe */
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,11 +56,11 @@ function openDetails() {
   border-radius: 16px;
   overflow: hidden;
   width: 90%;
-  min-height: 240px;            /* sorgt dafür, dass alle Karten gleich hoch sind */
+  min-height: 240px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Details-Button bleibt unten */
+  justify-content: space-between;
   padding: 15px 10px;
   text-align: center;
 }
@@ -71,32 +71,25 @@ function openDetails() {
   margin: 10px 0;
 }
 
-.url {
-  font-size: 14px;
-  color: #666;
-  word-break: break-word;
-  padding: 0 10px;
-  margin-bottom: auto; /* schiebt Button nach unten */
-}
 
 .details-btn {
   align-self: center;
   width: 80%;
   background-color: #463b2d;
   color: white;
-  border: 10px color(black);
+  border: 10px solid black;
   padding: 12px 0;
   border-radius: 25px;
   font-size: 1rem;
   cursor: pointer;
   transition: 0.2s ease-in-out;
-  margin-top: 15px; /* Abstand nach oben */
+  margin-top: 15px;
 }
 
 .card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;    /* 🔥 DAS ist der Schlüssel */
+  object-fit: cover;
   border-radius: 16px;
 }
 

@@ -1,15 +1,15 @@
 <script setup>
 import {onMounted, ref} from 'vue';
-import {useRouter} from 'vue-router'; // <--- Neu: Router importieren
+import {useRouter} from 'vue-router';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Button from "@/components/Button.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 const spots = ref([]);
-const router = useRouter(); // <--- Neu: Router-Instanz holen
+const router = useRouter();
 
-// Fix für verschwindende Marker-Icons (Vite Problem)
+
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -55,7 +55,6 @@ onMounted(async () => {
 `;
         marker.bindPopup(popupHTML);
 
-        // Klick-Event abfangen, sobald das Popup geöffnet wird
         marker.on('popupopen', () => {
           const btn = document.getElementById(`btn-details-${spot.id}`);
           if (btn) {
@@ -81,7 +80,7 @@ onMounted(async () => {
 <style scoped>
 .map-page {
   text-align: center;
-  height: calc(100vh - 100px); /* Seite minus Navbar-Höhe */
+  height: calc(100vh - 100px);
 }
 
 #map-container {
@@ -91,6 +90,6 @@ onMounted(async () => {
   width: 80%;
   border-radius: 25px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1; /* Sicherstellen, dass die Karte unter Menüs bleibt */
+  z-index: 1;
 }
 </style>>

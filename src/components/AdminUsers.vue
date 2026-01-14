@@ -191,7 +191,6 @@ Hier ist der bereinigte CSS-Code, der exakt auf dein Template abgestimmt ist. Ic
 CSS
 
 <style scoped>
-/* PAGE LAYOUT */
 .admin-users-page {
   min-height: 100vh;
   display: flex;
@@ -200,7 +199,6 @@ CSS
   width: 100%;
 }
 
-/* HEADER SECTION */
 .header-section {
   width: 100%;
   max-width: 1000px;
@@ -220,13 +218,13 @@ CSS
 
 .page-title-styled {
   color: #5daae0;
-  font-size: clamp(24px, 6vw, 42px); /* Flüssige Größe */
+  font-size: clamp(24px, 6vw, 42px);
   font-weight: 900;
   margin: 0;
   text-align: center;
 }
 
-/* CONTENT & SEARCH */
+
 .content-wrapper {
   width: 100%;
   max-width: 1000px;
@@ -257,7 +255,6 @@ CSS
   font-size: 16px;
 }
 
-/* TABLE CARD */
 .table-card {
   background-color: #2a8df2;
   border-radius: 30px;
@@ -267,7 +264,6 @@ CSS
   color: white;
 }
 
-/* GRID LAYOUT (DESKTOP) */
 .table-header, .table-row {
   display: grid;
   grid-template-columns: 1.2fr 1.5fr 1.2fr;
@@ -301,7 +297,7 @@ CSS
 
 .email {
   font-size: 15px;
-  word-break: break-all; /* Verhindert Überlaufen langer Mails */
+  word-break: break-all;
 }
 
 .actions {
@@ -310,7 +306,7 @@ CSS
   justify-content: flex-end;
 }
 
-/* BUTTONS */
+
 .btn-table {
   border: none;
   padding: 10px 18px;
@@ -326,10 +322,10 @@ CSS
 .btn-green { background: #4cd137; }
 .btn-red { background: #ff6b6b; }
 
-/* RESPONSIVE BREAKPOINT (TABLET/MOBILE) */
+
 @media (max-width: 768px) {
   .table-header {
-    display: none; /* Header ausblenden auf Mobilgeräten */
+    display: none;
   }
 
   .table-row {
@@ -359,14 +355,14 @@ CSS
   }
 
   .btn-table {
-    flex: 1; /* Buttons nehmen gleichmäßig Platz ein */
+    flex: 1;
     text-align: center;
   }
 }
 
 @media (max-width: 480px) {
   .header-section {
-    padding-top: 80px; /* Mehr Platz für den Back-Button */
+    padding-top: 80px;
   }
 
   .top-left-nav {
@@ -378,7 +374,6 @@ CSS
   }
 }
 
-/* OVERLAY MODAL */
 .overlay-backdrop {
   position: fixed;
   inset: 0;

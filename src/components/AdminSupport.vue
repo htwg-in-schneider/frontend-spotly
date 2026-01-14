@@ -34,7 +34,7 @@ const fetchLogs = async () => {
   }
 };
 
-// Filter-Logik für die Suche (sucht in Aktion, Admin-Name und Details)
+// Filter-Logik für die Suche
 const filteredLogs = computed(() => {
   return logs.value.filter(log => {
     const term = searchQuery.value.toLowerCase();
@@ -147,7 +147,7 @@ onMounted(fetchLogs);
 .top-left-nav { position: absolute; left: 20px; }
 .page-title-styled {
   color: #5daae0;
-  font-size: clamp(24px, 6vw, 42px); /* Flüssige Größe für Mobile */
+  font-size: clamp(24px, 6vw, 42px);
   font-weight: 900;
   margin: 0;
   text-align: center;
@@ -163,7 +163,6 @@ onMounted(fetchLogs);
   align-items: center;
 }
 
-/* Status Kacheln */
 .status-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -189,7 +188,6 @@ onMounted(fetchLogs);
 .status-badge.checking { color: #f1c40f; }
 .status-badge.offline, .status-badge.error { color: #ff4d4d; }
 
-/* Suche */
 .search-pill {
   background: white;
   padding: 12px 25px;
@@ -210,7 +208,6 @@ onMounted(fetchLogs);
   font-size: 16px;
 }
 
-/* Tabelle */
 .table-card {
   background-color: #2a8df2;
   border-radius: 30px;
@@ -222,7 +219,7 @@ onMounted(fetchLogs);
 
 .table-header, .table-row {
   display: grid;
-  grid-template-columns: 100px 150px 1fr; /* Spaltenbreiten optimiert */
+  grid-template-columns: 100px 150px 1fr;
   padding: 20px 30px;
   align-items: center;
 }
@@ -248,9 +245,6 @@ onMounted(fetchLogs);
   display: inline-block;
 }
 
-.tag-red { background: #ff4d4d !important; color: white; }
-.tag-green { background: #4cd137 !important; color: white; }
-.tag-default { background: rgba(255, 255, 255, 0.2); }
 
 .l-time { font-family: monospace; font-weight: bold; opacity: 0.9; font-size: 14px; }
 .l-msg { font-size: 15px; line-height: 1.4; }
@@ -258,7 +252,6 @@ onMounted(fetchLogs);
 
 .no-data-row { padding: 60px 20px; text-align: center; font-weight: bold; opacity: 0.8; }
 
-/* Footer Buttons */
 .action-footer {
   display: flex;
   flex-wrap: wrap;
@@ -282,7 +275,6 @@ onMounted(fetchLogs);
 
 .btn-tool:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(93, 170, 224, 0.4); }
 
-/* RESPONSIVE ANPASSUNGEN */
 @media (max-width: 850px) {
   .table-header { display: none; } /* Versteckt Header auf kleinen Screens */
 
@@ -301,7 +293,7 @@ onMounted(fetchLogs);
 
 @media (max-width: 600px) {
   .status-grid {
-    grid-template-columns: 1fr; /* Kacheln untereinander */
+    grid-template-columns: 1fr;
   }
 
   .header-section {
@@ -313,7 +305,7 @@ onMounted(fetchLogs);
   }
 
   .btn-tool {
-    width: 100%; /* Buttons auf Handy volle Breite */
+    width: 100%;
     max-width: 300px;
   }
 }

@@ -5,7 +5,6 @@ import Button from "@/components/Button.vue";
 
 const router = useRouter();
 
-// --- 1. Top Spot Logik (Neu) ---
 const topSpot = ref(null);
 const isLoadingSpot = ref(true);
 
@@ -14,7 +13,6 @@ const fetchTopSpot = async () => {
     const res = await fetch('https://backend-spotly.onrender.com/api/spots');
     if (res.ok) {
       const spots = await res.json();
-      // Sortiere nach averageRating (absteigend) und nimm den ersten
       if (spots.length > 0) {
         topSpot.value = spots.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))[0];
       }
@@ -26,7 +24,6 @@ const fetchTopSpot = async () => {
   }
 };
 
-// --- 2. Hintergrund-Slider ---
 const currentSlide = ref(0);
 const slides = ref([
   new URL('@/assets/shop.jpg', import.meta.url).href,
@@ -44,7 +41,7 @@ onMounted(() => {
 });
 onUnmounted(() => clearInterval(slideInterval));
 
-// --- 3. Kategorien Daten ---
+//Kategorien Daten
 const categories = [
   { name: "Natur & Aussicht",  img: new URL('@/assets/park.jpg', import.meta.url).href },
   { name: "Cafés & Essen", img: new URL('@/assets/cafe.jpeg', import.meta.url).href },
@@ -52,7 +49,7 @@ const categories = [
   { name: "Shops & Märkte", img: new URL('@/assets/shop.jpg', import.meta.url).href },
   { name: "Sport & Freizeit", img: new URL('@/assets/freizeit.jpeg', import.meta.url).href }
 ];
-// --- 4. Support Logik ---
+//Support
 const contactForm = ref({ name: '', email: '', message: '' });
 function sendMail() {
   const recipient = "support@spotly-konstanz.de";
@@ -148,12 +145,9 @@ function sendMail() {
 .home-container {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  /* 0.3 steht für 30% Deckkraft - so ist es fast durchsichtig,
-     behält aber einen ganz leichten Blaustich */
   background-color: rgba(248, 251, 255, 0.6);
 }
 
-/* HERO SECTION */
 .hero {
   position: relative;
   height: 90vh;
@@ -163,7 +157,6 @@ function sendMail() {
   overflow: hidden;
   color: white;
   text-align: center;
-  /* Sorgt dafür, dass die gesamte Sektion hinter dem Navbar-Dropdown bleibt */
   z-index: 1;
 }
 
@@ -178,7 +171,6 @@ function sendMail() {
   opacity: 0;
   transition: opacity 1.5s ease-in-out, transform 6s ease-out;
   transform: scale(1.05);
-  /* Slides ganz nach hinten */
   z-index: -1;
 }
 
@@ -189,7 +181,6 @@ function sendMail() {
 
 .hero-content {
   position: relative;
-  /* Höher als die Slides, aber niedriger als ein typisches Dropdown (100+) */
   z-index: 2;
   max-width: 800px;
   padding: 0 20px;
@@ -203,7 +194,6 @@ function sendMail() {
   letter-spacing: -1px;
 }
 
-/* SPOT HIGHLIGHT CARD */
 .section { padding: 80px 20px; }
 .content-wrapper { max-width: 1100px; margin: 0 auto; }
 
@@ -233,10 +223,10 @@ function sendMail() {
 .spot-image { flex: 1.2; overflow: hidden; }
 .spot-image img {
   width: 100%;
-  height: 300px; /* Hier kannst du die gewünschte Höhe festlegen */
-  object-fit: cover; /* Verhindert das Verzerren des Bildes */
+  height: 300px;
+  object-fit: cover;
   border-radius: 25px;
-  display: block; /* Entfernt mögliche Abstände unter dem Bild */
+  display: block;
 }
 
 .spot-highlight-card:hover .spot-image img {
@@ -278,7 +268,6 @@ function sendMail() {
   box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
 }
 
-/* KATEGORIEN GRID */
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -332,11 +321,9 @@ function sendMail() {
   transform: scale(1.1);
 }
 
-/* STORY / ÜBER UNS */
+
 .about-section {
-  /* 0.2 steht für 20% Deckkraft, also fast durchsichtig */
   background-color: rgba(255, 255, 255, 0.6);
-  /* Optional: Ein leichter Blur-Effekt macht den Text besser lesbar */
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
@@ -351,7 +338,7 @@ function sendMail() {
 .team-img {
   width: 180px;
   height: 180px;
-  border-radius: 60px; /* Modernere abgerundete Ecken statt Kreis */
+  border-radius: 60px;
   object-fit: cover;
   border: 4px solid white;
   box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -371,15 +358,11 @@ function sendMail() {
   font-style: italic;
 }
 
-/* SUPPORT SECTION */
 .support-wrapper-box {
   text-align: center;
   padding: 100px 20px;
-  /* Die Farbe (leichtes Blau) */
   background: rgba(230, 242, 255, 0.1);
-  /* Das erzeugt den Weichzeichner-Effekt für alles, was dahinter liegt */
   backdrop-filter: blur(5px);
-  /* Für Safari-Unterstützung */
   -webkit-backdrop-filter: blur(5px);
 }
 
@@ -394,7 +377,7 @@ function sendMail() {
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
-  background: #b19884; /* Das spezifische Braun deiner Support-Seite */
+  background: #b19884;
   padding: 30px;
   border-radius: 25px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -403,7 +386,7 @@ function sendMail() {
 .support-input-field {
   width: 100%;
   padding: 12px 20px;
-  border-radius: 30px; /* Voll abgerundet wie im Bild */
+  border-radius: 30px;
   border: none;
   background: white;
   color: #333;
@@ -440,10 +423,9 @@ function sendMail() {
 }
 
 .support-submit-btn:hover {
-  background: #5dade2; /* Helleres Blau beim Hover */
+  background: #5dade2;
 }
 
-/* RESPONSIVE */
 @media (max-width: 950px) {
   .spot-highlight-card { flex-direction: column; border-radius: 30px; }
   .spot-info { padding: 35px; align-items: center; text-align: center; }

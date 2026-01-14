@@ -1,17 +1,17 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useAuth0 } from '@auth0/auth0-vue';
-import { useRoute } from 'vue-router'; // HINZUGEFÜGT: Um Query-Params zu lesen
+import { useRoute } from 'vue-router';
 import Button from "./Button.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 const { isAuthenticated } = useAuth0();
-const route = useRoute(); // HINZUGEFÜGT
+const route = useRoute();
 
 const allSpots = ref([]);
 const categories = ref([]);
 const searchTitle = ref("");
-const searchCategory = ref(""); // Wird durch onMounted befüllt
+const searchCategory = ref("");
 const isLoading = ref(false);
 
 onMounted(async () => {
@@ -32,7 +32,6 @@ onMounted(async () => {
       ];
     }
 
-    // HINZUGEFÜGT: Prüfen, ob eine Kategorie von der Home-Seite übergeben wurde
     if (route.query.category) {
       searchCategory.value = route.query.category;
     }
@@ -48,7 +47,6 @@ const filteredSpots = computed(() => {
   return allSpots.value.filter(spot => {
     const matchesTitle = spot.title.toLowerCase().includes(searchTitle.value.toLowerCase());
 
-    // Logik angepasst: Prüft sowohl auf String als auch auf Objekt-Struktur der Kategorie
     const spotCatName = (typeof spot.category === 'object' && spot.category !== null)
         ? spot.category.name
         : spot.category;

@@ -1,6 +1,5 @@
 <template>
   <div class="about-page">
-    <!-- SECTION 1: "Story" (wie Vorlage oben) -->
     <section class="editorial-top">
       <div class="editorial-inner">
         <div class="top-left">
@@ -21,10 +20,8 @@
       </div>
     </section>
 
-    <!-- SECTION 2: Mitte (bei Vorlage ist hier Bild/Video) -> bei euch TEAM CARDS -->
     <section class="center-media">
       <div class="center-media-inner">
-        <!-- TEAM CARDS (dein Code, nur eingebettet) -->
         <div class="container-row">
           <div class="about-card">
             <div class="image-box">
@@ -53,7 +50,6 @@
       </div>
     </section>
 
-    <!-- SECTION 3: "What drives us" (wie Vorlage) -->
     <section class="drive">
       <div class="drive-inner">
         <div class="drive-left">
@@ -74,7 +70,6 @@
       </div>
     </section>
 
-    <!-- SECTION 4: großer Bild-Band (wie Vorlage unten, nur mit eurer Farbe) -->
     <section class="big-band">
       <div class="big-band-overlay">
         <h3>Spotly ist für Menschen, die ihre Stadt fühlen.</h3>
@@ -88,7 +83,6 @@
       </div>
     </section>
 
-    <!-- SECTION 5: Mission / Vision / Werte (wenn du willst, kannst du die auch drin lassen) -->
     <section class="stack">
       <div class="stack-inner">
         <div class="stack-block">
@@ -115,7 +109,6 @@
 
 <style scoped>
 
-/* ========= THEME ========= */
 .about-page {
   --blue: #5daae0;
   --blue-strong: rgba(93, 170, 224, 0.92);
@@ -129,7 +122,6 @@
 
 
 }
-/* ========= SECTION 1 (Top editorial) ========= */
 .editorial-top {
   padding: 80px 20px 40px;
   border-bottom: 1px solid var(--line);
@@ -174,12 +166,11 @@
   color: var(--muted);
 }
 
-/* ========= SECTION 2 (Center media area) ========= */
 .center-media {
   padding: 50px 20px 70px;
   border-bottom: 1px solid var(--line);
 
-  /* leichtes blaues "wash", aber sehr subtil */
+
   background: linear-gradient(
       180deg,
       rgba(93,170,224,0.10),
@@ -193,7 +184,6 @@
   margin: 0 auto;
 }
 
-/* TEAM CARDS: passen in die Vorlage (wie "Media") */
 .container-row {
   display: flex;
   justify-content: center;
@@ -203,7 +193,7 @@
 
 .about-card {
   width: 100%;
-  max-width: 520px; /* breiter, wirkt wie "Video-Frame" */
+  max-width: 520px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(14px);
@@ -267,7 +257,6 @@
   padding-top: 14px;
 }
 
-/* ========= SECTION 3 (What drives us) ========= */
 .drive {
   padding: 70px 20px;
   border-bottom: 1px solid var(--line);
@@ -297,7 +286,6 @@
   color: var(--blue);
 }
 
-/* ========= SECTION 4 (Big band) ========= */
 .big-band {
   position: relative;
   height: 420px;
@@ -345,7 +333,6 @@
 
 .cta:hover { transform: translateY(-2px); }
 
-/* ========= SECTION 5 (Stack blocks) ========= */
 .stack {
   padding: 70px 20px;
   background: rgba(255, 255, 255, 0.20);
@@ -398,7 +385,6 @@
 }
 
 
-/* ========= RESPONSIVE ========= */
 @media (max-width: 980px) {
   .editorial-inner {
     grid-template-columns: 1fr;
@@ -414,23 +400,14 @@
     gap: 18px;
   }
 
-  .end-card {
-    grid-template-columns: 1fr;
-    padding: 38px 24px;
-  }
-
-  .end-text { text-align: center; }
-  .end-spots { justify-content: center; }
 }
 
 @media (max-width: 768px) {
   .about-card { padding: 34px 22px; }
   .profile-circle { width: 160px; height: 160px; }
 
-  /* auf Mobile Reveal immer sichtbar */
   .reveal-content { max-height: 500px; opacity: 1; margin-top: 12px; }
 
-  .spot-tile { width: 130px; height: 90px; }
   .big-band-overlay h3 { font-size: 34px; }
 }
 </style>

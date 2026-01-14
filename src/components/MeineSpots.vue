@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useAuth0 } from '@auth0/auth0-vue';
-import Button from "./Button.vue"; // Pfad anpassen
+import Button from "./Button.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL;
 const { getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -68,7 +68,7 @@ onMounted(fetchMySpots);
 .spot-item { width: 100%; max-width: 500px; background: white; border-radius: 30px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 .card-content { display: flex; gap: 20px; align-items: center; }
 
-/* Bild & Platzhalter Styling */
+
 .image-container img { width: 120px; height: 90px; border-radius: 15px; object-fit: cover; }
 
 .placeholder-container {

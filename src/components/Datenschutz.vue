@@ -77,7 +77,6 @@ const router = useRouter();
   color: #333;
 }
 
-/* Titel */
 .title {
   color: #0084ff;
   font-size: 40px;
@@ -85,7 +84,6 @@ const router = useRouter();
   margin-bottom: 50px;
 }
 
-/* Sections */
 .legal-section {
   margin-bottom: 45px;
 }
@@ -103,8 +101,6 @@ const router = useRouter();
   max-width: 720px;
 }
 
-
-/* Mobile */
 @media (max-width: 768px) {
   .legal-card {
     padding: 40px 25px 80px;

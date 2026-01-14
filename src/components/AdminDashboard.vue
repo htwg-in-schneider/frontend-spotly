@@ -88,7 +88,7 @@ const username = ref("");
 const isEditing = ref(false);
 const originalUsername = ref("");
 
-// Benutzerdaten laden (Original-Logik)
+// Benutzerdaten laden
 async function loadUserData() {
   try {
     const token = await getAccessTokenSilently();
@@ -105,7 +105,7 @@ async function loadUserData() {
   }
 }
 
-// Profil speichern (Original-Logik mit /users/me)
+// Profil speichern
 async function saveProfile() {
   try {
     const token = await getAccessTokenSilently();
@@ -146,7 +146,6 @@ onMounted(loadUserData);
   padding: 80px 20px 40px 20px;
 }
 
-/* Der große blaue Kasten */
 .main-container {
   background: #6eb5f3;
   width: 100%;
@@ -166,7 +165,6 @@ onMounted(loadUserData);
   text-align: center;
 }
 
-/* Profil Spalte */
 .profile-column { flex: 1; }
 
 .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
@@ -189,10 +187,8 @@ input:disabled { color: rgba(255,255,255,0.8); cursor: not-allowed; }
 
 .edit-actions { display: flex; gap: 10px; }
 
-/* Trenner */
 .vertical-divider { width: 1px; background: rgba(255, 255, 255, 0.3); }
 
-/* Admin Spalte */
 .admin-column { flex: 1; }
 
 .menu-btn {

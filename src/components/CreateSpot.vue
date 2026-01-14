@@ -37,7 +37,7 @@ const imageOptions = [
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
-import Button from "./Button.vue"; // Button Komponente importieren
+import Button from "./Button.vue"
 
 const API_URL = import.meta.env.VITE_API_URL + "/spots";
 const router = useRouter();
@@ -185,7 +185,6 @@ async function createSpot() {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* Bild & Platzhalter */
 .image-box img {
   width: 100%;
   height: 200px;
@@ -212,7 +211,6 @@ async function createSpot() {
   opacity: 0.2;
 }
 
-/* Form Styling */
 .input {
   width: 100%;
   padding: 14px;

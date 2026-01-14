@@ -60,7 +60,6 @@ function sendMail() {
 <style scoped>
 .wrapper {
   text-align: center;
-  /* Nutzt Padding statt festem Margin für bessere mobile Abstände */
   padding: 80px 20px;
   min-height: 100vh;
   display: flex;
@@ -69,7 +68,6 @@ function sendMail() {
 }
 
 .title {
-  /* Nutzt clamp für flüssige Schriftgröße (Min, Scale, Max) */
   font-size: clamp(24px, 5vw, 36px);
   font-weight: 800;
   color: #0084ff;
@@ -79,16 +77,14 @@ function sendMail() {
 
 .card {
   width: 100%;
-  /* Max-width sorgt dafür, dass es am Desktop nicht zu breit wird */
   max-width: 450px;
   background: #b19884;
-  padding: clamp(20px, 5vw, 40px); /* Padding passt sich Handy an */
-  border-radius: 35px; /* Etwas weichere Ecken für modernen Look */
+  padding: clamp(20px, 5vw, 40px);
+  border-radius: 35px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box; /* WICHTIG: Padding wird in die Breite eingerechnet */
+  box-sizing: border-box;
 }
 
-/* Form Styling */
 form {
   display: flex;
   flex-direction: column;
@@ -97,10 +93,10 @@ form {
 
 .input, .textarea {
   width: 100%;
-  box-sizing: border-box; /* Verhindert Überlaufen */
-  border: 2px solid transparent; /* Vorbereitet für Fokus-Effekt */
+  box-sizing: border-box;
+  border: 2px solid transparent;
   font-family: 'Inter', sans-serif;
-  font-size: 16px; /* Verhindert Auto-Zoom bei iOS */
+  font-size: 16px;
   transition: all 0.3s ease;
 }
 
@@ -118,7 +114,6 @@ form {
   resize: none;
 }
 
-/* Fokus-Effekte für bessere User Experience */
 .input:focus, .textarea:focus {
   outline: none;
   border-color: #0084ff;
@@ -150,7 +145,6 @@ form {
   transform: scale(0.98);
 }
 
-/* Responsive Feinschliff */
 @media (max-width: 480px) {
   .wrapper {
     padding: 40px 15px;
@@ -158,7 +152,7 @@ form {
   }
 
   .card {
-    border-radius: 25px; /* Etwas weniger Radius auf kleinen Screens */
+    border-radius: 25px;
   }
 
   .create-btn {

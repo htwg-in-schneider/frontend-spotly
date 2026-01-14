@@ -64,7 +64,6 @@ const router = createRouter({
             component: Datenschutz
         },
 
-        // --- ADMIN BEREICH (Anforderung b) ---
         {
             path: "/admin",
             name: "admin-dashboard",
@@ -78,7 +77,7 @@ const router = createRouter({
             meta: { requiresAdmin: true }
         },
         {
-            path: "/admin/spots", // Der Pfad für deine neue Orte-Verwaltung
+            path: "/admin/spots",
             name: "admin-spots",
             component: AdminSpots,
             meta: { requiresAdmin: true }
@@ -119,18 +118,16 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore();
 
-    // Wenn die Seite Admin-Rechte braucht
     if (to.matched.some(record => record.meta.requiresAdmin)) {
 
-        // Check: Ist der User eingeloggt und ist er ADMIN in unserer Datenbank?
         if (userStore.userProfile?.role === 'ADMIN') {
-            next(); // Zugriff erlaubt
+            next();
         } else {
             alert("Zugriff verweigert: Nur für Admins!");
-            next('/'); // Umleitung auf Startseite
+            next('/');
         }
     } else {
-        next(); // Seite braucht kein Admin, einfach weiterleiten
+        next();
     }
 });
 

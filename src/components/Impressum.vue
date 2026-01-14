@@ -82,13 +82,4 @@ p {
   line-height: 1.6;
 }
 
-.back-btn {
-  margin-top: 30px;
-  background: #0084ff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-}
 </style>

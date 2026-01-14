@@ -61,7 +61,6 @@ import { useAuth0 } from '@auth0/auth0-vue';
 import { useRouter} from "vue-router";
 import { useUserStore } from '@/stores/userStore';
 
-// Logik für das Dropdown
 const isMenuOpen = ref(false);
 
 const { loginWithRedirect, logout, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -105,7 +104,6 @@ const handleAuth = () => {
 </script>
 
 <style scoped>
-/* --- DEIN ORIGINAL DESKTOP STYLE --- */
 
 .logo-outside {
   position: relative;
@@ -117,9 +115,9 @@ const handleAuth = () => {
 .header {
   position: relative;
   max-width: 600px;
-  top: -100px; /* Deine ursprüngliche Verschiebung */
+  top: -100px;
   display: flex;
-  justify-content: center; /* Zentriert die Nav-Links im Header */
+  justify-content: center;
   align-items: center;
   padding: 20px 40px;
   margin: 0 auto;
@@ -168,12 +166,11 @@ const handleAuth = () => {
   text-align: center;
 }
 
-.menu-trigger { display: none; } /* Auf Desktop versteckt */
+.menu-trigger { display: none; }
 
-/* --- RESPONSIVE TEIL (Ab 900px) --- */
 
 @media (max-width: 900px) {
-  .desktop-only { display: none; } /* Versteckt die seitlichen Buttons */
+  .desktop-only { display: none; }
 
   .logo-outside {
     height: 100px;
@@ -182,7 +179,7 @@ const handleAuth = () => {
   }
 
   .header {
-    top: 20px; /* Holt den Header für Mobile wieder ins Sichtfeld */
+    top: 20px;
     width: auto;
     max-width: 200px;
     flex-direction: column;
@@ -213,7 +210,6 @@ const handleAuth = () => {
 
   .nav.dropdown-visible { display: flex; }
 
-  /* Buttons im Mobile Dropdown */
   .mobile-auth-links {
     display: flex;
     flex-direction: column;
