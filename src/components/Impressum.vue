@@ -2,6 +2,7 @@
   <div class="legal-container">
     <div class="legal-card">
       <h1>Impressum</h1>
+
       <section>
         <h2>Angaben gemäß § 5 TMG</h2>
         <p>
@@ -14,12 +15,17 @@
 
       <section>
         <h2>Kontakt</h2>
-        <p>E-Mail: support@spotly-konstanz.de</p>
+        <p>
+          E-Mail: support@spotly-konstanz.de
+        </p>
       </section>
 
       <section>
         <h2>Vertreten durch</h2>
-        <p>Efe-liz & Moritz</p>
+        <p>
+          Efe-liz Kings<br />
+          Moritz Bader
+        </p>
       </section>
 
       <section>
@@ -30,12 +36,21 @@
         </p>
       </section>
 
-      <button @click="$router.back()" class="back-btn">Zurück</button>
+      <div class="top-left-nav">
+        <router-link to="/">
+          <Button variant="secondary" round>&lt;</Button>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
 
+<script setup lang="ts">
+import Button from "@/components/Button.vue";
+</script>
+
 <style scoped>
+.top-left-nav { position: absolute; top: 270px; left: 20px; z-index: 100; }
 .legal-container {
   display: flex;
   justify-content: center;
@@ -43,7 +58,7 @@
 }
 
 .legal-card {
-  background: rgba(255, 255, 255, 0.9); /* Weißer Hintergrund, leicht durchsichtig */
+  background: rgba(255, 255, 255, 0.9);
   padding: 40px;
   border-radius: 25px;
   max-width: 800px;
@@ -52,9 +67,20 @@
   color: #333;
 }
 
-h1 { color: #0084ff; margin-bottom: 20px; }
-h2 { font-size: 1.2rem; margin-top: 20px; color: #555; }
-p { line-height: 1.6; }
+h1 {
+  color: #0084ff;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  color: #555;
+}
+
+p {
+  line-height: 1.6;
+}
 
 .back-btn {
   margin-top: 30px;

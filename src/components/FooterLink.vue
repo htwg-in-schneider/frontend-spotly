@@ -1,6 +1,6 @@
 <script setup>
-const props = defineProps({
-  href: {
+defineProps({
+  to: {
     type: String,
     required: true
   }
@@ -8,9 +8,9 @@ const props = defineProps({
 </script>
 
 <template>
-  <a :href="href" class="footer-link">
-    <slot></slot>
-  </a>
+  <router-link :to="to" class="footer-link">
+    <slot />
+  </router-link>
 </template>
 
 <style scoped>
