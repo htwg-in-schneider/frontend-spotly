@@ -110,14 +110,14 @@ const handleAuth = () => {
 
 .header {
   position: relative;
-  max-width: 540px;
+  max-width: 600px;
   top: -100px; /* Deine ursprüngliche Verschiebung */
   display: flex;
   justify-content: center; /* Zentriert die Nav-Links im Header */
   align-items: center;
   padding: 20px 40px;
   margin: 0 auto;
-  width: 40%;
+  width: 45%;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 40px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -132,7 +132,7 @@ const handleAuth = () => {
   color: #1c1c1c;
   border-radius: 20px;
   transition: all 0.3s ease;
-  font-weight: 600;
+  font-weight: 550;
 }
 
 .nav a:hover {
