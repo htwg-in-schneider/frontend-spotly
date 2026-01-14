@@ -82,7 +82,7 @@ function sendMail() {
 
     <section class="section" v-if="topSpot">
       <div class="content-wrapper">
-        <h2 class="section-title-blue">Best bewerteste Spot</h2>
+        <h2 class="section-title-blue">Hot take</h2>
         <div class="spot-highlight-card">
           <div class="spot-image">
             <img :src="topSpot.imageUrl || slides[3]" :alt="topSpot.title">
