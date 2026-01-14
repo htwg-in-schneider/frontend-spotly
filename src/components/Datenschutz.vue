@@ -6,8 +6,15 @@ const router = useRouter();
 </script>
 
 <template>
+  <div class="top-left-nav">
+    <router-link to="/">
+      <Button variant="secondary" round>&lt;</Button>
+    </router-link>
+  </div>
+
   <div class="legal-container">
     <div class="legal-card">
+
 
       <h1 class="title">Datenschutzerklärung</h1>
 
@@ -40,11 +47,6 @@ const router = useRouter();
         </p>
       </section>
 
-      <div class="top-left-nav">
-        <router-link to="/">
-          <Button variant="secondary" round>&lt;</Button>
-        </router-link>
-      </div>
 
     </div>
   </div>
@@ -53,8 +55,8 @@ const router = useRouter();
 <style scoped>
 .top-left-nav {
   position: absolute;
-  top: -100px;
-  left: -270px;
+  top: 270px;
+  left: 20px;
   z-index: 100;
 }
 
