@@ -1,55 +1,59 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useAuth0 } from "@auth0/auth0-vue";
-import { useUserStore } from '@/stores/userStore';
+  import { ref, onMounted } from "vue";
+  import { useRoute, useRouter } from "vue-router";
+  import { useUserStore } from '@/stores/userStore';
+  import Button from "./Button.vue";
+  import SpotReviews from "@/components/SpotReviews.vue";
 
-// Import der Button-Komponente
-import Button from "./Button.vue";
-import SpotReviews from "@/components/SpotReviews.vue";
+  const route = useRoute();
+  const router = useRouter();
+  const userStore = useUserStore();
 
-const route = useRoute();
-const router = useRouter();
-const userStore = useUserStore();
+  const API_BASE = import.meta.env.VITE_API_URL;
+  const spot = ref(null);
 
-const API_BASE = import.meta.env.VITE_API_URL;
-
-const spot = ref(null);
-const user = ref(null);
-
-onMounted(async () => {
+  // 1. Die Funktion muss exakt so heißen wie im Template (@review-posted="loadSpotData")
+  async function loadSpotData() {
   const spotId = route.params.id;
 
   try {
-    const res = await fetch(`${API_BASE}/spots/${spotId}`);
+  const res = await fetch(`${API_BASE}/spots/${spotId}`);
 
-    if (!res.ok) {
-      throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
-    }
+  if (!res.ok) {
+  throw new Error(`Spot mit ID ${spotId} nicht gefunden.`);
+}
 
-    const data = await res.json();
+  const data = await res.json();
 
-    spot.value = {
-      id: data.id,
-      title: data.title,
-      category: data.category ?? "Unbekannt",
-      location: data.location ?? "Konstanz",
-      description: data.description || "Keine Beschreibung vorhanden.",
-      image: data.imageUrl,
-      reviews: data.reviews || [],
-      author: data.authorName || "Ein Spotly-Nutzer",
-      date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt"
-    };
+  spot.value = {
+  id: data.id,
+  title: data.title,
+  // Beachte: Falls data.category ein Objekt ist, nimm data.category.name
+  category: data.category?.name || data.category || "Unbekannt",
+  location: data.location ?? "Konstanz",
+  description: data.description || "Keine Beschreibung vorhanden.",
+  image: data.imageUrl,
+  reviews: data.reviews || [],
+  author: data.authorName || "Ein Spotly-Nutzer",
+  date: data.createdAt ? new Date(data.createdAt).toLocaleDateString("de-DE") : "unbekannt",
+  averageRating: data.averageRating,
+  reviewCount: data.reviewCount
+};
 
-  } catch (err) {
-    console.error("Fehler beim Laden des Spots:", err);
-    alert("Konnte Spot-Details nicht vom Backend laden.");
-  }
+} catch (err) {
+  console.error("Fehler beim Laden des Spots:", err);
+}
+}
+
+  // 2. Beim ersten Laden der Seite die Funktion aufrufen
+  onMounted(() => {
+  loadSpotData();
 });
 
-function editSpot() {
+  function editSpot() {
   router.push(`/spot/${route.params.id}/edit`);
 }
+
 </script>
 
 <template>
@@ -64,6 +68,15 @@ function editSpot() {
       <img :src="spot.image" class="spot-image" />
 
       <h2 class="spot-name">{{ spot.title }}</h2>
+
+      <div v-if="spot.reviewCount > 0" class="rating-badge">
+        <span class="star-icon">⭐</span>
+        <span class="rating-val">{{ spot.averageRating?.toFixed(1) }}</span>
+        <span class="rating-count">({{ spot.reviewCount }} Bewertungen)</span>
+      </div>
+      <div v-else class="rating-badge no-reviews">
+        Noch keine Bewertungen
+      </div>
 
       <p class="info-line">
         <strong>Kategorie:</strong> {{ spot.category.name }}
@@ -84,7 +97,7 @@ function editSpot() {
         </p>
       </div>
 
-      <SpotReviews :spotId="spot.id" />
+      <SpotReviews :spotId="spot.id" @review-posted="loadSpotData" />
 
       <div v-if="userStore.userProfile?.role === 'ADMIN'">
         <button class="edit-btn" @click="editSpot">Bearbeiten</button>
@@ -192,5 +205,38 @@ function editSpot() {
   font-size: 0.9rem;
   color: #666;
   font-style: italic;
+}
+
+ .rating-badge {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   background-color: #f8f9fa;
+   padding: 6px 12px;
+   border-radius: 20px;
+   width: fit-content;
+   margin: 10px 0;
+   font-weight: 600;
+   border: 1px solid #e9ecef;
+ }
+
+.star-icon {
+  color: #ffc107;
+}
+
+.rating-val {
+  color: #333;
+}
+
+.rating-count {
+  color: #6c757d;
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+.no-reviews {
+  font-style: italic;
+  color: #adb5bd;
+  font-size: 0.9em;
 }
 </style>

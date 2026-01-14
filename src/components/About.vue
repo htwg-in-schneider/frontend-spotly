@@ -136,10 +136,9 @@
 
   color: var(--ink);
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  background: rgba(255, 255, 255, 0.6);
+
 
 }
-
 /* ========= SECTION 1 (Top editorial) ========= */
 .editorial-top {
   padding: 80px 20px 40px;

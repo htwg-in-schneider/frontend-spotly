@@ -1,72 +1,69 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue"; // <--- 1. Auth0 importieren
-
-const API_BASE = import.meta.env.VITE_API_URL;
-const { getAccessTokenSilently, isAuthenticated } = useAuth0(); // <--- 2. Auth0-Funktionen laden
+import { useAuth0 } from "@auth0/auth0-vue";
+import { useUserStore } from '@/stores/userStore';
 
 const props = defineProps({
-  spotId: Number
+  spotId: Number,
+  isAdminMode: Boolean
 });
+
+const emit = defineEmits(['review-posted']);
+const API_BASE = import.meta.env.VITE_API_URL;
+const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+const userStore = useUserStore();
 
 const reviews = ref([]);
 const reviewText = ref("");
-const rating = ref(5);
+const rating = ref(5); // Standardwert 5 Sterne
 
 async function fetchReviews() {
   try {
     const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
+    if (res.ok) reviews.value = await res.json();
+  } catch (err) { console.error(err); }
+}
+
+async function deleteReview(reviewId) {
+  if (!confirm("Bewertung löschen?")) return;
+  try {
+    const token = await getAccessTokenSilently();
+    const res = await fetch(`${API_BASE}/spots/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     if (res.ok) {
-      reviews.value = await res.json();
-    } else {
-      reviews.value = [];
+      await fetchReviews();
+      emit('review-posted');
     }
-  } catch (err) {
-    console.error("Fehler beim Laden der Reviews:", err);
-  }
+  } catch (err) { console.error(err); }
 }
 
 async function submitReview() {
-  if (!isAuthenticated.value) {
-    alert("Du musst eingeloggt sein, um eine Bewertung abzugeben.");
+  if (!reviewText.value.trim()) {
+    alert("Bitte schreibe einen Kommentar.");
     return;
   }
-
-  if (reviewText.value.trim() === "" || rating.value < 1 || rating.value > 5) {
-    alert("Bitte geben Sie einen gültigen Text und eine Bewertung (1-5) ein.");
-    return;
-  }
-
-  const newReview = {
-    spotId: props.spotId,
-    rating: rating.value,
-    comment: reviewText.value,
-  };
-
   try {
-    // 3. Token für die Autorisierung abrufen
     const token = await getAccessTokenSilently();
-
-    const res = await fetch(`${API_BASE}/reviews`, {
+    const res = await fetch(`${API_BASE}/spots/${props.spotId}/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // <--- 4. Token mitschicken
+        'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(newReview)
+      body: JSON.stringify({
+        rating: rating.value,
+        comment: reviewText.value
+      })
     });
-
     if (res.ok) {
       reviewText.value = "";
       rating.value = 5;
       await fetchReviews();
-    } else {
-      throw new Error(`Fehler beim Speichern der Bewertung: ${res.statusText}`);
+      emit('review-posted');
     }
-  } catch (err) {
-    console.error("Fehler beim Senden der Bewertung.", err);
-    alert("Die Bewertung konnte nicht gesendet werden.");
-  }
+  } catch (err) { console.error(err); }
 }
 
 onMounted(fetchReviews);
@@ -74,24 +71,33 @@ onMounted(fetchReviews);
 
 <template>
   <div class="reviews-wrapper">
-    <h2 class="title">Bewertungen</h2>
+    <div v-if="isAuthenticated && !isAdminMode" class="review-form">
+      <h4>Bewertung schreiben</h4>
 
-    <div v-if="isAuthenticated" class="review-form">
-      <h4>Ihre Bewertung</h4>
-      <textarea v-model="reviewText" placeholder="Ihre Meinung zum Spot..." rows="3"></textarea>
+      <textarea v-model="reviewText" placeholder="Wie hat es dir dort gefallen?"></textarea>
+
       <div class="rating-input">
-        <label for="rating">Bewertung (1-5):</label>
-        <input type="number" id="rating" v-model.number="rating" min="1" max="5">
+        <label>Sterne (1-5):</label>
+        <input type="number" v-model.number="rating" min="1" max="5" />
       </div>
-      <button @click="submitReview" class="submit-btn">Absenden</button>
-    </div>
-    <hr>
 
-    <div v-if="reviews.length" class="review-list">
-      <h3>Bestehende Bewertungen ({{ reviews.length }})</h3>
+      <button class="submit-btn" @click="submitReview">Senden</button>
+    </div>
+
+    <div v-if="reviews.length > 0">
       <div v-for="r in reviews" :key="r.id" class="review-card">
-        <div class="stars">
-          <span v-for="i in 5" :key="i" class="star" :class="{ active: i <= r.rating }">★</span>
+        <div class="review-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="stars">
+            <span v-for="i in 5" :key="i" class="star" :class="{ active: i <= r.rating }">★</span>
+          </div>
+
+          <button
+              v-if="isAdminMode || userStore.userProfile?.role === 'ADMIN'"
+              @click="deleteReview(r.id)"
+              class="delete-btn"
+          >
+            Löschen
+          </button>
         </div>
         <p class="review-text">{{ r.comment }}</p>
       </div>
@@ -213,6 +219,23 @@ onMounted(fetchReviews);
   
   .submit-btn:hover {
       background: #0072d6;
+  }
+
+  .delete-btn {
+    background: red;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    /* Damit er linksbündig mit dem Formular ist */
+    display: inline-block;
+  }
+
+  .delete-btn:hover {
+    background: darkred;
   }
   
   /* Keine Reviews Platzhalter */

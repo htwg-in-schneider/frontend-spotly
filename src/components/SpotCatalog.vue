@@ -146,7 +146,7 @@ onMounted(() => fetchSpots());
     </div>
     <!-- Spot-Karten -->
     <section class="spots">
-      <div class="spots-container">
+      <div v-if="!isLoading" class="spots-container">
         <SpotCard v-for="spot in spots" :key="spot.id" :spot="spot"/>
       </div>
 

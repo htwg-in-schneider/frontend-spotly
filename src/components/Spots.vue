@@ -10,6 +10,7 @@ const allSpots = ref([]);
 const categories = ref([]);
 const searchTitle = ref("");
 const searchCategory = ref("");
+const isLoading = ref(false);
 
 onMounted(async () => {
   try {
@@ -79,7 +80,7 @@ const filteredSpots = computed(() => {
         </div>
       </div>
 
-      <div class="spot-list">
+      <div v-if="!isLoading" class="spot-list">
         <router-link v-for="spot in filteredSpots" :key="spot.id" :to="'/spot/' + spot.id" class="spot-card">
           <div class="card-content">
             <div class="image-container">
@@ -95,6 +96,10 @@ const filteredSpots = computed(() => {
             </div>
           </div>
         </router-link>
+      </div>
+      <div v-if="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Spots werden geladen...</p>
       </div>
     </div>
   </div>
@@ -159,4 +164,22 @@ input::placeholder { color: white; }
 
 .text-container h3 { margin: 0; font-size: 18px; font-weight: 700; }
 .text-container p { margin-top: 5px; font-size: 13px; color: #666; }
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #0084ff;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 132, 255, 0.1);
+  border-left-color: #0084ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
 </style>
