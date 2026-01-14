@@ -120,14 +120,12 @@ function sendMail() {
         <div class="about-container">
           <div class="team-wrapper">
             <img src="@/assets/Moritz.jpg" class="team-img" alt="Moritz">
-            <span class="team-name">Moritz</span>
           </div>
           <p class="about-text-content">
             Spotly ist unsere Art, Konstanz neu zu entdecken durch echte Tipps von echten Menschen...
           </p>
           <div class="team-wrapper">
             <img src="@/assets/Efeliz.jpg" class="team-img" alt="Efe-liz">
-            <span class="team-name">Efe-liz</span>
           </div>
         </div>
       </div>
@@ -365,62 +363,67 @@ function sendMail() {
 .support-wrapper-box {
   text-align: center;
   padding: 100px 20px;
-  background: linear-gradient(to bottom, #f8fbff, #e6f2ff);
+  background: linear-gradient(to bottom, rgba(248, 251, 255, 0.5), rgba(230, 242, 255, 0.5));
 }
 
 .support-header-title {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 700;
   color: #0084ff;
   margin-bottom: 40px;
 }
 
 .support-card-brown {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   margin: 0 auto;
-  background: #2d2d2d; /* Dunkler Kontrast statt braun wirkt edler */
-  padding: 45px;
-  border-radius: 40px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+  background: #b19884; /* Das spezifische Braun deiner Support-Seite */
+  padding: 30px;
+  border-radius: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.support-input-field, .support-textarea-field {
+.support-input-field {
   width: 100%;
-  padding: 18px 25px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.05);
-  color: white;
-  margin-bottom: 20px;
-  outline: none;
+  padding: 12px 20px;
+  border-radius: 30px; /* Voll abgerundet wie im Bild */
+  border: none;
+  background: white;
+  color: #333;
+  margin-bottom: 15px;
   font-family: inherit;
-  transition: all 0.3s ease;
+  outline: none;
 }
 
-.support-input-field:focus, .support-textarea-field:focus {
-  background: rgba(255,255,255,0.1);
-  border-color: #0084ff;
+.support-textarea-field {
+  width: 100%;
+  height: 120px;
+  padding: 15px 20px;
+  border-radius: 20px;
+  border: none;
+  background: white;
+  color: #333;
+  margin-bottom: 15px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
 }
 
 .support-submit-btn {
   width: 100%;
   background: #0084ff;
   color: white;
-  padding: 18px;
+  padding: 14px;
   border: none;
-  border-radius: 20px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(0, 132, 255, 0.3);
+  transition: background 0.3s ease;
 }
 
 .support-submit-btn:hover {
-  background: #0066cc;
-  transform: translateY(-2px);
-  box-shadow: 0 15px 25px rgba(0, 132, 255, 0.4);
+  background: #5dade2; /* Helleres Blau beim Hover */
 }
 
 /* RESPONSIVE */
@@ -433,5 +436,14 @@ function sendMail() {
   .team-wrapper:first-of-type { order: 1; }
   .team-wrapper:last-of-type { order: 3; }
   .hero-content h1 { font-size: 3rem; }
+}
+
+@media (max-width: 480px) {
+  .support-card-brown {
+    padding: 20px;
+  }
+  .support-header-title {
+    font-size: 26px;
+  }
 }
 </style>
