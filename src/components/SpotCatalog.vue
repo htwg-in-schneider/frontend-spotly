@@ -47,7 +47,7 @@ onUnmounted(() => clearInterval(slideInterval));
 // --- 3. Kategorien Daten ---
 const categories = [
   { name: "Natur & Aussicht",  img: new URL('@/assets/park.jpg', import.meta.url).href },
-  { name: "Essen & Trinken", img: new URL('@/assets/cafe.jpeg', import.meta.url).href },
+  { name: "Cafés & Essen", img: new URL('@/assets/cafe.jpeg', import.meta.url).href },
   { name: "Events & Kultur", img: new URL('@/assets/event.jpg', import.meta.url).href },
   { name: "Shops & Märkte", img: new URL('@/assets/shop.jpg', import.meta.url).href },
   { name: "Sport & Freizeit", img: new URL('@/assets/freizeit.jpeg', import.meta.url).href }

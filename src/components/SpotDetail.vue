@@ -76,7 +76,7 @@ function editSpot() {
       </div>
 
       <p class="info-line">
-        <strong>Kategorie:</strong> {{ spot.category.name }}
+        <strong>Kategorie:</strong> {{ spot.category}}
       </p>
 
       <p class="info-line">

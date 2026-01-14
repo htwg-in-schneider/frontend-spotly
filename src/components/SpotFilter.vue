@@ -31,7 +31,7 @@ async function fetchCategories() {
       {id: "nature", name: "Natur & Aussicht"},
       {id: "shops", name: "Shops & Märkte"},
       {id: "events", name: "Events & Kultur"},
-      {id: "cafes", name: "Cafés & Essen"},
+      {id: "cafes", name: "Essen & Trinken"},
       {id: "sport", name: "Sport & Freizeit"},
       {id: "andere", name: "Andere"},
 
