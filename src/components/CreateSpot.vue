@@ -5,16 +5,32 @@ const imageOptions = [
     url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/cafe.jpeg"
   },
   {
+    label: "Café2",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/cafe2.jpeg"
+  },
+  {
     label: "Event",
-    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/event.jpg"
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/event.jpeg"
+  },
+  {
+    label: "Event2",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/event2.jpeg"
   },
   {
     label: "Park",
-    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/park.jpg"
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/park.jpeg"
+  },
+  {
+    label: "Park2",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/park2.jpeg"
   },
   {
     label: "Shop",
     url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/shop.jpg"
+  },
+  {
+    label: "Sport & Freizeit",
+    url: "https://htwg-in-schneider.github.io/frontend-static-spotly/images/freizeit.jpeg"
   }
 ];
 
