@@ -68,7 +68,6 @@ const username = ref("");
 const isEditing = ref(false);
 const originalUsername = ref("");
 
-// Benutzerdaten vom eigenen Backend laden
 async function loadUserData() {
   try {
     const token = await getAccessTokenSilently();
@@ -94,7 +93,7 @@ async function saveProfile() {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ username: username.value })
+      body: JSON.stringify({ enabled: true, username: username.value })
     });
 
     if (res.ok) {
@@ -121,7 +120,7 @@ onMounted(loadUserData);
 .content-wrapper { width: 95%; max-width: 500px; }
 .main-title { color: #0084ff; font-size: 48px; font-weight: 800; margin-bottom: 25px; }
 
-/* Blaue Karte passend zu Spots */
+
 .profile-card { background: #6eb5f3; padding: 25px; border-radius: 30px; box-shadow: 0 8px 20px rgba(0,132,255,0.15); }
 
 .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
