@@ -1,10 +1,5 @@
 <template>
   <div class="admin-profile-page">
-    <div class="top-left-nav">
-      <router-link to="/">
-        <Button variant="secondary" round>&lt;</Button>
-      </router-link>
-    </div>
 
     <div class="main-container">
 
@@ -142,7 +137,6 @@ onMounted(loadUserData);
 </script>
 
 <style scoped>
-.top-left-nav { position: absolute; top: 20px; left: 20px; z-index: 100; }
 
 .admin-profile-page {
   min-height: 100vh;
