@@ -1,18 +1,21 @@
 <script setup>
-import {ref, onMounted, computed} from "vue";
-import {useAuth0} from '@auth0/auth0-vue';
+import { ref, onMounted, computed } from "vue";
+import { useAuth0 } from '@auth0/auth0-vue';
+import { useRoute } from 'vue-router'; // HINZUGEFÜGT: Um Query-Params zu lesen
 import Button from "./Button.vue";
 
 const API_BASE = import.meta.env.VITE_API_URL;
-const {isAuthenticated} = useAuth0();
+const { isAuthenticated } = useAuth0();
+const route = useRoute(); // HINZUGEFÜGT
 
 const allSpots = ref([]);
 const categories = ref([]);
 const searchTitle = ref("");
-const searchCategory = ref("");
+const searchCategory = ref(""); // Wird durch onMounted befüllt
 const isLoading = ref(false);
 
 onMounted(async () => {
+  isLoading.value = true;
   try {
     const spotRes = await fetch(`${API_BASE}/spots`);
     if (spotRes.ok) allSpots.value = await spotRes.json();
@@ -20,23 +23,38 @@ onMounted(async () => {
     const catRes = await fetch(`${API_BASE}/category`);
     if (catRes.ok) {
       const catData = await catRes.json();
-      categories.value = catData.map(c => typeof c === 'string' ? {name: c} : c);
+      categories.value = catData.map(c => typeof c === 'string' ? { name: c } : c);
     } else {
       categories.value = [
-        {name: "Natur & Aussicht"}, {name: "Shops & Märkte"},
-        {name: "Events & Kultur"}, {name: "Cafés & Essen"},
-        {name: "Sport & Freizeit"}, {name: "Andere"}
+        { name: "Natur & Aussicht" }, { name: "Shops & Märkte" },
+        { name: "Kultur & Events" }, { name: "Essen & Trinken" },
+        { name: "Sport & Freizeit" }, { name: "Andere" }
       ];
     }
+
+    // HINZUGEFÜGT: Prüfen, ob eine Kategorie von der Home-Seite übergeben wurde
+    if (route.query.category) {
+      searchCategory.value = route.query.category;
+    }
+
   } catch (err) {
     console.error("Verbindungsfehler:", err);
+  } finally {
+    isLoading.value = false;
   }
 });
 
 const filteredSpots = computed(() => {
   return allSpots.value.filter(spot => {
     const matchesTitle = spot.title.toLowerCase().includes(searchTitle.value.toLowerCase());
-    const matchesCategory = searchCategory.value === "" || (spot.category && spot.category.name === searchCategory.value);
+
+    // Logik angepasst: Prüft sowohl auf String als auch auf Objekt-Struktur der Kategorie
+    const spotCatName = (typeof spot.category === 'object' && spot.category !== null)
+        ? spot.category.name
+        : spot.category;
+
+    const matchesCategory = searchCategory.value === "" || spotCatName === searchCategory.value;
+
     return matchesTitle && matchesCategory;
   });
 });
