@@ -1,13 +1,13 @@
 <template xmlns="http://www.w3.org/1999/html">
-  <div class="top-left-nav">
-    <router-link to="/admin">
-      <Button variant="secondary" round>&lt;</Button>
-    </router-link>
-  </div>
   <div class="admin-users-page">
-    <div class="header-section">
+    <header class="header-section">
+      <div class="top-left-nav">
+        <router-link to="/admin">
+          <Button variant="secondary" round>&lt;</Button>
+        </router-link>
+      </div>
       <h1 class="page-title-styled">Benutzer verwalten</h1>
-    </div>
+    </header>
 
     <div class="content-wrapper">
       <div class="search-pill">
@@ -75,17 +75,17 @@
         </div>
 
         <div class="overlay-btns">
+          <button @click="showOverlay = false" class="btn-overlay-alt">Abbrechen</button>
           <button
               @click="handleConfirm"
               class="btn-overlay"
-              :disabled="activeMode === 'lock' && reason.length < 10" >
-        </button>
+              :disabled="activeMode === 'lock' && reason.length < 10">
+            Bestätigen
+          </button>
         </div>
       </div>
     </div>
   </div>
-
-
 </template>
 <script setup>
 import { ref, computed, onMounted } from 'vue';
@@ -188,46 +188,33 @@ onMounted(fetchUsers);
 </script>
 
 <style scoped>
-.top-left-nav {
-  position: absolute;
-  top: 300px;
-  left: 30px;
-  z-index: 100;
-}
-.admin-users-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  padding-bottom: 80px;
-}
-
 .header-section {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 60px 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
   position: relative;
-  text-align: center;
 }
 
-.back-link {
-  position: absolute; left: 0; top: 40px;
-  background: none; border: none;
-  color: #4a90e2; font-weight: bold; cursor: pointer;
+.top-left-nav {
+  display: flex;
+  align-items: center;
 }
 
 .page-title-styled {
-  color: #4a90e2;
+  color: #5daae0;
   font-size: 42px;
   font-weight: 900;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
   margin: 0;
+  line-height: 1;
 }
 
 .content-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -236,97 +223,183 @@ onMounted(fetchUsers);
 
 .search-pill {
   background: white;
-  padding: 10px 20px;
+  padding: 12px 25px;
   border-radius: 25px;
   display: flex;
+  align-items: center;
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
-.search-input { border: none; outline: none; margin-left: 10px; width: 100%; }
+.search-input {
+  border: none;
+  outline: none;
+  margin-left: 10px;
+  width: 100%;
+  font-size: 16px;
+}
 
 .table-card {
-  background: rgba(173, 216, 245, 0.4);
-  border-radius: 25px;
+  background-color: #2a8df2;
+  border-radius: 30px;
   width: 100%;
-  min-height: 200px;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  color: white;
 }
 
-.table-header {
+.table-header, .table-row {
   display: grid;
-  grid-template-columns: 1.2fr 2fr 1.2fr;
-  padding: 20px;
-  font-weight: 900;
-  color: #4a90e2;
-  border-bottom: 1px solid rgba(255,255,255,0.3);
-}
-
-.table-row {
-  display: grid;
-  grid-template-columns: 1.2fr 2fr 1.2fr;
-  padding: 15px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  grid-template-columns: 1.5fr 2fr 1.5fr;
+  padding: 20px 30px;
   align-items: center;
 }
 
-/* FIX für das abgeschnittene "Keine Benutzer gefunden" */
-.no-data-row {
-  padding: 50px 20px;
-  text-align: center;
-  color: #4a90e2;
-  font-weight: bold;
+.table-header {
+  font-weight: 900;
   font-size: 18px;
-  width: 100%;
+  background: rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-.no-data-icon { display: block; font-size: 30px; margin-bottom: 10px; }
+.table-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 
-.username { font-weight: bold; font-size: 16px; }
-.email { font-size: 14px; color: #444; }
+.table-row {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: 0.2s;
+}
+
+.table-row:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.row-locked {
+  background: rgba(0,0,0,0.1);
+}
+
+.username {
+  font-weight: bold;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lock-badge {
+  background: #ff4d4d;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.email {
+  font-size: 15px;
+  color: rgba(255,255,255,0.9);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
 
 .btn-table {
-  background: white;
   border: none;
-  padding: 8px 15px;
+  padding: 10px 18px;
   border-radius: 12px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 12px;
-  margin-right: 5px;
+  font-size: 13px;
+  color: white;
+  background: #a1c9f1;
+  transition: 0.2s;
 }
 
-.btn-red { color: #ff4d4d; }
+.btn-table:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.btn-green { background: #4cd137; }
+.btn-red { background: #ff6b6b; }
 
 .overlay-backdrop {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);
-  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .overlay-card {
-  background: #2a8df2; color: white; padding: 30px; border-radius: 30px; width: 340px; text-align: center;
+  background: #2a8df2;
+  color: white;
+  padding: 40px;
+  border-radius: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
 }
 
 .reason-input {
-  width: 100%; height: 80px; border-radius: 15px; padding: 12px; margin: 15px 0 5px 0; border: 2px solid transparent; outline: none;
+  width: 100%;
+  height: 100px;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 15px 0 5px;
+  border: none;
+  outline: none;
+  resize: none;
 }
 
-.input-error { border: 2px solid #ff4d4d; background-color: #fff0f0; }
-
-.validation-msg { font-size: 11px; color: #ffcccc; margin-bottom: 15px; text-align: left; }
-
-.btn-overlay:disabled { background-color: #888 !important; opacity: 0.6; cursor: not-allowed; }
-
-.overlay-btns { display: flex; gap: 10px; margin-top: 10px; }
-
-.btn-overlay, .btn-overlay-alt {
-  background: #8ec5ef; border: none; color: white; padding: 12px; border-radius: 20px; flex: 1; cursor: pointer; font-weight: bold;
+.input-error {
+  border: 2px solid #ff4d4d;
+  background: #fff0f0;
 }
 
-.admin-footer { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #888; font-size: 14px; }
+.validation-msg {
+  font-size: 12px;
+  color: #ffcccc;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.overlay-btns {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn-overlay {
+  background: #ff4757;
+  border: none;
+  color: white;
+  padding: 14px;
+  border-radius: 20px;
+  flex: 1;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-overlay:disabled {
+  background: #888;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.no-data-row {
+  padding: 60px 20px;
+  text-align: center;
+  font-weight: bold;
+  opacity: 0.8;
+}
 </style>

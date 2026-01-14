@@ -1,9 +1,8 @@
 <template>
   <div class="transparent-view">
     <div class="header">
-      <h1 class="title">Admin Dashboard</h1>
+      <h1 class="title">Admin Dashboard ⚙️</h1>
     </div>
-
     <div class="menu-container">
       <button @click="router.push('/admin/spots')" class="menu-btn">
         <span class="icon"></span>
@@ -40,12 +39,12 @@
 .header {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 60px;
 }
 
-.title { color: #5daae0; font-size: 36px; font-weight: 800; margin-left: 550px }
+.title { color: #5daae0; font-size: 36px; font-weight: 800; margin: 0; text-align: center; }
 .logo-img { height: 60px; }
 
 .menu-container { width: 100%; max-width: 320px; }

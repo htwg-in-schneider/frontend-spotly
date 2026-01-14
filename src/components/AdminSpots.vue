@@ -1,18 +1,17 @@
 <template>
-
   <div class="admin-spots-page">
-    <div class="header-section"></div>
+    <header class="header-section">
+      <div class="nav-container">
+        <router-link to="/admin" class="back-link">
+          <Button variant="secondary" round />
+        </router-link>
+      </div>
+      <h1 class="main-title">Orte verwalten</h1>
+    </header>
 
-    <div class="top-left-nav">
-      <router-link to="/admin">
-        <Button variant="secondary" round />
-      </router-link>
-    </div>
-
-    <div class="content-wrapper">
-      <div v-if="currentView === 'list'" class="menu-card">
-        <div class="menu-header">Orte verwalten</div>
-        <div class="search-container">
+    <main class="content-wrapper">
+      <div v-if="currentView === 'list'" class="menu-card list-view">
+        <div class="menu-header">
           <input v-model="searchQuery" placeholder="Spot suchen..." class="inner-search" />
         </div>
 
@@ -31,18 +30,23 @@
         </div>
       </div>
 
-      <div v-else class="detail-card">
+      <div v-else class="detail-card full-view">
         <div class="detail-header-text">
           <h2 class="sub-view-title">{{ activeMode === 'delete' ? 'Ort löschen' : 'Ort prüfen' }}</h2>
         </div>
 
         <div class="preview-box">
-          <img :src="selectedSpot.imageUrl || 'https://via.placeholder.com/300x200'" class="spot-img" />
-          <h3 class="preview-name">{{ selectedSpot.title }}</h3>
-          <div class="info-grid">
-            <p><strong>Kategorie:</strong> {{ selectedSpot.category?.name || selectedSpot.category }}</p>
-            <p><strong>Standort:</strong> {{ selectedSpot.location }}</p>
+          <div class="preview-main">
+            <img :src="selectedSpot.imageUrl || 'https://via.placeholder.com/300x200'" class="spot-img" />
+            <div class="preview-info">
+              <h3 class="preview-name">{{ selectedSpot.title }}</h3>
+              <div class="info-grid">
+                <p><strong>Kategorie:</strong> {{ selectedSpot.category?.name || selectedSpot.category }}</p>
+                <p><strong>Standort:</strong> {{ selectedSpot.location }}</p>
+              </div>
+            </div>
           </div>
+
           <div class="description-area">
             <strong>Beschreibung:</strong>
             <p>{{ selectedSpot.description }}</p>
@@ -55,11 +59,10 @@
         </div>
 
         <div class="action-footer-btns">
-          <button @click="goBack" class="btn-reject-main">Zurück</button>
           <button v-if="activeMode === 'delete'" @click="showOverlay = true" class="btn-danger-main">Jetzt Löschen</button>
         </div>
       </div>
-    </div>
+    </main>
 
     <div v-if="showOverlay" class="overlay-backdrop">
       <div class="overlay-card">
@@ -145,72 +148,283 @@ export default {
 </script>
 
 <style scoped>
-/* NAV & PAGE LAYOUT */
-.top-left-nav { position: absolute; top: 30px; left: 30px; z-index: 100; }
-.admin-spots-page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 50px; }
-/* Header-Breite erhöht */
-.header-section { width: 100%; max-width: 800px; padding: 40px 20px; }
+.admin-spots-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 50px;
+  background: transparent;
+}
 
-/* LIST VIEW */
+.header-section {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.nav-container {
+  position: absolute;
+  left: 20px;
+}
+
+.main-title {
+  color: #5daae0;
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.content-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
 .menu-card {
-  background: #4a90e2;
+  background: #2a8df2;
   border-radius: 30px;
-  width: 100%; /* Nutzt mehr verfügbaren Platz */
-  max-width: 800px; /* Breite von 380px auf 800px erhöht */
+  width: 100%;
+  max-width: 800px;
   padding: 30px;
   color: white;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
-.inner-search { width: 100%; padding: 15px; border-radius: 20px; border: none; margin-bottom: 20px; outline: none; font-size: 16px; }
-.spot-list-scroll { overflow-y: auto; max-height: 60vh; padding-right: 10px; }
+
+.inner-search {
+  width: 100%;
+  padding: 15px;
+  border-radius: 20px;
+  border: none;
+  margin-bottom: 20px;
+  outline: none;
+  font-size: 16px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.spot-list-scroll {
+  overflow-y: auto;
+  max-height: 60vh;
+  padding-right: 10px;
+}
+
 .spot-card-item {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 12px;
-  display: flex; /* Name und Buttons nebeneinander bei breiter Karte */
+  display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background 0.2s;
 }
-.btn-action-light { background: #a1c9f1; border: none; color: white; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-left: 10px; }
 
-/* DETAIL VIEW */
+.spot-name {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.btn-action-light {
+  background: #a1c9f1;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.btn-action-light:hover {
+  background: #b6d5f5;
+  transform: translateY(-2px);
+}
+
 .detail-card {
   background: #eef7ff;
   border-radius: 30px;
-  width: 95%;
-  max-width: 900px; /* Deutlich breiter für die Detailansicht */
-  padding: 40px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-.spot-img {
   width: 100%;
-  max-height: 400px; /* Verhindert, dass das Bild bei breiter Karte zu hoch wird */
+  max-width: 900px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.sub-view-title {
+  color: #4a90e2;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.preview-main {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+  align-items: flex-start;
+}
+
+.spot-img {
+  width: 40%;
+  max-height: 300px;
   border-radius: 20px;
   object-fit: cover;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-.description-area { background: #d4e9ff; padding: 25px; border-radius: 20px; text-align: left; margin: 20px 0; font-size: 16px; }
 
-/* REVIEWS MODERATION */
+.preview-info {
+  flex: 1;
+  text-align: left;
+}
+
+.preview-name {
+  color: #333;
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.info-grid p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 16px;
+}
+
+.description-area {
+  background: #d4e9ff;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: left;
+  margin: 20px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
 .admin-reviews-container {
   margin-top: 30px;
   text-align: left;
   background: white;
   padding: 25px;
   border-radius: 20px;
-  max-height: 500px;
+  max-height: 400px;
   overflow-y: auto;
   border: 1px solid #c0d9eb;
 }
-.admin-reviews-container h4 { color: #4a90e2; margin-bottom: 15px; font-size: 20px; }
 
-/* BUTTONS & OVERLAYS */
-.action-footer-btns { display: flex; gap: 20px; margin-top: 30px; justify-content: center; }
-.action-footer-btns button { max-width: 250px; } /* Verhindert, dass Buttons zu riesig werden */
+.admin-reviews-container h4 {
+  color: #4a90e2;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
 
-.btn-confirm-main, .btn-danger-main { background: #6ab0e5; color: white; border: none; padding: 15px; border-radius: 25px; flex: 1; font-weight: bold; font-size: 16px; cursor: pointer; }
-.btn-reject-main { background: #8ec5ef; color: white; border: none; padding: 15px; border-radius: 25px; flex: 1; font-weight: bold; cursor: pointer; }
+.action-footer-btns {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  justify-content: center;
+}
 
-.overlay-card { background: #2a8df2; color: white; padding: 35px; border-radius: 30px; width: 450px; text-align: center; }
+.btn-danger-main {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-reject-main {
+  background: #8ec5ef;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.overlay-card {
+  background: #2a8df2;
+  color: white;
+  padding: 35px;
+  border-radius: 30px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.overlay-btns {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  justify-content: center;
+}
+
+.btn-overlay {
+  padding: 12px 25px;
+  border-radius: 20px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-overlay.danger {
+  background: #ff4757;
+  color: white;
+}
+
+.btn-overlay-alt {
+  padding: 12px 25px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .preview-main {
+    flex-direction: column;
+  }
+  .spot-img {
+    width: 100%;
+  }
+  .spot-card-item {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .item-actions {
+    margin-left: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+}
 </style>
