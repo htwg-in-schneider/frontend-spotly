@@ -33,7 +33,7 @@
             <h2 class="member-name">Efe-liz</h2>
             <div class="reveal-content">
               <p class="member-text">
-                Hi, ich bin Efe-liz. Ich liebe es, neue Lieblingsorte zu entdecken und weiterzugeben. Genau dafür gibt’s Spotly :)
+                Neue Spots zu finden ist das eine, aber sie festzuhalten und mit anderen zu teilen, macht für mich erst den richtigen Reiz aus. Ich liebe es, meine Entdeckungen zu dokumentieren und euch hier auf Spotly daran teilhaben zu lassen. Viel Spaß beim Auschecken!
               </p>
             </div>
           </div>
@@ -45,8 +45,7 @@
             <h2 class="member-name">Moritz</h2>
             <div class="reveal-content">
               <p class="member-text">
-                Moin, ich bin Moritz. Ich verbinde Technik mit lokaler Kultur
-                und echten Orten.
+                Hey, ich bin Moritz. Seit dem Sommersemester 2024 studiere ich an der HTWG Wirtschaftsinformatik und hätte mir damals solch eine Website gewünscht, bei der Locals hiere Spots hochladen können, damit Neuzugezogene sich besser in Konstanz orientieren können.
               </p>
             </div>
           </div>
@@ -106,15 +105,6 @@
             Eine Stadt, in der man sich nicht wie ein Tourist fühlt,
             sondern wie jemand, der dazugehört.
           </p>
-        </div>
-
-        <div class="stack-block">
-          <h2>Unsere Werte</h2>
-          <ul>
-            <li>Echte Empfehlungen statt Werbung</li>
-            <li>Lokal denken, menschlich handeln</li>
-            <li>Qualität vor Quantität</li>
-          </ul>
         </div>
       </div>
     </section>

@@ -130,8 +130,11 @@ function editSpot() {
 
 .spot-image {
   width: 100%;
+  height: 400px; /* Hier kannst du die gewünschte Höhe festlegen */
+  object-fit: cover; /* Verhindert das Verzerren des Bildes */
   border-radius: 25px;
   margin-bottom: 25px;
+  display: block; /* Entfernt mögliche Abstände unter dem Bild */
 }
 
 .spot-name {

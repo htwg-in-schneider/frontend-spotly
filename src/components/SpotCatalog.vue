@@ -122,8 +122,7 @@ function sendMail() {
             <img src="@/assets/Moritz.jpg" class="team-img" alt="Moritz">
           </div>
           <p class="about-text-content">
-            Spotly ist unsere Art, Konstanz neu zu entdecken durch echte Tipps von echten Menschen...
-          </p>
+            Unsere Vision Spotly ist unsere Art, Konstanz durch echte Tipps von echten Menschen neu zu entdecken. Wir haben diese Plattform geschaffen, um verborgene Lieblingsorte sichtbar zu machen, die in keinem Reiseführer stehen. Gemeinsam bauen wir so die persönlichste Karte der Stadt – von Locals für Locals und alle, die es werden wollen.</p>
           <div class="team-wrapper">
             <img src="@/assets/Efeliz.jpg" class="team-img" alt="Efe-liz">
           </div>
@@ -229,10 +228,10 @@ function sendMail() {
 .spot-image { flex: 1.2; overflow: hidden; }
 .spot-image img {
   width: 100%;
-  height: 100%;
-  min-height: 400px;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+  height: 300px; /* Hier kannst du die gewünschte Höhe festlegen */
+  object-fit: cover; /* Verhindert das Verzerren des Bildes */
+  border-radius: 25px;
+  display: block; /* Entfernt mögliche Abstände unter dem Bild */
 }
 
 .spot-highlight-card:hover .spot-image img {
