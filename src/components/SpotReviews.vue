@@ -19,7 +19,7 @@ const rating = ref(5);
 
 async function fetchReviews() {
   try {
-    const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
+    const res = await fetch(`${API_BASE}/reviews/${props.spotId}`);
     if (res.ok) reviews.value = await res.json();
   } catch (err) {
     console.error(err);
@@ -30,7 +30,7 @@ async function deleteReview(reviewId) {
   if (!confirm("Bewertung löschen?")) return;
   try {
     const token = await getAccessTokenSilently();
-    const res = await fetch(`${API_BASE}/spots/reviews/${reviewId}`, {
+    const res = await fetch(`${API_BASE}/reviews/${reviewId}`, {
       method: 'DELETE',
       headers: {'Authorization': `Bearer ${token}`}
     });
@@ -50,13 +50,14 @@ async function submitReview() {
   }
   try {
     const token = await getAccessTokenSilently();
-    const res = await fetch(`${API_BASE}/spots/${props.spotId}/reviews`, {
+    const res = await fetch(`${API_BASE}/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
+        spotId: props.spotId,
         rating: rating.value,
         comment: reviewText.value
       })
