@@ -66,6 +66,9 @@ async function submitReview() {
       rating.value = 5;
       await fetchReviews();
       emit('review-posted');
+    } else if (res.status === 403) {
+      const errorMSG = await res.text();
+      alert(`Zugriff verweigert: ${errorMsg || "Dein Account wurde gesperrt."}`);
     }
   } catch (err) {
     console.error(err);
