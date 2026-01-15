@@ -9,6 +9,10 @@
     <div class="content-wrapper">
       <h1 class="main-title">Profil</h1>
 
+      <div v-if="isEnabled === false" class="banned-banner">
+        Dein Account ist aktuell gesperrt. Du kannst keine neuen Spots oder Bewertungen erstellen.
+      </div>
+
       <div class="profile-card">
         <div class="avatar-section">
           <img :src="user?.picture" alt="Avatar" class="profile-avatar" />
@@ -67,6 +71,7 @@ const API = import.meta.env.VITE_API_URL;
 const username = ref("");
 const isEditing = ref(false);
 const originalUsername = ref("");
+const isEnabled = ref(true);
 
 async function loadUserData() {
   try {
@@ -78,6 +83,7 @@ async function loadUserData() {
       const data = await res.json();
       username.value = data.username;
       originalUsername.value = data.username;
+      isEnabled.value = data.enabled;
     }
   } catch (err) {
     console.error("Fehler beim Laden des Profils:", err);
@@ -93,7 +99,7 @@ async function saveProfile() {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ enabled: true, username: username.value })
+      body: JSON.stringify({ enabled: isEnabled.value, username: username.value })
     });
 
     if (res.ok) {
@@ -160,4 +166,14 @@ input::placeholder { color: rgba(255,255,255,0.6); }
 .stat-card:hover { transform: translateY(-3px); }
 .stat-card h3 { margin: 0; color: #0084ff; }
 .stat-card p { margin: 5px 0 0; font-size: 14px; color: #666; }
+.banned-banner {
+  background: #ff4d4d;
+  color: white;
+  padding: 15px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
 </style>
