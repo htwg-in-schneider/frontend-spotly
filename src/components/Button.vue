@@ -45,11 +45,37 @@ const props = defineProps({
   text-decoration: none;
 }
 
+/* Runder Button Style */
+.round {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
+/* Der weiße Pfeil im blauen Kreis */
 .arrow-icon {
   width: 20px;
   height: 20px;
-  color: white;
+  color: white; /* Pfeilfarbe weiß */
 }
 
+/* Accent (Dunkelblau für Haupt-Aktionen) */
+.accent {
+  background: #0084ff;
+  color: white;
+}
+.accent:hover {
+  background: #1c86ee;
+}
+
+/* Secondary (Dein spezielles Blau für den Zurück-Button) */
+.secondary {
+  background: #6eb5f3; /* Farbe wie gewünscht */
+  color: white;
+}
+.secondary:hover {
+  background: #5a9ed8;
+}
 </style>
