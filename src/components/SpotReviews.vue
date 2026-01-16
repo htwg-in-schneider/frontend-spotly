@@ -19,7 +19,7 @@ const rating = ref(5);
 
 async function fetchReviews() {
   try {
-    const res = await fetch(`${API_BASE}/reviews/${props.spotId}`);
+    const res = await fetch(`${API_BASE}/reviews/spot/${props.spotId}`);
     if (res.ok) reviews.value = await res.json();
   } catch (err) {
     console.error(err);
