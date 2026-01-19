@@ -15,7 +15,7 @@ app.use(
             authorizationParams: {
                 audience: import.meta.env.VITE_AUTH0_AUDIENCE,
                 // Dieser Teil stellt sicher, dass du zum Unterordner zurückkehrst
-                redirect_uri: window.location.origin
+                redirect_uri: window.location.origin + window.location.pathname
             }
         })
     );
