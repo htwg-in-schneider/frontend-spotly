@@ -92,7 +92,7 @@ const handleAuth = () => {
   if (!isAuthenticated.value) {
     loginWithRedirect();
   } else {
-    const returnUrl = window.location.origin;
+    const returnUrl = window.location.origin + window.location.pathname;
 
     logout({
       logoutParams: {
